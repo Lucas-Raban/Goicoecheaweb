@@ -34,6 +34,18 @@ export const equipo: { nombre: string; cargo: string; whatsapp?: string; instagr
     whatsapp: "5492234399282",
     instagram: "https://www.instagram.com/lucasraban.propiedades/",
   },
+  {
+    nombre: "Nicolas Loinas",
+    cargo: "Asesor inmobiliario",
+    whatsapp: "5492236164513",
+    instagram: "https://www.instagram.com/loinas.propiedades/",
+  },
+  {
+    nombre: "Alejandro Cordeiro",
+    cargo: "Asesor inmobiliario",
+    whatsapp: "5492234541702",
+    instagram: "https://www.instagram.com/alebkomc/",
+  },
 ];
 
 export const navegacion = [

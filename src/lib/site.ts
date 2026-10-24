@@ -26,7 +26,7 @@ export const site = {
 };
 
 // Asesores de la oficina. La foto de perfil se guarda en public/equipo/ (cuadrada); sin foto se ven las iniciales.
-export const equipo: { nombre: string; cargo: string; whatsapp?: string; instagram?: string; foto?: string }[] = [
+export const equipo: { nombre: string; cargo: string; whatsapp?: string; instagram?: string; foto?: string; esLogo?: boolean }[] = [
   {
     nombre: "Lucas Raban",
     cargo: "Asesor inmobiliario",
@@ -39,6 +39,9 @@ export const equipo: { nombre: string; cargo: string; whatsapp?: string; instagr
     cargo: "Asesor inmobiliario",
     whatsapp: "5492236164513",
     instagram: "https://www.instagram.com/loinas.propiedades/",
+    // Su perfil de Instagram usa el isotipo de la inmobiliaria.
+    foto: "/marca/isotipo-azul.png",
+    esLogo: true,
   },
   {
     nombre: "Alejandro Cordeiro",

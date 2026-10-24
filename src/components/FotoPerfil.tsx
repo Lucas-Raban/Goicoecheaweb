@@ -1,6 +1,9 @@
 import Image from "next/image";
 
-export function FotoPerfil({ foto, nombre }: { foto?: string; nombre: string }) {
+export function FotoPerfil({ foto, nombre, esLogo }: { foto?: string; nombre: string; esLogo?: boolean }) {
+  if (foto && esLogo) {
+    return <Image src={foto} alt={nombre} fill sizes="112px" className="bg-white object-contain p-5 ring-1 ring-borde ring-inset" />;
+  }
   if (foto) {
     return <Image src={foto} alt={nombre} fill sizes="112px" className="object-cover object-top" />;
   }

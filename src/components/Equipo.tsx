@@ -21,7 +21,7 @@ export function Equipo() {
         return (
           <div key={a.nombre} className="flex items-center gap-6 bg-white p-6 md:p-8">
             <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-full bg-fondo md:h-28 md:w-28">
-              <FotoPerfil foto={a.foto} nombre={a.nombre} />
+              <FotoPerfil foto={a.foto} nombre={a.nombre} esLogo={a.esLogo} />
             </div>
             <div className="min-w-0">
               <h3 className="font-serif text-2xl leading-tight font-bold">{a.nombre}</h3>

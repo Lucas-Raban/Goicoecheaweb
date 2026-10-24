@@ -43,7 +43,7 @@ export function Footer() {
         <div>
           <p className="etiqueta text-white/60">Secciones</p>
           <ul className="mt-4 space-y-2 text-sm">
-            {navegacion.map((item) => (
+            {[...navegacion, { href: "/barrios", label: "Barrios" }, { href: "/propiedades", label: "Todas las propiedades" }].map((item) => (
               <li key={item.href}>
                 <Link href={item.href} className="hover:underline">
                   {item.label}

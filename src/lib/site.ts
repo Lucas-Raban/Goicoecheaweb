@@ -1,3 +1,5 @@
+import { listaBarrios } from "./barrios";
+
 export const site = {
   nombre: "Goicoechea Propiedades",
   registro: "Reg. 3594",
@@ -24,24 +26,15 @@ export const site = {
 };
 
 export const navegacion = [
-  { href: "/propiedades", label: "Propiedades" },
+  { href: "/venta", label: "Venta" },
+  { href: "/alquiler", label: "Alquiler" },
+  { href: "/alquiler-temporario", label: "Temporario" },
   { href: "/tasaciones", label: "Tasaciones" },
   { href: "/nosotros", label: "Nosotros" },
   { href: "/contacto", label: "Contacto" },
 ];
 
-export const barrios = [
-  "Centro",
-  "Plaza Mitre",
-  "Chauvin",
-  "La Perla",
-  "Güemes",
-  "Playa Grande",
-  "Los Troncos",
-  "Stella Maris",
-  "Sierra de los Padres",
-  "Batán",
-];
+export const barrios = listaBarrios.map((b) => b.nombre);
 
 export const avisoLegal =
   "Todas las medidas enunciadas son meramente orientativas, las medidas exactas serán las que se expresen en el respectivo título de propiedad de cada inmueble. Todas las fotos, imágenes y videos son meramente ilustrativos y no contractuales. Los precios enunciados son meramente orientativos y no contractuales.";

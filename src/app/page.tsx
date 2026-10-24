@@ -1,29 +1,32 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Buscador } from "@/components/Buscador";
+import { GrillaPropiedades } from "@/components/TarjetaPropiedad";
 import { fotos } from "@/lib/fotos";
+import { slugify } from "@/lib/texto";
 import { barrios, linkWhatsapp, site } from "@/lib/site";
+import { getPropiedades } from "@/lib/tokko";
 
 const operaciones = [
   {
     etiqueta: "Venta",
     titulo: "Propiedades en venta",
     texto: "Departamentos, casas, PH, locales, terrenos, galpones y campos.",
-    href: "/propiedades?operacion=venta",
+    href: "/venta",
     foto: fotos.venta,
   },
   {
     etiqueta: "Alquiler",
     titulo: "Alquileres anuales",
     texto: "Para vivir o para tu negocio, con contrato por escrito desde el primer día.",
-    href: "/propiedades?operacion=alquiler",
+    href: "/alquiler",
     foto: fotos.alquiler,
   },
   {
     etiqueta: "Temporario",
     titulo: "Alquiler temporario",
     texto: "Por semana, quincena o mes. En temporada conviene consultar con tiempo.",
-    href: "/propiedades?operacion=temporario",
+    href: "/alquiler-temporario",
     foto: fotos.temporario,
   },
 ];
@@ -36,7 +39,10 @@ function Flecha({ className = "" }: { className?: string }) {
   );
 }
 
-export default function Inicio() {
+export default async function Inicio() {
+  const propiedades = await getPropiedades();
+  const destacadas = [...propiedades.filter((p) => p.destacada), ...propiedades.filter((p) => !p.destacada)].slice(0, 6);
+
   return (
     <>
       {/* Portada a pantalla completa; el buscador queda montado sobre el borde inferior */}
@@ -45,10 +51,10 @@ export default function Inicio() {
           <Image src={fotos.hero} alt="Vista aérea de la costa de Mar del Plata" fill priority sizes="100vw" className="-z-20 scale-105 object-cover motion-safe:animate-[acercar_18s_ease-out_both]" />
           <div className="absolute inset-0 -z-10 bg-gradient-to-b from-azul/50 via-azul/20 to-azul/80" />
           <div className="mx-auto w-full max-w-7xl px-4 pt-40 pb-28 md:px-8 md:pb-36">
-            <p className="text-sm font-bold text-white/80">Goicoechea Propiedades · Mar del Plata</p>
-            <h1 className="mt-4 max-w-5xl font-serif text-[clamp(3rem,8vw,7.5rem)] leading-[0.95] font-bold tracking-[-0.02em]">
+            <h1 className="text-sm font-bold text-white/80">Inmobiliaria en Mar del Plata · Goicoechea Propiedades</h1>
+            <p className="mt-4 max-w-5xl font-serif text-[clamp(3rem,8vw,7.5rem)] leading-[0.95] font-bold tracking-[-0.02em]">
               Vivir cerca del mar empieza acá
-            </h1>
+            </p>
           </div>
         </div>
         <div className="relative z-10 mx-auto -mt-14 max-w-7xl px-4 md:px-8">
@@ -88,6 +94,21 @@ export default function Inicio() {
           ))}
         </div>
       </section>
+
+      {destacadas.length > 0 && (
+        <section className="border-t border-borde">
+          <div className="mx-auto max-w-7xl px-4 py-24 md:px-8 md:py-32">
+            <div className="mb-14 grid gap-6 md:grid-cols-[1fr_auto] md:items-end">
+              <h2 className="font-serif text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-6xl">Propiedades destacadas</h2>
+              <Link href="/propiedades" className="group inline-flex items-center gap-3 font-bold">
+                <span className="border-b border-azul pb-1">Ver todas</span>
+                <Flecha className="transition group-hover:translate-x-1" />
+              </Link>
+            </div>
+            <GrillaPropiedades propiedades={destacadas} />
+          </div>
+        </section>
+      )}
 
       {/* Vender o alquilar: imagen a sangre de un lado, texto del otro */}
       <section className="grid bg-azul text-white md:grid-cols-2">
@@ -136,7 +157,7 @@ export default function Inicio() {
             {barrios.map((b) => (
               <li key={b} className="border-b border-borde">
                 <Link
-                  href={`/propiedades?barrio=${encodeURIComponent(b)}`}
+                  href={`/barrios/${slugify(b)}`}
                   className="group flex items-center justify-between py-4 font-serif text-2xl font-bold transition-colors hover:text-gris md:text-3xl"
                 >
                   <span className="transition-transform duration-300 group-hover:translate-x-2">{b}</span>

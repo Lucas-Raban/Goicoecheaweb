@@ -1,13 +1,28 @@
 import type { MetadataRoute } from "next";
-import { navegacion, site } from "@/lib/site";
+import { listaBarrios } from "@/lib/barrios";
+import { site } from "@/lib/site";
+import { getPropiedades } from "@/lib/tokko";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const propiedades = await getPropiedades();
+  const fijas = ["", "/venta", "/alquiler", "/alquiler-temporario", "/propiedades", "/barrios", "/tasaciones", "/nosotros", "/contacto"];
+
   return [
-    { url: site.url, changeFrequency: "weekly", priority: 1 },
-    ...navegacion.map((item) => ({
-      url: `${site.url}${item.href}`,
+    ...fijas.map((ruta) => ({
+      url: `${site.url}${ruta}`,
+      changeFrequency: "daily" as const,
+      priority: ruta === "" ? 1 : 0.8,
+    })),
+    ...listaBarrios.map((b) => ({
+      url: `${site.url}/barrios/${b.slug}`,
       changeFrequency: "weekly" as const,
-      priority: item.href === "/propiedades" ? 0.9 : 0.6,
+      priority: 0.7,
+    })),
+    ...propiedades.map((p) => ({
+      url: `${site.url}/propiedades/${p.slug}`,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+      images: p.fotos.slice(0, 1).map((f) => f.url),
     })),
   ];
 }

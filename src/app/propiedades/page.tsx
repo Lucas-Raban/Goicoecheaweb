@@ -1,48 +1,41 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Encabezado } from "@/components/Encabezado";
+import { ListadoFiltrable } from "@/components/ListadoFiltrable";
+import { Migas } from "@/components/Migas";
+import { SinPropiedades } from "@/components/SinPropiedades";
+import { GrillaPropiedades } from "@/components/TarjetaPropiedad";
 import { fotos } from "@/lib/fotos";
-import { linkWhatsapp, site } from "@/lib/site";
+import { getPropiedades } from "@/lib/tokko";
 
 export const metadata: Metadata = {
   title: "Propiedades en venta y alquiler en Mar del Plata",
   description:
-    "Departamentos, casas, locales y terrenos en venta, alquiler y alquiler temporario en Mar del Plata. Fotos, videos y recorridos virtuales.",
+    "Departamentos, casas, locales y terrenos en venta, alquiler y alquiler temporario en Mar del Plata. Fotos, videos y recorridos 360.",
   alternates: { canonical: "/propiedades" },
 };
 
-// El catálogo se va a leer desde la API de Tokko (paso 2 del plan).
-export default function Propiedades() {
+export default async function Propiedades() {
+  const propiedades = await getPropiedades();
+
   return (
     <>
       <Encabezado etiqueta="Propiedades" titulo="Propiedades en Mar del Plata" foto={fotos.venta}>
         <p>Venta, alquiler y alquiler temporario de departamentos, casas, locales y terrenos.</p>
       </Encabezado>
-
-      <section className="mx-auto max-w-7xl px-4 md:px-8 py-20">
-        <div className="border border-borde bg-fondo p-8 md:p-12">
-          <h2 className="font-serif text-2xl font-bold">Estamos sumando el catálogo a la web nueva</h2>
-          <p className="mt-4 max-w-2xl text-gris">
-            Muy pronto vas a poder buscar por operación, barrio, precio y ambientes, con fotos, videos y recorridos
-            360. Mientras tanto, podés ver todas las propiedades en nuestra web actual o preguntarnos directamente.
-          </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a
-              href={site.catalogoActual}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-azul px-8 py-4 text-center font-bold text-white hover:bg-azul-claro"
-            >
-              Ver catálogo completo
-            </a>
-            <a
-              href={linkWhatsapp("Hola, estoy buscando una propiedad.")}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="border border-azul px-8 py-4 text-center font-bold hover:bg-azul hover:text-white"
-            >
-              Contanos qué buscás
-            </a>
-          </div>
+      <section className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-20">
+        <Migas items={[{ nombre: "Propiedades", href: "/propiedades" }]} />
+        <div className="mt-10">
+          {propiedades.length > 0 ? (
+            <Suspense fallback={<GrillaPropiedades propiedades={propiedades} />}>
+              <ListadoFiltrable propiedades={propiedades} />
+            </Suspense>
+          ) : (
+            <SinPropiedades
+              titulo="Estamos sumando el catálogo a la web nueva"
+              mensaje="Muy pronto vas a poder buscar por operación, barrio y tipo, con fotos, videos y recorridos 360. Mientras tanto, escribinos o mirá el catálogo en nuestra web actual."
+            />
+          )}
         </div>
       </section>
     </>

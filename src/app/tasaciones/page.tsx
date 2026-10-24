@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Encabezado } from "@/components/Encabezado";
+import { JsonLd } from "@/components/JsonLd";
 import { fotos } from "@/lib/fotos";
 import { FormularioWhatsapp } from "@/components/FormularioWhatsapp";
 
@@ -10,6 +11,25 @@ export const metadata: Metadata = {
   alternates: { canonical: "/tasaciones" },
 };
 
+
+const preguntas = [
+  {
+    pregunta: "¿La tasación tiene costo?",
+    respuesta: "No. La tasación es sin cargo y no te compromete a vender ni a alquilar con nosotros.",
+  },
+  {
+    pregunta: "¿Cuánto tarda?",
+    respuesta: "Coordinamos la visita en pocos días y después te pasamos el valor con la explicación de cómo lo calculamos.",
+  },
+  {
+    pregunta: "¿Por qué hace falta ver la propiedad?",
+    respuesta: "El estado, la luz, la vista, la orientación y las expensas cambian mucho el precio, y nada de eso se ve bien en fotos.",
+  },
+  {
+    pregunta: "¿Tasan locales, terrenos y campos?",
+    respuesta: "Sí. Tasamos departamentos, casas, PH, locales, terrenos, galpones y campos en Mar del Plata y alrededores.",
+  },
+];
 
 export default function Tasaciones() {
   return (
@@ -51,6 +71,31 @@ export default function Tasaciones() {
             />
           </div>
         </div>
+      </section>
+
+      <section className="border-t border-borde bg-fondo">
+        <div className="mx-auto max-w-7xl px-4 py-20 md:px-8">
+          <h2 className="font-serif text-3xl font-bold md:text-4xl">Preguntas frecuentes</h2>
+          <div className="mt-10 grid gap-x-12 md:grid-cols-2">
+            {preguntas.map((p) => (
+              <div key={p.pregunta} className="border-t border-borde py-6">
+                <h3 className="font-bold">{p.pregunta}</h3>
+                <p className="mt-2 text-gris">{p.respuesta}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <JsonLd
+          datos={{
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: preguntas.map((p) => ({
+              "@type": "Question",
+              name: p.pregunta,
+              acceptedAnswer: { "@type": "Answer", text: p.respuesta },
+            })),
+          }}
+        />
       </section>
     </>
   );

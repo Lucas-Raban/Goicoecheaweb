@@ -30,13 +30,15 @@ type PropiedadPanel = {
   videos?: string[];
   videosArchivo?: string[];
   tours?: string[];
+  panoramas?: { ambiente?: string; url?: string }[];
 };
 
 const consulta = `*[_type == "propiedad" && publicada != false && !(_id in path("drafts.**"))] | order(_createdAt desc) {
   _id, destacada, titulo, operacion, tipo, direccion, barrio, otroBarrio, precio, moneda, mostrarPrecio,
   ambientes, dormitorios, banos, cocheras, superficieCubierta, superficieTotal, codigo, descripcion, ubicacion,
   "fotos": fotos[]{ "url": asset->url, descripcion },
-  videos, "videosArchivo": videosArchivo[].asset->url, tours
+  videos, "videosArchivo": videosArchivo[].asset->url, tours,
+  "panoramas": panoramas[]{ ambiente, "url": imagen.asset->url }
 }`;
 
 // Saca latitud y longitud de un link de Google Maps (formatos @lat,lng o q=lat,lng).
@@ -77,6 +79,9 @@ function normalizar(p: PropiedadPanel): Propiedad {
     videos: (p.videos ?? []).map(linkIncrustable),
     videosArchivo: (p.videosArchivo ?? []).filter(Boolean),
     tours: p.tours ?? [],
+    panoramas: (p.panoramas ?? [])
+      .filter((f) => f.url)
+      .map((f, i) => ({ url: `${f.url}?w=6000&auto=format`, ambiente: f.ambiente || `Ambiente ${i + 1}` })),
     lat,
     lng,
     destacada: Boolean(p.destacada),

@@ -31,9 +31,9 @@ export function TarjetaPropiedad({ propiedad: p, prioridad }: { propiedad: Propi
             {nombresOperacion[op.tipo]}: {p.tipo}
           </span>
         )}
-        {(p.videos.length > 0 || p.videosArchivo.length > 0 || p.tours.length > 0) && (
+        {(p.videos.length > 0 || p.videosArchivo.length > 0 || p.tours.length > 0 || p.panoramas.length > 0) && (
           <span className="absolute right-3 bottom-3 bg-azul/85 px-2.5 py-1 text-xs font-bold text-white">
-            {[(p.videos.length > 0 || p.videosArchivo.length > 0) && "Video", p.tours.length > 0 && "Tour 360"].filter(Boolean).join(" · ")}
+            {[(p.videos.length > 0 || p.videosArchivo.length > 0) && "Video", (p.tours.length > 0 || p.panoramas.length > 0) && "Tour 360"].filter(Boolean).join(" · ")}
           </span>
         )}
       </div>

@@ -23,6 +23,7 @@ export type Propiedad = {
   videos: string[];
   videosArchivo: string[];
   tours: string[];
+  panoramas: { url: string; ambiente: string }[];
   lat: number | null;
   lng: number | null;
   destacada: boolean;

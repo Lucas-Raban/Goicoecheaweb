@@ -92,6 +92,7 @@ function normalizar(p: TokkoPropiedad): Propiedad {
     videos: enlaces.filter((u) => !esTour(u)).map(linkIncrustable),
     videosArchivo: [],
     tours: enlaces.filter(esTour),
+    panoramas: [],
     lat: numero(p.geo_lat),
     lng: numero(p.geo_long),
     destacada: Boolean(p.is_starred_on_web),

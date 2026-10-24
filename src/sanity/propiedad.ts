@@ -120,9 +120,26 @@ export const propiedad = defineType({
       group: "multimedia",
     }),
     defineField({
+      name: "panoramas",
+      title: "Tour virtual 360 (subir fotos 360)",
+      description: "Fotos 360 (equirectangulares, 2:1) de cada ambiente. En la ficha se recorren una por una.",
+      type: "array",
+      of: [
+        defineArrayMember({
+          type: "object",
+          fields: [
+            defineField({ name: "ambiente", title: "Ambiente", type: "string", description: "Ej.: Living, Cocina, Dormitorio principal." }),
+            defineField({ name: "imagen", title: "Foto 360", type: "image", validation: (r) => r.required() }),
+          ],
+          preview: { select: { title: "ambiente", media: "imagen" } },
+        }),
+      ],
+      group: "multimedia",
+    }),
+    defineField({
       name: "tours",
       title: "Tour virtual 360 (links)",
-      description: "Link de Matterport, Kuula u otro servicio de tours 360.",
+      description: "Link público de Matterport, Kuula u otro servicio de tours 360.",
       type: "array",
       of: [defineArrayMember({ type: "url" })],
       group: "multimedia",

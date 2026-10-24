@@ -6,6 +6,7 @@ import { Galeria } from "@/components/Galeria";
 import { JsonLd } from "@/components/JsonLd";
 import { Migas } from "@/components/Migas";
 import { GrillaPropiedades } from "@/components/TarjetaPropiedad";
+import { Tour360 } from "@/components/Tour360";
 import { linkWhatsapp, site } from "@/lib/site";
 import { nombresOperacion, rutasOperacion, type Propiedad } from "@/lib/propiedad";
 import { getPropiedad, getPropiedades } from "@/lib/propiedades";
@@ -164,9 +165,11 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
             </section>
           )}
 
-          {p.tours[0] && (
+          {(p.panoramas.length > 0 || p.tours[0]) && (
               <section className="mt-12">
                 <h2 className="font-serif text-2xl font-bold">Tour virtual 360</h2>
+                {p.panoramas.length > 0 && <Tour360 panoramas={p.panoramas} direccion={p.direccion} />}
+                {p.tours[0] && (
                 <iframe
                   src={p.tours[0]}
                   title={`Tour 360 de ${p.direccion}`}
@@ -175,6 +178,7 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
                   allowFullScreen
                   loading="lazy"
                 />
+                )}
               </section>
             )}
 

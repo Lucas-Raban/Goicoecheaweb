@@ -6,7 +6,7 @@ import { Migas } from "@/components/Migas";
 import { SinPropiedades } from "@/components/SinPropiedades";
 import { GrillaPropiedades } from "@/components/TarjetaPropiedad";
 import { fotos } from "@/lib/fotos";
-import { getPropiedades } from "@/lib/tokko";
+import { getPropiedades } from "@/lib/propiedades";
 
 export const metadata: Metadata = {
   title: "Propiedades en venta y alquiler en Mar del Plata",

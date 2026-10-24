@@ -7,7 +7,7 @@ import { GrillaPropiedades } from "@/components/TarjetaPropiedad";
 import { fotos } from "@/lib/fotos";
 import { listaBarrios } from "@/lib/barrios";
 import { linkWhatsapp, site } from "@/lib/site";
-import { getPropiedades } from "@/lib/tokko";
+import { getPropiedades } from "@/lib/propiedades";
 
 const operaciones = [
   {

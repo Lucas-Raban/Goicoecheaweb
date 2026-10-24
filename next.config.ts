@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "static.tokkobroker.com" },
+      { protocol: "https", hostname: "cdn.sanity.io" },
     ],
   },
   turbopack: {

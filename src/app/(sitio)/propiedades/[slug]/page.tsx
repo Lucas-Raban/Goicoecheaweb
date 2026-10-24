@@ -8,7 +8,7 @@ import { Migas } from "@/components/Migas";
 import { GrillaPropiedades } from "@/components/TarjetaPropiedad";
 import { linkWhatsapp, site } from "@/lib/site";
 import { nombresOperacion, rutasOperacion, type Propiedad } from "@/lib/propiedad";
-import { getPropiedad, getPropiedades } from "@/lib/tokko";
+import { getPropiedad, getPropiedades } from "@/lib/propiedades";
 
 const SIN_DATOS = "sin-propiedades";
 
@@ -150,20 +150,21 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
               </section>
             )}
 
-            {p.videos[0] && (
-              <section className="mt-12">
-                <h2 className="font-serif text-2xl font-bold">Video</h2>
-                <iframe
-                  src={p.videos[0]}
-                  title={`Video de ${p.direccion}`}
-                  className="mt-4 aspect-video w-full"
-                  allowFullScreen
-                  loading="lazy"
-                />
-              </section>
-            )}
+            {(p.videos.length > 0 || p.videosArchivo.length > 0) && (
+            <section className="mt-12">
+              <h2 className="font-serif text-2xl font-bold">Video</h2>
+              <div className="mt-4 space-y-4">
+                {p.videos.map((v) => (
+                  <iframe key={v} src={v} title={`Video de ${p.direccion}`} className="aspect-video w-full" allowFullScreen loading="lazy" />
+                ))}
+                {p.videosArchivo.map((v) => (
+                  <video key={v} src={v} controls preload="metadata" className="aspect-video w-full bg-black" />
+                ))}
+              </div>
+            </section>
+          )}
 
-            {p.tours[0] && (
+          {p.tours[0] && (
               <section className="mt-12">
                 <h2 className="font-serif text-2xl font-bold">Tour virtual 360</h2>
                 <iframe

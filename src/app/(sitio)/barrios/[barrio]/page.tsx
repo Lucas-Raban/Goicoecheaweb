@@ -8,7 +8,7 @@ import { GrillaPropiedades } from "@/components/TarjetaPropiedad";
 import { buscarBarrio, listaBarrios } from "@/lib/barrios";
 import { fotos } from "@/lib/fotos";
 import { nombresOperacion, type Operacion } from "@/lib/propiedad";
-import { getPropiedades } from "@/lib/tokko";
+import { getPropiedades } from "@/lib/propiedades";
 
 export function generateStaticParams() {
   return listaBarrios.map((b) => ({ barrio: b.slug }));

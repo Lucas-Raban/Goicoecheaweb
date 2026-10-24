@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { listaBarrios } from "@/lib/barrios";
 import { site } from "@/lib/site";
-import { getPropiedades } from "@/lib/tokko";
+import { getPropiedades } from "@/lib/propiedades";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const propiedades = await getPropiedades();

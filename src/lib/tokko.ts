@@ -1,6 +1,6 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
-import type { Operacion, Propiedad } from "./propiedad";
+import { linkIncrustable, type Operacion, type Propiedad } from "./propiedad";
 import { slugify } from "./texto";
 
 // Lo que devuelve la API de Tokko (solo los campos que usamos).
@@ -71,7 +71,8 @@ function normalizar(p: TokkoPropiedad): Propiedad {
   );
 
   return {
-    id: p.id,
+    id: `tokko-${p.id}`,
+    origen: "tokko",
     slug,
     codigo: p.reference_code ?? String(p.id),
     titulo,
@@ -88,7 +89,8 @@ function normalizar(p: TokkoPropiedad): Propiedad {
     superficieCubierta: numero(p.roofed_surface),
     descripcion: p.description ?? "",
     fotos,
-    videos: enlaces.filter((u) => !esTour(u)),
+    videos: enlaces.filter((u) => !esTour(u)).map(linkIncrustable),
+    videosArchivo: [],
     tours: enlaces.filter(esTour),
     lat: numero(p.geo_lat),
     lng: numero(p.geo_long),
@@ -103,7 +105,7 @@ async function leerFixture(ruta: string) {
 
 // Trae todas las propiedades publicadas en Tokko. Sin API key devuelve una lista vacía
 // y la web muestra el aviso de catálogo en preparación.
-export async function getPropiedades(): Promise<Propiedad[]> {
+export async function getPropiedadesTokko(): Promise<Propiedad[]> {
   "use cache";
   cacheLife("hours");
   cacheTag("propiedades");
@@ -131,9 +133,4 @@ export async function getPropiedades(): Promise<Propiedad[]> {
     return [];
   }
   return todas.map(normalizar);
-}
-
-export async function getPropiedad(slug: string) {
-  const propiedades = await getPropiedades();
-  return propiedades.find((p) => p.slug === slug);
 }

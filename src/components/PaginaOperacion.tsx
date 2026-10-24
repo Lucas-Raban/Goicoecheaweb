@@ -2,7 +2,7 @@ import Link from "next/link";
 import { listaBarrios } from "@/lib/barrios";
 import { fotos } from "@/lib/fotos";
 import { nombresOperacion, type Operacion } from "@/lib/propiedad";
-import { getPropiedades } from "@/lib/tokko";
+import { getPropiedades } from "@/lib/propiedades";
 import { Encabezado } from "./Encabezado";
 import { Migas } from "./Migas";
 import { SinPropiedades } from "./SinPropiedades";

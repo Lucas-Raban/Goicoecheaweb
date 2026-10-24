@@ -62,6 +62,10 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
   const mensaje = `Hola, me interesa la propiedad ${p.codigo} (${p.direccion}, ${p.barrio}).`;
   const url = `${site.url}/propiedades/${p.slug}`;
 
+  // Con coordenadas el punto es exacto; si no, Google ubica la dirección.
+  const lugarMapa =
+    p.lat && p.lng ? `${p.lat},${p.lng}` : encodeURIComponent(`${p.direccion}, ${p.barrio}, Mar del Plata, Buenos Aires`);
+
   return (
     <article>
       <JsonLd
@@ -149,6 +153,17 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
                 <div className="mt-4 leading-relaxed whitespace-pre-line text-gris">{p.descripcion}</div>
               </section>
             )}
+
+            <section className="mt-12">
+              <h2 className="font-serif text-2xl font-bold">Ubicación</h2>
+              <iframe
+                src={`https://www.google.com/maps?q=${lugarMapa}&z=16&output=embed`}
+                title={`Mapa de ${p.direccion}`}
+                className="mt-4 h-80 w-full grayscale"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </section>
           </div>
 
           <aside className="lg:sticky lg:top-24 lg:self-start">

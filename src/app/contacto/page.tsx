@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Encabezado } from "@/components/Encabezado";
+import { fotos } from "@/lib/fotos";
 import { FormularioWhatsapp } from "@/components/FormularioWhatsapp";
 import { linkWhatsapp, site } from "@/lib/site";
 
@@ -12,11 +13,11 @@ export const metadata: Metadata = {
 export default function Contacto() {
   return (
     <>
-      <Encabezado etiqueta="Contacto" titulo="Hablemos">
+      <Encabezado etiqueta="Contacto" titulo="Hablemos" foto={fotos.temporario}>
         <p>Si querés ver una propiedad, vender la tuya o tenés alguna duda, mandanos un mensaje y lo charlamos.</p>
       </Encabezado>
 
-      <section className="mx-auto grid max-w-6xl gap-14 px-4 py-20 md:grid-cols-2">
+      <section className="mx-auto grid max-w-7xl gap-14 px-4 md:px-8 py-20 md:grid-cols-2">
         <div className="space-y-8">
           <div>
             <h2 className="etiqueta text-gris">WhatsApp</h2>
@@ -41,13 +42,13 @@ export default function Contacto() {
           <iframe
             title="Mapa de la oficina de Goicoechea Propiedades"
             src="https://www.google.com/maps?q=Alberti+1550,+Mar+del+Plata&output=embed"
-            className="h-72 w-full border border-borde"
+            className="h-72 w-full rounded-[28px] border-0"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
           />
         </div>
 
-        <div className="border border-borde p-6 md:p-8">
+        <div className="rounded-[28px] bg-white p-6 shadow-xl shadow-azul/5 ring-1 ring-borde md:p-10">
           <h2 className="font-serif text-2xl font-bold">Escribinos</h2>
           <div className="mt-6">
             <FormularioWhatsapp

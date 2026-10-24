@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Encabezado } from "@/components/Encabezado";
+import { fotos } from "@/lib/fotos";
 
 export const metadata: Metadata = {
   title: "Nosotros",
@@ -12,9 +13,9 @@ const valores = ["Honestidad", "Trato personalizado", "Ética en cada operación
 export default function Nosotros() {
   return (
     <>
-      <Encabezado etiqueta="Nosotros" titulo="Una inmobiliaria de Mar del Plata" />
+      <Encabezado etiqueta="Nosotros" titulo="Una inmobiliaria de Mar del Plata" foto={fotos.ciudad} />
 
-      <section className="mx-auto grid max-w-6xl gap-14 px-4 py-20 md:grid-cols-[2fr_1fr]">
+      <section className="mx-auto grid max-w-7xl gap-14 px-4 md:px-8 py-20 md:grid-cols-[2fr_1fr]">
         <div className="space-y-5 text-lg text-gris">
           <p>
             Goicoechea Propiedades es una inmobiliaria de Mar del Plata con cientos de operaciones concretadas. Trabajamos
@@ -28,7 +29,7 @@ export default function Nosotros() {
           <p>Estamos en Alberti 1550, local 1. Si querés pasar o que te llamemos, escribinos.</p>
         </div>
 
-        <aside className="bg-fondo p-8">
+        <aside className="rounded-[28px] bg-fondo p-8">
           <h2 className="etiqueta text-gris">Lo que nos define</h2>
           <ul className="mt-6 space-y-4">
             {valores.map((v) => (

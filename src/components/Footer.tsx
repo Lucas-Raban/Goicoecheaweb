@@ -4,8 +4,8 @@ import { avisoLegal, linkWhatsapp, navegacion, site } from "@/lib/site";
 
 export function Footer() {
   return (
-    <footer className="fondo-lineas mt-auto text-white">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-3">
+    <footer className="fondo-lineas mt-auto bg-azul-noche text-white">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 md:px-8 py-14 md:grid-cols-3">
         <div>
           <Image src="/marca/logo-blanco.png" alt={site.nombre} width={232} height={50} />
           <p className="mt-5 text-sm text-white/75">
@@ -55,7 +55,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="mx-auto max-w-6xl px-4 py-6 text-xs text-white/55">
+        <div className="mx-auto max-w-7xl px-4 md:px-8 py-6 text-xs text-white/55">
           <p>{avisoLegal}</p>
           <p className="mt-3">
             © {site.nombre} · {site.registro}

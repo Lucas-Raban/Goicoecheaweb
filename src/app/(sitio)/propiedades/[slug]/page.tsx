@@ -149,19 +149,6 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
                 <div className="mt-4 leading-relaxed whitespace-pre-line text-gris">{p.descripcion}</div>
               </section>
             )}
-
-            {p.lat && p.lng && (
-              <section className="mt-12">
-                <h2 className="font-serif text-2xl font-bold">Ubicación</h2>
-                <iframe
-                  src={`https://www.google.com/maps?q=${p.lat},${p.lng}&z=15&output=embed`}
-                  title={`Mapa de ${p.direccion}`}
-                  className="mt-4 h-80 w-full grayscale"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-              </section>
-            )}
           </div>
 
           <aside className="lg:sticky lg:top-24 lg:self-start">

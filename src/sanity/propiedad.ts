@@ -84,7 +84,7 @@ export const propiedad = defineType({
     defineField({
       name: "ubicacion",
       title: "Ubicación en el mapa",
-      description: "Pegá el link de Google Maps de la propiedad (opcional).",
+      description: "Opcional. Si lo dejás vacío, el mapa ubica la dirección de arriba. Para un punto exacto, pegá el link largo de Google Maps (el que tiene @ y números).",
       type: "url",
       group: "datos",
     }),

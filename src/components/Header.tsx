@@ -45,28 +45,26 @@ export function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className={`rounded-full px-4 py-2 text-sm font-bold transition ${
-                claro ? "text-azul hover:bg-fondo" : "text-white hover:bg-white/15"
+              className={`px-4 py-2 text-sm font-bold underline-offset-8 transition hover:underline ${
+                claro ? "text-azul" : "text-white"
               }`}
             >
               {item.label}
             </Link>
           ))}
           <a
-            href={linkWhatsapp("Hola, te escribo desde la web.")}
+            href={linkWhatsapp()}
             target="_blank"
             rel="noopener noreferrer"
-            className={`ml-3 rounded-full px-5 py-2.5 text-sm font-bold transition ${
-              claro ? "bg-azul text-white hover:bg-azul-claro" : "bg-white text-azul hover:bg-fondo"
-            }`}
+            className={`ml-4 border-l pl-6 text-sm font-bold ${claro ? "border-borde text-azul" : "border-white/30 text-white"}`}
           >
-            Hablemos
+            {site.telefono}
           </a>
         </nav>
 
         <button
           type="button"
-          className={`relative z-50 flex h-11 w-11 items-center justify-center rounded-full lg:hidden ${claro ? "text-azul" : "text-white"}`}
+          className={`relative z-50 flex h-11 w-11 items-center justify-center lg:hidden ${claro ? "text-azul" : "text-white"}`}
           aria-expanded={abierto}
           aria-controls="menu-movil"
           aria-label={abierto ? "Cerrar menú" : "Abrir menú"}
@@ -79,13 +77,12 @@ export function Header() {
       </div>
 
       {abierto && (
-        <nav id="menu-movil" className="fondo-lineas fixed inset-0 z-40 flex flex-col px-6 pt-32 pb-10 lg:hidden" aria-label="Principal">
-          {navegacion.map((item, i) => (
+        <nav id="menu-movil" className="fixed inset-0 bg-azul z-40 flex flex-col px-6 pt-32 pb-10 lg:hidden" aria-label="Principal">
+          {navegacion.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              style={{ animationDelay: `${i * 60}ms` }}
-              className="animate-subir border-b border-white/10 py-5 font-serif text-4xl font-bold text-white"
+              className="border-b border-white/10 py-5 font-serif text-4xl font-bold text-white"
               onClick={() => setAbierto(false)}
             >
               {item.label}
@@ -95,7 +92,7 @@ export function Header() {
             href={linkWhatsapp("Hola, te escribo desde la web.")}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-auto rounded-full bg-white py-4 text-center font-bold text-azul"
+            className="mt-auto bg-white py-4 text-center font-bold text-azul"
           >
             Escribinos por WhatsApp
           </a>

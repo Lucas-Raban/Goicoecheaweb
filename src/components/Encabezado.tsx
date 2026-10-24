@@ -13,21 +13,17 @@ export function Encabezado({
   children?: React.ReactNode;
 }) {
   return (
-    <section className="fondo-lineas relative isolate overflow-hidden text-white">
+    <section className="relative isolate overflow-hidden bg-azul text-white">
       {foto && (
         <>
           <Image src={foto} alt="" fill priority sizes="100vw" className="-z-20 object-cover" />
-          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-azul via-azul/85 to-azul/40" />
+          <div className="absolute inset-0 -z-10 bg-azul/70" />
         </>
       )}
-      <div className="mx-auto max-w-7xl px-4 pt-40 pb-20 md:px-8 md:pt-48 md:pb-28">
-        <span className="vidrio etiqueta animate-subir inline-block rounded-full px-4 py-2">{etiqueta}</span>
-        <h1 className="animate-subir mt-6 max-w-3xl font-serif text-5xl leading-[1.05] font-bold [animation-delay:80ms] md:text-7xl">
-          {titulo}
-        </h1>
-        {children && (
-          <div className="animate-subir mt-6 max-w-2xl text-lg text-white/80 [animation-delay:160ms]">{children}</div>
-        )}
+      <div className="mx-auto max-w-7xl px-4 pt-36 pb-16 md:px-8 md:pt-44 md:pb-20">
+        <span className="etiqueta inline-block bg-white px-3 py-2 text-azul">{etiqueta}</span>
+        <h1 className="mt-5 max-w-3xl font-serif text-4xl leading-tight font-bold md:text-6xl">{titulo}</h1>
+        {children && <div className="mt-4 max-w-2xl text-lg text-white/85">{children}</div>}
       </div>
     </section>
   );

@@ -27,7 +27,7 @@ export function FormularioWhatsapp({
   }
 
   const clasesInput =
-    "mt-1 w-full rounded-2xl border-0 bg-fondo px-4 py-3.5 ring-1 ring-transparent focus:ring-azul text-base text-azul outline-none";
+    "mt-1 w-full border border-borde bg-white px-4 py-3 focus:border-azul text-base text-azul outline-none";
 
   return (
     <form onSubmit={enviar} className="space-y-4">
@@ -56,7 +56,7 @@ export function FormularioWhatsapp({
           )}
         </label>
       ))}
-      <button type="submit" className="w-full rounded-full bg-azul px-8 py-4 font-bold text-white transition hover:bg-azul-claro sm:w-auto">
+      <button type="submit" className="w-full bg-azul px-8 py-4 font-bold text-white transition hover:bg-azul-claro sm:w-auto">
         {boton}
       </button>
     </form>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Encabezado } from "@/components/Encabezado";
 import { fotos } from "@/lib/fotos";
+import { linkWhatsapp, site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Nosotros",
@@ -8,7 +9,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/nosotros" },
 };
 
-const valores = ["Honestidad", "Trato personalizado", "Ética en cada operación", "Respuestas rápidas"];
 
 export default function Nosotros() {
   return (
@@ -26,18 +26,26 @@ export default function Nosotros() {
             Nos importa que entiendas cada paso. Te decimos lo que vale tu propiedad, la mostramos con fotos y videos
             reales, y te acompañamos hasta la firma, sea una escritura o un contrato de alquiler.
           </p>
-          <p>Estamos en Alberti 1550, local 1. Si querés pasar o que te llamemos, escribinos.</p>
         </div>
 
-        <aside className="rounded-[28px] bg-fondo p-8">
-          <h2 className="etiqueta text-gris">Lo que nos define</h2>
-          <ul className="mt-6 space-y-4">
-            {valores.map((v) => (
-              <li key={v} className="border-b border-borde pb-4 font-bold last:border-0">
-                {v}
-              </li>
-            ))}
-          </ul>
+        <aside className="border-l-2 border-azul pl-6">
+          <h2 className="font-serif text-xl font-bold">Oficina</h2>
+          <p className="mt-3 text-gris">
+            {site.direccion.calle}
+            <br />
+            {site.direccion.ciudad}
+          </p>
+          <p className="mt-4">
+            <a href={linkWhatsapp()} className="font-bold underline">
+              {site.telefono}
+            </a>
+          </p>
+          <p className="mt-1">
+            <a href={`mailto:${site.email}`} className="break-all text-gris underline">
+              {site.email}
+            </a>
+          </p>
+          <p className="mt-4 text-sm text-gris">{site.registro}</p>
         </aside>
       </section>
     </>

@@ -19,7 +19,7 @@ export default function Propiedades() {
       </Encabezado>
 
       <section className="mx-auto max-w-7xl px-4 md:px-8 py-20">
-        <div className="rounded-[28px] bg-fondo p-8 md:p-14">
+        <div className="border border-borde bg-fondo p-8 md:p-12">
           <h2 className="font-serif text-2xl font-bold">Estamos sumando el catálogo a la web nueva</h2>
           <p className="mt-4 max-w-2xl text-gris">
             Muy pronto vas a poder buscar por operación, barrio, precio y ambientes, con fotos, videos y recorridos
@@ -30,7 +30,7 @@ export default function Propiedades() {
               href={site.catalogoActual}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full bg-azul px-8 py-4 text-center font-bold text-white hover:bg-azul-claro"
+              className="bg-azul px-8 py-4 text-center font-bold text-white hover:bg-azul-claro"
             >
               Ver catálogo completo
             </a>
@@ -38,7 +38,7 @@ export default function Propiedades() {
               href={linkWhatsapp("Hola, estoy buscando una propiedad.")}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full px-8 py-4 text-center font-bold ring-1 ring-azul hover:bg-azul hover:text-white"
+              className="border border-azul px-8 py-4 text-center font-bold hover:bg-azul hover:text-white"
             >
               Contanos qué buscás
             </a>

@@ -15,12 +15,12 @@ export function Buscador() {
   const [operacion, setOperacion] = useState("venta");
 
   const clasesCampo =
-    "h-14 w-full appearance-none rounded-2xl border-0 bg-white px-4 text-sm font-bold text-azul outline-none ring-1 ring-borde focus:ring-2 focus:ring-azul";
+    "h-14 w-full appearance-none border border-borde bg-white px-4 text-sm text-azul outline-none focus:border-azul";
 
   return (
-    <form action="/propiedades" className="vidrio rounded-[28px] p-2 shadow-2xl shadow-black/30">
+    <form action="/propiedades" className="bg-white text-azul shadow-lg">
       <input type="hidden" name="operacion" value={operacion} />
-      <div className="flex gap-1 p-1" role="tablist" aria-label="Operación">
+      <div className="flex border-b border-borde" role="tablist" aria-label="Operación">
         {operaciones.map((op) => (
           <button
             key={op.valor}
@@ -28,15 +28,15 @@ export function Buscador() {
             role="tab"
             aria-selected={operacion === op.valor}
             onClick={() => setOperacion(op.valor)}
-            className={`flex-1 rounded-full px-4 py-2.5 text-sm font-bold transition sm:flex-none ${
-              operacion === op.valor ? "bg-white text-azul" : "text-white hover:bg-white/10"
+            className={`-mb-px flex-1 border-b-2 px-5 py-3.5 text-sm font-bold transition sm:flex-none ${
+              operacion === op.valor ? "border-azul text-azul" : "border-transparent text-gris hover:text-azul"
             }`}
           >
             {op.label}
           </button>
         ))}
       </div>
-      <div className="grid gap-2 rounded-[22px] bg-white p-2 sm:grid-cols-[1fr_1fr_auto]">
+      <div className="grid gap-2 p-3 sm:grid-cols-[1fr_1fr_auto]">
         <label className="relative">
           <span className="sr-only">Tipo de propiedad</span>
           <select name="tipo" defaultValue="" className={clasesCampo}>
@@ -57,7 +57,7 @@ export function Buscador() {
           </select>
           <Flecha />
         </label>
-        <button type="submit" className="flex h-14 items-center justify-center gap-2 rounded-2xl bg-azul px-8 text-sm font-bold text-white transition hover:bg-azul-claro">
+        <button type="submit" className="flex h-14 items-center justify-center gap-2 bg-azul px-8 text-sm font-bold text-white transition hover:bg-azul-claro">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
             <circle cx="11" cy="11" r="7" />
             <path d="m20 20-3.5-3.5" />

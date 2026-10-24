@@ -42,13 +42,13 @@ export default function Contacto() {
           <iframe
             title="Mapa de la oficina de Goicoechea Propiedades"
             src="https://www.google.com/maps?q=Alberti+1550,+Mar+del+Plata&output=embed"
-            className="h-72 w-full rounded-[28px] border-0"
+            className="h-72 w-full border border-borde"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
           />
         </div>
 
-        <div className="rounded-[28px] bg-white p-6 shadow-xl shadow-azul/5 ring-1 ring-borde md:p-10">
+        <div className="border border-borde bg-white p-6 md:p-10">
           <h2 className="font-serif text-2xl font-bold">Escribinos</h2>
           <div className="mt-6">
             <FormularioWhatsapp

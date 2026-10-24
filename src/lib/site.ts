@@ -25,8 +25,8 @@ export const site = {
   catalogoActual: "https://goicoecheapropiedades.com",
 };
 
-// Asesores de la oficina. La foto va en public/equipo/ (vertical, 4:5).
-export const equipo: { nombre: string; cargo: string; whatsapp?: string; foto?: string }[] = [
+// Asesores de la oficina. La foto es la de perfil de Instagram, guardada en public/equipo/ (cuadrada).
+export const equipo: { nombre: string; cargo: string; whatsapp?: string; instagram?: string; foto?: string }[] = [
   { nombre: "Lucas Raban", cargo: "Asesor inmobiliario", whatsapp: "5492234399282" },
 ];
 

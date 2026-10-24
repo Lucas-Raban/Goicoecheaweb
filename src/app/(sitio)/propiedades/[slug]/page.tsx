@@ -42,11 +42,16 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
   if (!p) notFound();
 
   const op = p.operaciones[0];
-  // Recomendaciones: primero las de la misma operación, mismo barrio y mismo tipo; después el resto.
-  const puntaje = (o: Propiedad) =>
-    (o.operaciones.some((x) => x.tipo === op?.tipo) ? 4 : 0) + (o.barrioSlug === p.barrioSlug ? 2 : 0) + (o.tipo === p.tipo ? 1 : 0);
+  // Recomendaciones coherentes: misma operación y misma cantidad de ambientes (o mismo tipo si no hay ambientes).
+  // Entre esas, primero las del mismo barrio y del mismo tipo.
+  const puntaje = (o: Propiedad) => (o.barrioSlug === p.barrioSlug ? 2 : 0) + (o.tipo === p.tipo ? 1 : 0);
   const similares = (await getPropiedades())
-    .filter((o) => o.id !== p.id)
+    .filter(
+      (o) =>
+        o.id !== p.id &&
+        (!op || o.operaciones.some((x) => x.tipo === op.tipo)) &&
+        (p.ambientes ? o.ambientes === p.ambientes : o.tipo === p.tipo),
+    )
     .sort((a, b) => puntaje(b) - puntaje(a))
     .slice(0, 10);
 

@@ -104,6 +104,19 @@ export const propiedad = defineType({
       group: "multimedia",
     }),
     defineField({
+      name: "planos",
+      title: "Planos",
+      description: "Imagen del plano (JPG o PNG). Se muestra en su propia solapa en la ficha.",
+      type: "array",
+      of: [
+        defineArrayMember({
+          type: "image",
+          fields: [defineField({ name: "descripcion", title: "Descripción breve", type: "string", description: "Ej.: Planta baja" })],
+        }),
+      ],
+      group: "multimedia",
+    }),
+    defineField({
       name: "videos",
       title: "Videos (links)",
       description: "Links de YouTube o Vimeo.",

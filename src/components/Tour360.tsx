@@ -38,7 +38,7 @@ export function Tour360({ panoramas, direccion }: { panoramas: { url: string; am
   }
 
   return (
-    <div className="mt-4">
+    <div>
       <div ref={contenedor} className="aspect-video w-full bg-azul-noche" />
       {panoramas.length > 1 && (
         <div className="mt-3 flex flex-wrap gap-2">

@@ -3,7 +3,15 @@
 import Image from "next/image";
 import { useState } from "react";
 
-export function Galeria({ fotos, alt }: { fotos: { url: string; descripcion: string }[]; alt: string }) {
+export function Galeria({
+  fotos,
+  alt,
+  ajuste = "cover",
+}: {
+  fotos: { url: string; descripcion: string }[];
+  alt: string;
+  ajuste?: "cover" | "contain";
+}) {
   const [actual, setActual] = useState(0);
   if (fotos.length === 0) return <div className="aspect-[3/2] bg-fondo" />;
 
@@ -18,7 +26,7 @@ export function Galeria({ fotos, alt }: { fotos: { url: string; descripcion: str
           fill
           priority={actual === 0}
           sizes="(min-width: 1024px) 66vw, 100vw"
-          className="object-cover"
+          className={ajuste === "contain" ? "bg-white object-contain" : "object-cover"}
         />
         {fotos.length > 1 && (
           <>

@@ -20,7 +20,7 @@ type TokkoPropiedad = {
   total_surface?: string | number;
   roofed_surface?: string | number;
   description?: string;
-  photos?: { image?: string; original?: string; description?: string; is_front_cover?: boolean; order?: number }[];
+  photos?: { image?: string; original?: string; description?: string; is_front_cover?: boolean; is_blueprint?: boolean; order?: number }[];
   videos?: { player_url?: string; url?: string; provider?: string }[];
   geo_lat?: string | number;
   geo_long?: string | number;
@@ -60,9 +60,11 @@ function normalizar(p: TokkoPropiedad): Propiedad {
     const precio = p.web_price === false ? null : formatearPrecio(op.prices?.[0]?.currency, op.prices?.[0]?.price);
     return [{ tipo: t, precio }];
   });
-  const fotos = [...(p.photos ?? [])]
-    .sort((a, b) => Number(b.is_front_cover) - Number(a.is_front_cover) || (a.order ?? 0) - (b.order ?? 0))
-    .flatMap((f) => (f.image ? [{ url: f.image, descripcion: f.description ?? "" }] : []));
+  const ordenadas = [...(p.photos ?? [])]
+    .filter((f) => f.image)
+    .sort((a, b) => Number(b.is_front_cover) - Number(a.is_front_cover) || (a.order ?? 0) - (b.order ?? 0));
+  const fotos = ordenadas.filter((f) => !f.is_blueprint).map((f) => ({ url: f.image!, descripcion: f.description ?? "" }));
+  const planos = ordenadas.filter((f) => f.is_blueprint).map((f) => ({ url: f.image!, descripcion: f.description ?? "" }));
   const enlaces = (p.videos ?? []).map((v) => v.player_url || v.url || "").filter(Boolean);
   const ambientes = numero(p.room_amount);
   const titulo = p.publication_title || `${tipo} en ${barrio}`;
@@ -93,6 +95,7 @@ function normalizar(p: TokkoPropiedad): Propiedad {
     videosArchivo: [],
     tours: enlaces.filter(esTour),
     panoramas: [],
+    planos,
     lat: numero(p.geo_lat),
     lng: numero(p.geo_long),
     destacada: Boolean(p.is_starred_on_web),

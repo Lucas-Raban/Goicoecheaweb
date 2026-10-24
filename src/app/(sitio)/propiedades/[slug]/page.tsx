@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FormularioWhatsapp } from "@/components/FormularioWhatsapp";
-import { Galeria } from "@/components/Galeria";
 import { JsonLd } from "@/components/JsonLd";
 import { Migas } from "@/components/Migas";
+import { Multimedia } from "@/components/Multimedia";
 import { GrillaPropiedades } from "@/components/TarjetaPropiedad";
-import { Tour360 } from "@/components/Tour360";
 import { linkWhatsapp, site } from "@/lib/site";
 import { nombresOperacion, rutasOperacion, type Propiedad } from "@/lib/propiedad";
 import { getPropiedad, getPropiedades } from "@/lib/propiedades";
@@ -133,7 +132,7 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
       <div className="mx-auto max-w-7xl px-4 pb-20 md:px-8">
         <div className="mt-10 grid gap-12 lg:grid-cols-[2fr_1fr]">
           <div className="min-w-0">
-            <Galeria fotos={p.fotos} alt={`${p.tipo} en ${p.barrio}`} />
+            <Multimedia p={p} alt={`${p.tipo} en ${p.barrio}`} />
 
             <dl className="mt-10 grid grid-cols-2 border-t border-l border-borde sm:grid-cols-4">
               {datos.map(([k, v]) => (
@@ -148,37 +147,6 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
               <section className="mt-12">
                 <h2 className="font-serif text-2xl font-bold">Descripción</h2>
                 <div className="mt-4 leading-relaxed whitespace-pre-line text-gris">{p.descripcion}</div>
-              </section>
-            )}
-
-            {(p.videos.length > 0 || p.videosArchivo.length > 0) && (
-            <section className="mt-12">
-              <h2 className="font-serif text-2xl font-bold">Video</h2>
-              <div className="mt-4 space-y-4">
-                {p.videos.map((v) => (
-                  <iframe key={v} src={v} title={`Video de ${p.direccion}`} className="aspect-video w-full" allowFullScreen loading="lazy" />
-                ))}
-                {p.videosArchivo.map((v) => (
-                  <video key={v} src={v} controls preload="metadata" className="aspect-video w-full bg-black" />
-                ))}
-              </div>
-            </section>
-          )}
-
-          {(p.panoramas.length > 0 || p.tours[0]) && (
-              <section className="mt-12">
-                <h2 className="font-serif text-2xl font-bold">Tour virtual 360</h2>
-                {p.panoramas.length > 0 && <Tour360 panoramas={p.panoramas} direccion={p.direccion} />}
-                {p.tours[0] && (
-                <iframe
-                  src={p.tours[0]}
-                  title={`Tour 360 de ${p.direccion}`}
-                  className="mt-4 aspect-video w-full"
-                  allow="xr-spatial-tracking; fullscreen"
-                  allowFullScreen
-                  loading="lazy"
-                />
-                )}
               </section>
             )}
 

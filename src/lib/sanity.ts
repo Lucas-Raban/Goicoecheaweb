@@ -31,6 +31,7 @@ type PropiedadPanel = {
   videosArchivo?: string[];
   tours?: string[];
   panoramas?: { ambiente?: string; url?: string }[];
+  planos?: { url: string; descripcion?: string }[];
 };
 
 const consulta = `*[_type == "propiedad" && publicada != false && !(_id in path("drafts.**"))] | order(_createdAt desc) {
@@ -38,7 +39,8 @@ const consulta = `*[_type == "propiedad" && publicada != false && !(_id in path(
   ambientes, dormitorios, banos, cocheras, superficieCubierta, superficieTotal, codigo, descripcion, ubicacion,
   "fotos": fotos[]{ "url": asset->url, descripcion },
   videos, "videosArchivo": videosArchivo[].asset->url, tours,
-  "panoramas": panoramas[]{ ambiente, "url": imagen.asset->url }
+  "panoramas": panoramas[]{ ambiente, "url": imagen.asset->url },
+  "planos": planos[]{ "url": asset->url, descripcion }
 }`;
 
 // Saca latitud y longitud de un link de Google Maps (formatos @lat,lng o q=lat,lng).
@@ -79,6 +81,7 @@ function normalizar(p: PropiedadPanel): Propiedad {
     videos: (p.videos ?? []).filter(Boolean).map(linkIncrustable),
     videosArchivo: (p.videosArchivo ?? []).filter(Boolean),
     // Los artifacts de Claude no se pueden incrustar en otra página, así que se descartan.
+    planos: (p.planos ?? []).filter((f) => f.url).map((f) => ({ url: `${f.url}?w=2400&auto=format`, descripcion: f.descripcion ?? "" })),
     tours: (p.tours ?? []).filter((t) => t && !t.includes("claude.ai")),
     panoramas: (p.panoramas ?? [])
       .filter((f) => f.url)

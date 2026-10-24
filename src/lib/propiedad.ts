@@ -24,6 +24,7 @@ export type Propiedad = {
   videosArchivo: string[];
   tours: string[];
   panoramas: { url: string; ambiente: string }[];
+  planos: { url: string; descripcion: string }[];
   lat: number | null;
   lng: number | null;
   destacada: boolean;

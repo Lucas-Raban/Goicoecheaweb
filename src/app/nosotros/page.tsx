@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Encabezado } from "@/components/Encabezado";
+import { Equipo } from "@/components/Equipo";
 import { fotos } from "@/lib/fotos";
 import { linkWhatsapp, site } from "@/lib/site";
 
@@ -47,6 +48,13 @@ export default function Nosotros() {
           </p>
           <p className="mt-4 text-sm text-gris">{site.registro}</p>
         </aside>
+      </section>
+
+      <section className="border-t border-borde">
+        <div className="mx-auto max-w-7xl px-4 py-20 md:px-8">
+          <h2 className="mb-12 font-serif text-3xl font-bold md:text-4xl">El equipo</h2>
+          <Equipo />
+        </div>
       </section>
     </>
   );

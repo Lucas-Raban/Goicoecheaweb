@@ -11,68 +11,56 @@ const operaciones = [
 
 const tipos = ["Departamento", "Casa", "PH", "Local", "Terreno", "Galpón", "Campo"];
 
+// Barra de búsqueda en una sola línea: operación, tipo, barrio y botón.
 export function Buscador() {
   const [operacion, setOperacion] = useState("venta");
 
-  const clasesCampo =
-    "h-14 w-full appearance-none border border-borde bg-white px-4 text-sm text-azul outline-none focus:border-azul";
-
   return (
-    <form action="/propiedades" className="bg-white text-azul shadow-lg">
+    <form action="/propiedades" className="bg-white text-azul shadow-[0_30px_60px_-20px_rgb(8_22_38/0.45)]">
       <input type="hidden" name="operacion" value={operacion} />
-      <div className="flex border-b border-borde" role="tablist" aria-label="Operación">
-        {operaciones.map((op) => (
-          <button
-            key={op.valor}
-            type="button"
-            role="tab"
-            aria-selected={operacion === op.valor}
-            onClick={() => setOperacion(op.valor)}
-            className={`-mb-px flex-1 border-b-2 px-5 py-3.5 text-sm font-bold transition sm:flex-none ${
-              operacion === op.valor ? "border-azul text-azul" : "border-transparent text-gris hover:text-azul"
-            }`}
-          >
-            {op.label}
-          </button>
-        ))}
-      </div>
-      <div className="grid gap-2 p-3 sm:grid-cols-[1fr_1fr_auto]">
-        <label className="relative">
-          <span className="sr-only">Tipo de propiedad</span>
-          <select name="tipo" defaultValue="" className={clasesCampo}>
-            <option value="">Todos los tipos</option>
-            {tipos.map((t) => (
-              <option key={t}>{t}</option>
-            ))}
-          </select>
-          <Flecha />
-        </label>
-        <label className="relative">
-          <span className="sr-only">Barrio</span>
-          <select name="barrio" defaultValue="" className={clasesCampo}>
-            <option value="">Todos los barrios</option>
-            {barrios.map((b) => (
-              <option key={b}>{b}</option>
-            ))}
-          </select>
-          <Flecha />
-        </label>
-        <button type="submit" className="flex h-14 items-center justify-center gap-2 bg-azul px-8 text-sm font-bold text-white transition hover:bg-azul-claro">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-            <circle cx="11" cy="11" r="7" />
-            <path d="m20 20-3.5-3.5" />
-          </svg>
+      <div className="grid lg:grid-cols-[auto_1fr_1fr_auto]">
+        <div className="flex border-b border-borde lg:border-r lg:border-b-0" role="tablist" aria-label="Operación">
+          {operaciones.map((op) => (
+            <button
+              key={op.valor}
+              type="button"
+              role="tab"
+              aria-selected={operacion === op.valor}
+              onClick={() => setOperacion(op.valor)}
+              className={`flex-1 px-5 py-5 text-sm font-bold transition lg:flex-none ${
+                operacion === op.valor ? "bg-azul text-white" : "text-gris hover:text-azul"
+              }`}
+            >
+              {op.label}
+            </button>
+          ))}
+        </div>
+        <Campo label="Tipo de propiedad" nombre="tipo" vacio="Todos" opciones={tipos} />
+        <Campo label="Barrio" nombre="barrio" vacio="Toda la ciudad" opciones={barrios} borde />
+        <button type="submit" className="group flex items-center justify-center gap-3 bg-azul px-8 py-5 text-sm font-bold text-white transition hover:bg-azul-claro">
           Buscar
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="transition group-hover:translate-x-1">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
         </button>
       </div>
     </form>
   );
 }
 
-function Flecha() {
+function Campo({ label, nombre, vacio, opciones, borde }: { label: string; nombre: string; vacio: string; opciones: string[]; borde?: boolean }) {
   return (
-    <svg className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-gris" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="m6 9 6 6 6-6" />
-    </svg>
+    <label className={`relative block border-b border-borde px-5 py-3 lg:border-b-0 ${borde ? "lg:border-l" : ""}`}>
+      <span className="block text-xs text-gris">{label}</span>
+      <select name={nombre} defaultValue="" className="w-full appearance-none bg-transparent pr-6 text-base font-bold outline-none">
+        <option value="">{vacio}</option>
+        {opciones.map((o) => (
+          <option key={o}>{o}</option>
+        ))}
+      </select>
+      <svg className="pointer-events-none absolute right-5 bottom-4 text-gris" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="m6 9 6 6 6-6" />
+      </svg>
+    </label>
   );
 }

@@ -84,9 +84,10 @@ function normalizar(p: PropiedadPanel): Propiedad {
 }
 
 // Propiedades cargadas a mano en /admin. Sin proyecto de Sanity configurado devuelve una lista vacía.
+// Se refresca cada minuto para que lo publicado aparezca enseguida aunque no haya webhook.
 export async function getPropiedadesPanel(): Promise<Propiedad[]> {
   "use cache";
-  cacheLife("hours");
+  cacheLife("minutes");
   cacheTag("propiedades");
 
   if (!sanityProjectId) return [];

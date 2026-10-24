@@ -48,6 +48,7 @@ export const equipo: { nombre: string; cargo: string; whatsapp?: string; instagr
     cargo: "Asesor inmobiliario",
     whatsapp: "5492234541702",
     instagram: "https://www.instagram.com/alebkomc/",
+    foto: "/equipo/alejandro-cordeiro.jpg",
   },
 ];
 

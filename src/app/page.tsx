@@ -62,6 +62,22 @@ export default async function Inicio() {
         </div>
       </section>
 
+      {/* Propiedades destacadas, apenas debajo de la portada */}
+      {destacadas.length > 0 && (
+        <section>
+          <div className="mx-auto max-w-7xl px-4 pt-28 pb-8 md:px-8 md:pt-36 md:pb-12">
+            <div className="mb-14 grid gap-6 md:grid-cols-[1fr_auto] md:items-end">
+              <h2 className="font-serif text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-6xl">Propiedades destacadas</h2>
+              <Link href="/propiedades" className="group inline-flex items-center gap-3 font-bold">
+                <span className="border-b border-azul pb-1">Ver todas</span>
+                <Flecha className="transition group-hover:translate-x-1" />
+              </Link>
+            </div>
+            <GrillaPropiedades propiedades={destacadas} />
+          </div>
+        </section>
+      )}
+
       {/* Operaciones, en grilla asimétrica */}
       <section className="mx-auto max-w-7xl px-4 pt-28 pb-24 md:px-8 md:pt-36 md:pb-32">
         <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-end">
@@ -94,21 +110,6 @@ export default async function Inicio() {
           ))}
         </div>
       </section>
-
-      {destacadas.length > 0 && (
-        <section className="border-t border-borde">
-          <div className="mx-auto max-w-7xl px-4 py-24 md:px-8 md:py-32">
-            <div className="mb-14 grid gap-6 md:grid-cols-[1fr_auto] md:items-end">
-              <h2 className="font-serif text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-6xl">Propiedades destacadas</h2>
-              <Link href="/propiedades" className="group inline-flex items-center gap-3 font-bold">
-                <span className="border-b border-azul pb-1">Ver todas</span>
-                <Flecha className="transition group-hover:translate-x-1" />
-              </Link>
-            </div>
-            <GrillaPropiedades propiedades={destacadas} />
-          </div>
-        </section>
-      )}
 
       {/* Vender o alquilar: imagen a sangre de un lado, texto del otro */}
       <section className="grid bg-azul text-white md:grid-cols-2">

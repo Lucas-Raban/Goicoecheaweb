@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BotonesDeslizar } from "@/components/BotonesDeslizar";
 import { Buscador } from "@/components/Buscador";
 import { Equipo } from "@/components/Equipo";
 import { GrillaPropiedades } from "@/components/TarjetaPropiedad";
@@ -136,53 +135,47 @@ export default async function Inicio() {
         </div>
       </section>
 
-      {/* Barrios: tira horizontal que se desliza, con la cantidad de propiedades de cada uno */}
-      <section className="overflow-hidden bg-azul text-white">
-        <div className="mx-auto max-w-7xl px-4 pt-24 md:px-8 md:pt-32">
+      {/* Barrios: grilla compacta con la cantidad de propiedades de cada uno */}
+      <section className="bg-azul text-white">
+        <div className="mx-auto max-w-7xl px-4 py-20 md:px-8 md:py-24">
           <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-end">
             <div>
-              <h2 className="font-serif text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-6xl">Barrios donde trabajamos</h2>
-              <p className="mt-5 max-w-lg text-white/75">
-                Tomamos propiedades en toda la ciudad y alrededores. Elegí un barrio para ver cómo es y qué tenemos ahí.
-              </p>
+              <h2 className="font-serif text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-5xl">Barrios donde trabajamos</h2>
+              <p className="mt-4 max-w-lg text-white/75">Tomamos propiedades en toda la ciudad y alrededores.</p>
             </div>
-            <div className="flex items-center gap-8">
-              <Link href="/barrios" className="group inline-flex items-center gap-3 font-bold">
-                <span className="border-b border-white pb-1">Todos los barrios</span>
-                <Flecha className="transition group-hover:translate-x-1" />
-              </Link>
-              <BotonesDeslizar objetivo="tira-barrios" />
-            </div>
+            <Link href="/barrios" className="group inline-flex items-center gap-3 font-bold">
+              <span className="border-b border-white pb-1">Todos los barrios</span>
+              <Flecha className="transition group-hover:translate-x-1" />
+            </Link>
           </div>
+          <ul className="mt-10 grid grid-cols-2 border-t border-l border-white/20 sm:grid-cols-3 lg:grid-cols-5">
+            {listaBarrios.map((b) => {
+              const cantidad = propiedades.filter((p) => p.barrioSlug === b.slug).length;
+              return (
+                <li key={b.slug}>
+                  <Link
+                    href={`/barrios/${b.slug}`}
+                    className="group flex h-full items-end justify-between gap-3 border-r border-b border-white/20 p-4 transition-colors duration-300 hover:bg-white hover:text-azul md:p-5"
+                  >
+                    <div>
+                      <h3 className="font-serif text-xl leading-tight font-bold md:text-2xl">{b.nombre}</h3>
+                      <p className="mt-1 text-xs text-white/60 group-hover:text-gris">
+                        {cantidad > 0 ? `${cantidad} ${cantidad === 1 ? "propiedad" : "propiedades"}` : "Consultanos"}
+                      </p>
+                    </div>
+                    <Flecha className="mb-1 shrink-0 opacity-60 transition group-hover:translate-x-1 group-hover:opacity-100" />
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </div>
-        <ul id="tira-barrios" className="mt-12 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-24 [scrollbar-width:none] md:scroll-px-[max(2rem,calc((100vw-80rem)/2+2rem))] md:px-[max(2rem,calc((100vw-80rem)/2+2rem))] md:pb-32">
-          {listaBarrios.map((b) => {
-            const cantidad = propiedades.filter((p) => p.barrioSlug === b.slug).length;
-            return (
-              <li key={b.slug} className="shrink-0 snap-start">
-                <Link
-                  href={`/barrios/${b.slug}`}
-                  className="group flex h-[340px] w-[260px] flex-col justify-between border border-white/20 p-6 transition-colors duration-300 hover:border-white hover:bg-white hover:text-azul md:h-[400px] md:w-[300px]"
-                >
-                  <span className="text-sm text-white/60 group-hover:text-gris">
-                    {cantidad > 0 ? `${cantidad} ${cantidad === 1 ? "propiedad" : "propiedades"}` : "Consultanos"}
-                  </span>
-                  <div>
-                    <h3 className="font-serif text-4xl leading-none font-bold">{b.nombre}</h3>
-                    <p className="mt-4 text-sm text-white/70 group-hover:text-gris">{b.resumen}</p>
-                    <Flecha className="mt-6 transition group-hover:translate-x-1" />
-                  </div>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
       </section>
 
       {/* Equipo */}
       <section className="mx-auto max-w-7xl px-4 py-24 md:px-8 md:py-32">
         <div className="mb-14 grid gap-6 md:grid-cols-[1fr_1fr] md:items-end">
-          <h2 className="font-serif text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-6xl">Quiénes te van a atender</h2>
+          <h2 className="font-serif text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-6xl">Quiénes son nuestros asesores</h2>
           <p className="text-gris md:justify-self-end md:text-right">
             Somos un equipo chico: cada consulta la sigue la misma persona de principio a fin.
           </p>

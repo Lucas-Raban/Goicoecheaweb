@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BotonesDeslizar } from "@/components/BotonesDeslizar";
 import { FormularioWhatsapp } from "@/components/FormularioWhatsapp";
 import { JsonLd } from "@/components/JsonLd";
 import { Migas } from "@/components/Migas";
 import { Multimedia } from "@/components/Multimedia";
-import { GrillaPropiedades } from "@/components/TarjetaPropiedad";
+import { TarjetaPropiedad } from "@/components/TarjetaPropiedad";
 import { linkWhatsapp, site } from "@/lib/site";
 import { nombresOperacion, rutasOperacion, type Propiedad } from "@/lib/propiedad";
 import { getPropiedad, getPropiedades } from "@/lib/propiedades";
@@ -41,12 +42,13 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
   if (!p) notFound();
 
   const op = p.operaciones[0];
+  // Recomendaciones: primero las de la misma operación, mismo barrio y mismo tipo; después el resto.
+  const puntaje = (o: Propiedad) =>
+    (o.operaciones.some((x) => x.tipo === op?.tipo) ? 4 : 0) + (o.barrioSlug === p.barrioSlug ? 2 : 0) + (o.tipo === p.tipo ? 1 : 0);
   const similares = (await getPropiedades())
-    .filter(
-      (o) =>
-        o.id !== p.id && o.operaciones.some((x) => x.tipo === op?.tipo) && (o.barrioSlug === p.barrioSlug || o.tipo === p.tipo),
-    )
-    .slice(0, 3);
+    .filter((o) => o.id !== p.id)
+    .sort((a, b) => puntaje(b) - puntaje(a))
+    .slice(0, 10);
 
   const datos = [
     ["Tipo", p.tipo],
@@ -195,8 +197,20 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
 
         {similares.length > 0 && (
           <section className="mt-24 border-t border-borde pt-16">
-            <h2 className="mb-10 font-serif text-3xl font-bold">Propiedades parecidas</h2>
-            <GrillaPropiedades propiedades={similares} />
+            <div className="mb-10 flex items-end justify-between gap-6">
+              <h2 className="font-serif text-3xl font-bold">También te pueden interesar</h2>
+              <BotonesDeslizar objetivo="recomendaciones" fondo="claro" />
+            </div>
+            <ul
+              id="recomendaciones"
+              className="-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-6 overflow-x-auto px-4 pb-4 [scrollbar-width:none] md:mx-0 md:scroll-px-0 md:px-0"
+            >
+              {similares.map((o) => (
+                <li key={o.id} className="w-[78%] shrink-0 snap-start sm:w-[45%] lg:w-[calc((100%-3rem)/3)]">
+                  <TarjetaPropiedad propiedad={o} />
+                </li>
+              ))}
+            </ul>
           </section>
         )}
 

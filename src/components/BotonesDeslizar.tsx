@@ -1,12 +1,15 @@
 "use client";
 
 // Flechas para mover una tira horizontal en compu, donde no siempre se puede deslizar con el mouse.
-export function BotonesDeslizar({ objetivo }: { objetivo: string }) {
+export function BotonesDeslizar({ objetivo, fondo = "oscuro" }: { objetivo: string; fondo?: "oscuro" | "claro" }) {
   const mover = (sentido: number) => {
     const tira = document.getElementById(objetivo);
     tira?.scrollBy({ left: sentido * tira.clientWidth * 0.8, behavior: "smooth" });
   };
-  const clases = "flex h-12 w-12 items-center justify-center border border-white/30 transition hover:border-white hover:bg-white hover:text-azul";
+  const clases =
+    fondo === "oscuro"
+      ? "flex h-12 w-12 items-center justify-center border border-white/30 transition hover:border-white hover:bg-white hover:text-azul"
+      : "flex h-12 w-12 items-center justify-center border border-borde text-azul transition hover:border-azul hover:bg-azul hover:text-white";
   return (
     <div className="hidden gap-2 md:flex">
       <button type="button" onClick={() => mover(-1)} aria-label="Anteriores" className={clases}>

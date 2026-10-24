@@ -139,7 +139,8 @@ export const propiedad = defineType({
     defineField({
       name: "tours",
       title: "Tour virtual 360 (links)",
-      description: "Link público de Matterport, Kuula u otro servicio de tours 360.",
+      description:
+        "Link público de Matterport, Kuula u otro servicio de tours 360. Los links de Claude no se pueden mostrar dentro de la web: para esos tours subí las fotos 360 en el campo de arriba.",
       type: "array",
       of: [defineArrayMember({ type: "url" })],
       group: "multimedia",

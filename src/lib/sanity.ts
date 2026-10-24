@@ -76,9 +76,10 @@ function normalizar(p: PropiedadPanel): Propiedad {
     superficieCubierta: p.superficieCubierta ?? null,
     descripcion: p.descripcion ?? "",
     fotos: (p.fotos ?? []).filter((f) => f.url).map((f) => ({ url: `${f.url}?w=1800&auto=format`, descripcion: f.descripcion ?? "" })),
-    videos: (p.videos ?? []).map(linkIncrustable),
+    videos: (p.videos ?? []).filter(Boolean).map(linkIncrustable),
     videosArchivo: (p.videosArchivo ?? []).filter(Boolean),
-    tours: p.tours ?? [],
+    // Los artifacts de Claude no se pueden incrustar en otra página, así que se descartan.
+    tours: (p.tours ?? []).filter((t) => t && !t.includes("claude.ai")),
     panoramas: (p.panoramas ?? [])
       .filter((f) => f.url)
       .map((f, i) => ({ url: `${f.url}?w=6000&auto=format`, ambiente: f.ambiente || `Ambiente ${i + 1}` })),

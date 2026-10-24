@@ -1,69 +1,128 @@
-import Image from "next/image";
+import Link from "next/link";
+import { barrios, linkWhatsapp } from "@/lib/site";
 
-export default function Home() {
+const operaciones = [
+  {
+    titulo: "Venta",
+    texto: "Departamentos, casas, locales, terrenos y galpones en Mar del Plata y alrededores.",
+    href: "/propiedades",
+  },
+  {
+    titulo: "Alquiler",
+    texto: "Alquileres anuales para vivir o para tu negocio, con contrato claro desde el primer día.",
+    href: "/propiedades",
+  },
+  {
+    titulo: "Alquiler temporario",
+    texto: "Departamentos para la temporada, una escapada o una estadía de trabajo en la ciudad.",
+    href: "/propiedades",
+  },
+  {
+    titulo: "Tasaciones",
+    texto: "Te decimos cuánto vale tu propiedad hoy, con datos reales del mercado de Mar del Plata.",
+    href: "/tasaciones",
+  },
+];
+
+const motivos = [
+  {
+    titulo: "Trato directo",
+    texto: "Hablás siempre con la misma persona, que conoce tu propiedad y te responde rápido.",
+  },
+  {
+    titulo: "Todo a la vista",
+    texto: "Fotos, videos y recorridos virtuales reales, para que sepas qué vas a ver antes de ir.",
+  },
+  {
+    titulo: "Te acompañamos hasta la firma",
+    texto: "Reserva, documentación, escritura o contrato: te explicamos cada paso sin vueltas.",
+  },
+];
+
+export default function Inicio() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <>
+      <section className="fondo-lineas text-white">
+        <div className="mx-auto max-w-6xl px-4 py-20 md:py-32">
+          <span className="etiqueta inline-block bg-white px-3 py-2 text-azul">Inmobiliaria en Mar del Plata</span>
+          <h1 className="mt-6 max-w-3xl font-serif text-4xl leading-tight font-bold md:text-6xl">
+            Vendé, comprá o alquilá tu propiedad con alguien que te conoce
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mt-6 max-w-2xl text-lg text-white/80">
+            Somos una inmobiliaria de Mar del Plata, en Alberti 1550. Te decimos lo que vale tu propiedad, te mostramos
+            todo con fotos y videos reales, y te acompañamos hasta la firma.
           </p>
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+            <Link href="/propiedades" className="etiqueta bg-white px-6 py-4 text-center text-azul hover:bg-fondo">
+              Ver propiedades
+            </Link>
+            <Link
+              href="/tasaciones"
+              className="etiqueta border border-white px-6 py-4 text-center text-white hover:bg-white hover:text-azul"
+            >
+              Pedí tu tasación
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-20">
+        <p className="etiqueta text-gris">Qué hacemos</p>
+        <h2 className="mt-3 font-serif text-3xl font-bold md:text-4xl">Venta, alquiler y tasaciones</h2>
+        <div className="mt-10 grid gap-px border border-borde bg-borde sm:grid-cols-2 lg:grid-cols-4">
+          {operaciones.map((op) => (
+            <Link key={op.titulo} href={op.href} className="group bg-white p-8 transition hover:bg-azul hover:text-white">
+              <h3 className="etiqueta">{op.titulo}</h3>
+              <p className="mt-4 text-sm text-gris group-hover:text-white/80">{op.texto}</p>
+              <span className="mt-6 inline-block text-sm font-bold">Ver más →</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="bg-fondo">
+        <div className="mx-auto max-w-6xl px-4 py-20">
+          <p className="etiqueta text-gris">Por qué elegirnos</p>
+          <h2 className="mt-3 font-serif text-3xl font-bold md:text-4xl">Serios, pero cercanos</h2>
+          <div className="mt-10 grid gap-10 md:grid-cols-3">
+            {motivos.map((m) => (
+              <div key={m.titulo} className="border-t-2 border-azul pt-6">
+                <h3 className="text-lg font-bold">{m.titulo}</h3>
+                <p className="mt-3 text-gris">{m.texto}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-20">
+        <p className="etiqueta text-gris">Dónde trabajamos</p>
+        <h2 className="mt-3 font-serif text-3xl font-bold md:text-4xl">Propiedades en los barrios de Mar del Plata</h2>
+        <ul className="mt-8 flex flex-wrap gap-3">
+          {barrios.map((b) => (
+            <li key={b} className="border border-borde px-4 py-2 text-sm">
+              {b}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="fondo-lineas text-white">
+        <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 py-16 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 className="font-serif text-3xl font-bold">¿Querés saber cuánto vale tu propiedad?</h2>
+            <p className="mt-3 text-white/80">Mandanos un mensaje y lo charlamos. La tasación no tiene costo.</p>
+          </div>
           <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            href={linkWhatsapp("Hola, quiero tasar mi propiedad.")}
             target="_blank"
             rel="noopener noreferrer"
+            className="etiqueta shrink-0 bg-white px-6 py-4 text-azul hover:bg-fondo"
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
+            Escribinos por WhatsApp
           </a>
         </div>
-      </main>
-    </div>
+      </section>
+    </>
   );
 }

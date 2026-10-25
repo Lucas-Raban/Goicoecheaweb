@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Buscador } from "@/components/Buscador";
@@ -36,6 +37,10 @@ function Flecha({ className = "" }: { className?: string }) {
     </svg>
   );
 }
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default async function Inicio() {
   const propiedades = await getPropiedades();

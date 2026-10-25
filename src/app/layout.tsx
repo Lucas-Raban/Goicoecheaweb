@@ -26,7 +26,6 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_AR",
     siteName: site.nombre,
-    images: [{ url: "/marca/logo-azul.png", width: 1280, height: 276, alt: site.nombre }],
   },
   verification: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION ? { google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION } : undefined,
   robots: site.indexar ? { index: true, follow: true } : { index: false, follow: false },

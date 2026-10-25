@@ -1,10 +1,18 @@
 import type { MetadataRoute } from "next";
 import { listaBarrios } from "@/lib/barrios";
 import { site } from "@/lib/site";
+import { rutasOperacion, type Operacion } from "@/lib/propiedad";
 import { getPropiedades } from "@/lib/propiedades";
+import { esDelTipo, listaTipos } from "@/lib/tipos";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const propiedades = await getPropiedades();
+  // Solo las combinaciones operación + tipo que tienen propiedades (ej. /venta/departamentos).
+  const combinaciones = (Object.keys(rutasOperacion) as Operacion[]).flatMap((op) =>
+    listaTipos
+      .filter((t) => propiedades.some((p) => p.operaciones.some((o) => o.tipo === op) && esDelTipo(p.tipo, t.slug)))
+      .map((t) => `${rutasOperacion[op]}/${t.slug}`),
+  );
   const fijas = ["", "/venta", "/alquiler", "/alquiler-temporario", "/propiedades", "/barrios", "/tasaciones", "/nosotros", "/contacto"];
 
   return [
@@ -13,6 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily" as const,
       priority: ruta === "" ? 1 : 0.8,
     })),
+    ...combinaciones.map((ruta) => ({ url: `${site.url}${ruta}`, changeFrequency: "daily" as const, priority: 0.8 })),
     ...listaBarrios.map((b) => ({
       url: `${site.url}/barrios/${b.slug}`,
       changeFrequency: "weekly" as const,

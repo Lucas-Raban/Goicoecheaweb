@@ -21,7 +21,8 @@ export async function generateStaticParams() {
 
 function tituloSeo(p: Propiedad) {
   const op = p.operaciones[0] ? ` en ${nombresOperacion[p.operaciones[0].tipo].toLowerCase()}` : "";
-  return `${p.tipo}${op} en ${p.barrio}${p.ambientes ? `, ${p.ambientes} ambientes` : ""}`;
+  const ambientes = p.ambientes === 1 ? ", monoambiente" : p.ambientes ? `, ${p.ambientes} ambientes` : "";
+  return `${p.tipo}${op} en ${p.barrio}${ambientes}`;
 }
 
 export async function generateMetadata({ params }: PageProps<"/propiedades/[slug]">): Promise<Metadata> {

@@ -3,6 +3,7 @@ import { listaBarrios } from "@/lib/barrios";
 import { fotos } from "@/lib/fotos";
 import { nombresOperacion, type Operacion } from "@/lib/propiedad";
 import { getPropiedades } from "@/lib/propiedades";
+import { esDelTipo, listaTipos } from "@/lib/tipos";
 import { Encabezado } from "./Encabezado";
 import { Migas } from "./Migas";
 import { SinPropiedades } from "./SinPropiedades";
@@ -30,6 +31,7 @@ export async function PaginaOperacion({ operacion, ruta }: { operacion: Operacio
   const texto = textos[operacion];
   const propiedades = (await getPropiedades()).filter((p) => p.operaciones.some((o) => o.tipo === operacion));
   const barriosConPropiedades = listaBarrios.filter((b) => propiedades.some((p) => p.barrioSlug === b.slug));
+  const tiposConPropiedades = listaTipos.filter((t) => propiedades.some((p) => esDelTipo(p.tipo, t.slug)));
 
   return (
     <>
@@ -51,6 +53,20 @@ export async function PaginaOperacion({ operacion, ruta }: { operacion: Operacio
       </section>
       <section className="border-t border-borde bg-fondo">
         <div className="mx-auto max-w-7xl px-4 py-16 md:px-8">
+          {tiposConPropiedades.length > 0 && (
+            <>
+              <h2 className="font-serif text-2xl font-bold md:text-3xl">{nombresOperacion[operacion]} por tipo</h2>
+              <ul className="mt-6 mb-12 flex flex-wrap gap-x-8 gap-y-3">
+                {tiposConPropiedades.map((t) => (
+                  <li key={t.slug}>
+                    <Link href={`${ruta}/${t.slug}`} className="underline-offset-4 hover:underline">
+                      {t.plural} en {operacion === "venta" ? "venta" : operacion === "alquiler" ? "alquiler" : "alquiler temporario"}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
           <h2 className="font-serif text-2xl font-bold md:text-3xl">{nombresOperacion[operacion]} por barrio</h2>
           <ul className="mt-6 flex flex-wrap gap-x-8 gap-y-3">
             {(barriosConPropiedades.length > 0 ? barriosConPropiedades : listaBarrios).map((b) => (

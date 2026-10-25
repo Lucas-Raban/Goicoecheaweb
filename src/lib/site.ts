@@ -25,8 +25,10 @@ export const site = {
   catalogoActual: "https://goicoecheapropiedades.com",
 };
 
-// Asesores de la oficina. La foto de perfil se guarda en public/equipo/ (cuadrada); sin foto se ven las iniciales.
-export const equipo: { nombre: string; cargo: string; whatsapp?: string; instagram?: string; foto?: string; esLogo?: boolean }[] = [
+export type Asesor = { nombre: string; cargo: string; whatsapp?: string; instagram?: string; foto?: string; esLogo?: boolean };
+
+// Asesores de respaldo, mientras no haya ninguno publicado en el panel (/admin). Sin foto se ven las iniciales.
+export const equipo: Asesor[] = [
   {
     nombre: "Lucas Raban",
     cargo: "Asesor inmobiliario",

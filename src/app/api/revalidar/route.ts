@@ -11,5 +11,6 @@ export async function POST(req: NextRequest) {
   if (!isValidSignature) return new Response("Firma inválida", { status: 401 });
 
   revalidateTag("propiedades", "max");
+  revalidateTag("asesores", "max");
   return Response.json({ ok: true });
 }

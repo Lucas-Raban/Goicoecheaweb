@@ -1,3 +1,4 @@
+import { getAsesoresPanel } from "@/lib/sanity";
 import { equipo } from "@/lib/site";
 import { FotoPerfil } from "./FotoPerfil";
 
@@ -13,10 +14,13 @@ function usuarioInstagram(valor?: string) {
 }
 
 // Las fotos de perfil de Instagram son chicas (320 px), por eso van en círculo y a tamaño moderado.
-export function Equipo() {
+// Usa los asesores del panel; si todavía no hay ninguno publicado, los de respaldo de site.ts.
+export async function Equipo() {
+  const panel = await getAsesoresPanel();
+  const asesores = panel.length > 0 ? panel : equipo;
   return (
     <div className="grid gap-px border border-borde bg-borde sm:grid-cols-2 lg:grid-cols-3">
-      {equipo.map((a) => {
+      {asesores.map((a) => {
         const usuario = usuarioInstagram(a.instagram);
         return (
           <div key={a.nombre} className="flex items-center gap-6 bg-white p-6 md:p-8">

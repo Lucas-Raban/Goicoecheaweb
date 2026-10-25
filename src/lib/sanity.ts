@@ -3,6 +3,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import { createClient } from "next-sanity";
 import { sanityApiVersion, sanityDataset, sanityProjectId } from "@/sanity/env";
 import { linkIncrustable, type Propiedad } from "./propiedad";
+import type { Asesor } from "./site";
 import { slugify } from "./texto";
 
 type PropiedadPanel = {
@@ -106,6 +107,58 @@ export async function getPropiedadesPanel(): Promise<Propiedad[]> {
     return datos.map(normalizar);
   } catch (error) {
     console.error("No se pudieron leer las propiedades del panel", error);
+    return [];
+  }
+}
+
+type AsesorPanel = {
+  nombre: string;
+  cargo?: string;
+  whatsapp?: string;
+  instagram?: string;
+  esLogo?: boolean;
+  foto?: string;
+  hotspot?: { x: number; y: number };
+};
+
+// Acepta el número local (2234399282) o con código de país, y lo deja listo para wa.me.
+function numeroWhatsapp(valor?: string) {
+  const digitos = valor?.replace(/\D/g, "") ?? "";
+  if (!digitos) return undefined;
+  if (digitos.startsWith("54")) return digitos;
+  return `549${digitos.replace(/^0/, "").replace(/^(\d{2,4})15/, "$1")}`;
+}
+
+// Asesores cargados en /admin, en el orden elegido. Vacío si no hay ninguno publicado.
+export async function getAsesoresPanel(): Promise<Asesor[]> {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("asesores");
+
+  if (!sanityProjectId) return [];
+  const cliente = createClient({ projectId: sanityProjectId, dataset: sanityDataset, apiVersion: sanityApiVersion, useCdn: false });
+  try {
+    const datos = await cliente.fetch<AsesorPanel[]>(
+      `*[_type == "asesor" && activo != false && !(_id in path("drafts.**"))] | order(orden asc, nombre asc) {
+        nombre, cargo, whatsapp, instagram, esLogo, "foto": foto.asset->url, "hotspot": foto.hotspot
+      }`,
+    );
+    return datos
+      .filter((a) => a.nombre)
+      .map((a) => ({
+        nombre: a.nombre,
+        cargo: a.cargo || "Asesor inmobiliario",
+        whatsapp: numeroWhatsapp(a.whatsapp),
+        instagram: a.instagram,
+        esLogo: Boolean(a.esLogo),
+        foto: a.foto
+          ? a.esLogo
+            ? `${a.foto}?w=320&auto=format`
+            : `${a.foto}?w=320&h=320&fit=crop&crop=focalpoint&fp-x=${a.hotspot?.x ?? 0.5}&fp-y=${a.hotspot?.y ?? 0.3}&auto=format`
+          : undefined,
+      }));
+  } catch (error) {
+    console.error("No se pudieron leer los asesores del panel", error);
     return [];
   }
 }

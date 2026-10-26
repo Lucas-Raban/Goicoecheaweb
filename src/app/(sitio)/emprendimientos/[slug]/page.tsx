@@ -4,6 +4,7 @@ import { Consulta } from "@/components/Consulta";
 import { JsonLd } from "@/components/JsonLd";
 import { Migas } from "@/components/Migas";
 import { Multimedia } from "@/components/Multimedia";
+import { TituloFicha } from "@/components/TituloFicha";
 import { GrillaPropiedades } from "@/components/TarjetaPropiedad";
 import { getEmprendimiento, getEmprendimientos, getUnidades } from "@/lib/emprendimientos";
 import { site } from "@/lib/site";
@@ -74,20 +75,14 @@ export default async function FichaEmprendimiento({ params }: PageProps<"/empren
             { nombre: e.nombre, href: `/emprendimientos/${e.slug}` },
           ]}
         />
-        <header className="mt-3 flex flex-col gap-x-8 gap-y-2 border-b border-borde pb-4 md:flex-row md:items-end md:justify-between">
-          <div className="min-w-0">
-            <h1 className="font-serif text-3xl leading-tight font-bold md:text-4xl">{e.nombre}</h1>
-            <p className="mt-1 text-sm text-gris">
-              {[e.estado, `${e.direccion}, ${e.barrio}`, e.entrega && `Entrega ${e.entrega}`].filter(Boolean).join(" · ")}
-            </p>
-          </div>
-          {e.precioDesde && (
-            <p className="shrink-0 font-serif text-2xl font-bold md:text-right md:text-3xl">
-              <span className="font-sans text-sm font-normal text-gris">Desde </span>
-              {e.precioDesde}
-            </p>
-          )}
-        </header>
+        <TituloFicha
+          etiqueta={e.estado ?? "Emprendimiento"}
+          titulo={e.nombre}
+          ubicacion={`${e.direccion}, ${e.barrio}`}
+          datos={[e.entrega && `Entrega ${e.entrega}`, unidades.length > 0 && `${unidades.length} ${unidades.length === 1 ? "unidad disponible" : "unidades disponibles"}`].filter(Boolean) as string[]}
+          precioEtiqueta={e.precioDesde ? "Unidades desde" : "Precios"}
+          precio={e.precioDesde ?? "Consultar"}
+        />
       </div>
 
       <div className="mx-auto max-w-7xl px-4 pb-20 md:px-8">

@@ -6,6 +6,7 @@ import { Consulta } from "@/components/Consulta";
 import { JsonLd } from "@/components/JsonLd";
 import { Migas } from "@/components/Migas";
 import { Multimedia } from "@/components/Multimedia";
+import { TituloFicha } from "@/components/TituloFicha";
 import { datosCortos, TarjetaPropiedad } from "@/components/TarjetaPropiedad";
 import { getEmprendimientos } from "@/lib/emprendimientos";
 import { site } from "@/lib/site";
@@ -125,15 +126,14 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
             { nombre: p.direccion, href: `/propiedades/${p.slug}` },
           ]}
         />
-        <header className="mt-3 flex flex-col gap-x-8 gap-y-2 border-b border-borde pb-4 md:flex-row md:items-end md:justify-between">
-          <div className="min-w-0">
-            <h1 className="font-serif text-3xl leading-tight font-bold md:text-4xl">{p.direccion}</h1>
-            <p className="mt-1 text-sm text-gris">
-              {[op && `${nombresOperacion[op.tipo]}: ${p.tipo}`, `${p.barrio}, Mar del Plata`, ...datosCortos(p)].filter(Boolean).join(" · ")}
-            </p>
-          </div>
-          <p className="shrink-0 font-serif text-2xl font-bold md:text-right md:text-3xl">{op?.precio ?? "Consultar precio"}</p>
-        </header>
+        <TituloFicha
+          etiqueta={op ? `${nombresOperacion[op.tipo]}: ${p.tipo}` : p.tipo}
+          titulo={p.direccion}
+          ubicacion={`${p.barrio}, Mar del Plata`}
+          datos={datosCortos(p)}
+          precioEtiqueta={op?.precio ? (op.tipo === "venta" ? "Precio de venta" : op.tipo === "alquiler" ? "Alquiler mensual" : "Precio") : "Precio"}
+          precio={op?.precio ?? "Consultar"}
+        />
         {emprendimiento && (
           <p className="mt-3 text-sm">
             Unidad del emprendimiento{" "}

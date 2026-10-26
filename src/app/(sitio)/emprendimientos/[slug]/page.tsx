@@ -76,17 +76,22 @@ export default async function FichaEmprendimiento({ params }: PageProps<"/empren
           ]}
         />
         <TituloFicha
-          etiqueta={e.estado ?? "Emprendimiento"}
+          antetitulo={`${e.estado ?? "Emprendimiento"} · ${e.direccion}, ${e.barrio}`}
           titulo={e.nombre}
-          ubicacion={`${e.direccion}, ${e.barrio}`}
-          datos={[e.entrega && `Entrega ${e.entrega}`, unidades.length > 0 && `${unidades.length} ${unidades.length === 1 ? "unidad disponible" : "unidades disponibles"}`].filter(Boolean) as string[]}
+          datos={[
+            e.entrega && { icono: "entrega" as const, texto: `Entrega ${e.entrega}` },
+            unidades.length > 0 && {
+              icono: "unidades" as const,
+              texto: `${unidades.length} ${unidades.length === 1 ? "unidad disponible" : "unidades disponibles"}`,
+            },
+          ]}
           precioEtiqueta={e.precioDesde ? "Unidades desde" : "Precios"}
           precio={e.precioDesde ?? "Consultar"}
         />
       </div>
 
       <div className="mx-auto max-w-7xl px-4 pb-20 md:px-8">
-        <div className="mt-5 grid gap-12 lg:grid-cols-[2fr_1fr]">
+        <div className="mt-8 grid gap-12 lg:grid-cols-[2fr_1fr]">
           <div className="min-w-0">
             <Multimedia p={e} alt={e.nombre} />
 

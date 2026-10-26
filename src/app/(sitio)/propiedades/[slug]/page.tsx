@@ -7,7 +7,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { Migas } from "@/components/Migas";
 import { Multimedia } from "@/components/Multimedia";
 import { TituloFicha } from "@/components/TituloFicha";
-import { datosCortos, TarjetaPropiedad } from "@/components/TarjetaPropiedad";
+import { TarjetaPropiedad } from "@/components/TarjetaPropiedad";
 import { getEmprendimientos } from "@/lib/emprendimientos";
 import { site } from "@/lib/site";
 import { nombresOperacion, rutasOperacion, type Propiedad } from "@/lib/propiedad";
@@ -127,10 +127,14 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
           ]}
         />
         <TituloFicha
-          etiqueta={op ? `${nombresOperacion[op.tipo]}: ${p.tipo}` : p.tipo}
+          antetitulo={`${p.tipo}${op ? ` en ${nombresOperacion[op.tipo].toLowerCase()}` : ""} · ${p.barrio}, Mar del Plata`}
           titulo={p.direccion}
-          ubicacion={`${p.barrio}, Mar del Plata`}
-          datos={datosCortos(p)}
+          datos={[
+            p.ambientes && { icono: "ambientes" as const, texto: p.ambientes === 1 ? "Monoambiente" : `${p.ambientes} ambientes` },
+            p.dormitorios && { icono: "dormitorios" as const, texto: `${p.dormitorios} dormitorio${p.dormitorios > 1 ? "s" : ""}` },
+            p.banos && { icono: "banos" as const, texto: `${p.banos} baño${p.banos > 1 ? "s" : ""}` },
+            (p.superficieCubierta ?? p.superficieTotal) && { icono: "superficie" as const, texto: `${p.superficieCubierta ?? p.superficieTotal} m²` },
+          ]}
           precioEtiqueta={op?.precio ? (op.tipo === "venta" ? "Precio de venta" : op.tipo === "alquiler" ? "Alquiler mensual" : "Precio") : "Precio"}
           precio={op?.precio ?? "Consultar"}
         />
@@ -146,7 +150,7 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
       </div>
 
       <div className="mx-auto max-w-7xl px-4 pb-20 md:px-8">
-        <div className="mt-5 grid gap-12 lg:grid-cols-[2fr_1fr]">
+        <div className="mt-8 grid gap-12 lg:grid-cols-[2fr_1fr]">
           <div className="min-w-0">
             <Multimedia p={p} alt={`${p.tipo} en ${p.barrio}`} />
             {p.titulo !== p.direccion && <p className="mt-6 font-serif text-xl leading-snug font-bold md:text-2xl">{p.titulo}</p>}

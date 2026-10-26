@@ -1,5 +1,6 @@
-import { defineArrayMember, defineField, defineType } from "sanity";
+import { defineField, defineType } from "sanity";
 import { listaBarrios } from "@/lib/barrios";
+import { fotosYPlanos, videosYTours } from "./multimedia";
 
 const tipos = ["Departamento", "Casa", "PH", "Local", "Oficina", "Terreno", "Galpón", "Campo", "Cochera"];
 
@@ -80,6 +81,14 @@ export const propiedad = defineType({
     defineField({ name: "superficieCubierta", title: "Superficie cubierta (m²)", type: "number", group: "datos" }),
     defineField({ name: "superficieTotal", title: "Superficie total (m²)", type: "number", group: "datos" }),
     defineField({ name: "codigo", title: "Código interno", type: "string", group: "datos" }),
+    defineField({
+      name: "emprendimiento",
+      title: "Emprendimiento",
+      description: "Si es una unidad de un edificio en pozo o en construcción, elegilo acá y aparece en su ficha.",
+      type: "reference",
+      to: [{ type: "emprendimiento" }],
+      group: "datos",
+    }),
     defineField({ name: "descripcion", title: "Descripción", type: "text", rows: 10, group: "datos" }),
     defineField({
       name: "ubicacion",
@@ -88,34 +97,7 @@ export const propiedad = defineType({
       type: "url",
       group: "datos",
     }),
-    defineField({
-      name: "fotos",
-      title: "Fotos",
-      description: "La primera es la portada. Podés arrastrarlas para cambiar el orden.",
-      type: "array",
-      of: [
-        defineArrayMember({
-          type: "image",
-          options: { hotspot: true },
-          fields: [defineField({ name: "descripcion", title: "Descripción breve", type: "string" })],
-        }),
-      ],
-      options: { layout: "grid" },
-      group: "multimedia",
-    }),
-    defineField({
-      name: "planos",
-      title: "Planos",
-      description: "Imagen del plano (JPG o PNG). Se muestra en su propia solapa en la ficha.",
-      type: "array",
-      of: [
-        defineArrayMember({
-          type: "image",
-          fields: [defineField({ name: "descripcion", title: "Descripción breve", type: "string", description: "Ej.: Planta baja" })],
-        }),
-      ],
-      group: "multimedia",
-    }),
+    ...fotosYPlanos,
     defineField({
       name: "maqueta",
       title: "Maqueta 3D (archivo .html)",
@@ -124,48 +106,7 @@ export const propiedad = defineType({
       options: { accept: ".html,text/html" },
       group: "multimedia",
     }),
-    defineField({
-      name: "videos",
-      title: "Videos (links)",
-      description: "Links de YouTube o Vimeo.",
-      type: "array",
-      of: [defineArrayMember({ type: "url" })],
-      group: "multimedia",
-    }),
-    defineField({
-      name: "videosArchivo",
-      title: "Videos (subir archivo)",
-      description: "Archivos MP4 cortos. Para videos largos conviene YouTube.",
-      type: "array",
-      of: [defineArrayMember({ type: "file", options: { accept: "video/*" } })],
-      group: "multimedia",
-    }),
-    defineField({
-      name: "panoramas",
-      title: "Tour virtual 360 (subir fotos 360)",
-      description: "Fotos 360 (equirectangulares, 2:1) de cada ambiente. En la ficha se recorren una por una.",
-      type: "array",
-      of: [
-        defineArrayMember({
-          type: "object",
-          fields: [
-            defineField({ name: "ambiente", title: "Ambiente", type: "string", description: "Ej.: Living, Cocina, Dormitorio principal." }),
-            defineField({ name: "imagen", title: "Foto 360", type: "image", validation: (r) => r.required() }),
-          ],
-          preview: { select: { title: "ambiente", media: "imagen" } },
-        }),
-      ],
-      group: "multimedia",
-    }),
-    defineField({
-      name: "tours",
-      title: "Tour virtual 360 (links)",
-      description:
-        "Link público de Matterport, Kuula u otro servicio de tours 360. Los links de Claude no se pueden mostrar dentro de la web: para esos tours subí las fotos 360 en el campo de arriba.",
-      type: "array",
-      of: [defineArrayMember({ type: "url" })],
-      group: "multimedia",
-    }),
+    ...videosYTours,
   ],
   preview: {
     select: { title: "direccion", subtitle: "titulo", media: "fotos.0", operacion: "operacion", publicada: "publicada" },

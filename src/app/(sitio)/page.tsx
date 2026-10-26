@@ -28,6 +28,12 @@ const operaciones = [
     texto: "Por semana, quincena o mes. En temporada conviene consultar con tiempo.",
     href: "/alquiler-temporario",
   },
+  {
+    etiqueta: "Emprendimientos",
+    titulo: "Emprendimientos",
+    texto: "Edificios en pozo y en construcción, con anticipo y cuotas.",
+    href: "/emprendimientos",
+  },
 ];
 
 function Flecha({ className = "" }: { className?: string }) {
@@ -121,17 +127,17 @@ export default async function Inicio() {
       {/* Accesos rápidos por operación */}
       <section className="mx-auto max-w-7xl px-4 py-20 md:px-8 md:py-24">
         <h2 className="font-serif text-3xl font-bold md:text-4xl">¿Qué estás buscando?</h2>
-        <div className="mt-10 grid border-t border-borde md:grid-cols-3">
+        <div className="mt-10 grid border-t border-borde md:grid-cols-2 lg:grid-cols-4">
           {operaciones.map((op, i) => (
             <Link
               key={op.etiqueta}
               href={op.href}
-              className={`group flex items-start justify-between gap-6 border-b border-borde py-8 md:border-b-0 md:px-8 md:py-10 ${
-                i > 0 ? "md:border-l" : "md:pl-0"
-              }`}
+              className={`group flex items-start justify-between gap-6 border-b border-borde py-8 md:px-8 md:py-10 lg:border-b-0 ${
+                i % 2 === 1 ? "md:border-l" : "md:pl-0"
+              } ${i > 0 ? "lg:border-l lg:pl-8" : ""}`}
             >
               <div>
-                <h3 className="font-serif text-2xl font-bold group-hover:underline md:text-3xl">{op.titulo}</h3>
+                <h3 className="font-serif text-2xl font-bold group-hover:underline md:text-3xl lg:text-2xl">{op.titulo}</h3>
                 <p className="mt-2 max-w-xs text-gris">{op.texto}</p>
               </div>
               <Flecha className="mt-2 shrink-0 transition group-hover:translate-x-1" />

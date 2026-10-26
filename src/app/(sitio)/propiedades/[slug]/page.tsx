@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BotonesDeslizar } from "@/components/BotonesDeslizar";
-import { FormularioWhatsapp } from "@/components/FormularioWhatsapp";
+import { Consulta } from "@/components/Consulta";
 import { JsonLd } from "@/components/JsonLd";
 import { Migas } from "@/components/Migas";
 import { Multimedia } from "@/components/Multimedia";
+import { TituloFicha } from "@/components/TituloFicha";
 import { TarjetaPropiedad } from "@/components/TarjetaPropiedad";
-import { linkWhatsapp, site } from "@/lib/site";
+import { getEmprendimientos } from "@/lib/emprendimientos";
+import { site } from "@/lib/site";
 import { nombresOperacion, rutasOperacion, type Propiedad } from "@/lib/propiedad";
 import { getPropiedad, getPropiedades } from "@/lib/propiedades";
 
@@ -43,6 +45,7 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
   if (!p) notFound();
 
   const op = p.operaciones[0];
+  const emprendimiento = p.emprendimiento ? (await getEmprendimientos()).find((e) => e.id === p.emprendimiento) : undefined;
   // Recomendaciones coherentes: misma operación y misma cantidad de ambientes (o mismo tipo si no hay ambientes).
   // Entre esas, primero las del mismo barrio y del mismo tipo.
   const puntaje = (o: Propiedad) => (o.barrioSlug === p.barrioSlug ? 2 : 0) + (o.tipo === p.tipo ? 1 : 0);
@@ -114,39 +117,45 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
         }}
       />
 
-      <div className="bg-azul text-white">
-        <div className="mx-auto max-w-7xl px-4 pt-32 pb-12 md:px-8 md:pt-36 [&_nav]:text-white/70 [&_nav_span.text-azul]:text-white">
-          <Migas
-            items={[
-              ...(op ? [{ nombre: nombresOperacion[op.tipo], href: rutasOperacion[op.tipo] }] : []),
-              { nombre: p.barrio, href: `/barrios/${p.barrioSlug}` },
-              { nombre: p.direccion, href: `/propiedades/${p.slug}` },
-            ]}
-          />
-
-          <header className="mt-6 grid gap-6 md:grid-cols-[1fr_auto] md:items-end">
-            <div>
-              {op && (
-                <span className="etiqueta inline-block bg-white px-3 py-2 text-azul">
-                  {nombresOperacion[op.tipo]}: {p.tipo}
-                </span>
-              )}
-              <h1 className="mt-4 font-serif text-4xl leading-tight font-bold md:text-5xl">{p.direccion}</h1>
-              <p className="mt-2 text-lg text-white/75">
-                {p.barrio}, Mar del Plata · {p.titulo}
-              </p>
-            </div>
-            <p className="font-serif text-3xl font-bold md:text-right md:text-4xl">{op?.precio ?? "Consultar precio"}</p>
-          </header>
-        </div>
+      {/* Título compacto: la publicación aparece enseguida */}
+      <div className="mx-auto max-w-7xl px-4 pt-24 md:px-8 md:pt-26">
+        <Migas
+          items={[
+            ...(op ? [{ nombre: nombresOperacion[op.tipo], href: rutasOperacion[op.tipo] }] : []),
+            { nombre: p.barrio, href: `/barrios/${p.barrioSlug}` },
+            { nombre: p.direccion, href: `/propiedades/${p.slug}` },
+          ]}
+        />
+        <TituloFicha
+          antetitulo={`${p.tipo}${op ? ` en ${nombresOperacion[op.tipo].toLowerCase()}` : ""} · ${p.barrio}, Mar del Plata`}
+          titulo={p.direccion}
+          datos={[
+            p.ambientes && { icono: "ambientes" as const, texto: p.ambientes === 1 ? "Monoambiente" : `${p.ambientes} ambientes` },
+            p.dormitorios && { icono: "dormitorios" as const, texto: `${p.dormitorios} dormitorio${p.dormitorios > 1 ? "s" : ""}` },
+            p.banos && { icono: "banos" as const, texto: `${p.banos} baño${p.banos > 1 ? "s" : ""}` },
+            (p.superficieCubierta ?? p.superficieTotal) && { icono: "superficie" as const, texto: `${p.superficieCubierta ?? p.superficieTotal} m²` },
+          ]}
+          precioEtiqueta={op?.precio ? (op.tipo === "venta" ? "Precio de venta" : op.tipo === "alquiler" ? "Alquiler mensual" : "Precio") : "Precio"}
+          precio={op?.precio ?? "Consultar"}
+        />
+        {emprendimiento && (
+          <p className="mt-3 text-sm">
+            Unidad del emprendimiento{" "}
+            <Link href={`/emprendimientos/${emprendimiento.slug}`} className="font-bold underline underline-offset-4">
+              {emprendimiento.nombre}
+            </Link>
+            {emprendimiento.estado && <span className="text-gris"> ({emprendimiento.estado.toLowerCase()})</span>}
+          </p>
+        )}
       </div>
 
       <div className="mx-auto max-w-7xl px-4 pb-20 md:px-8">
-        <div className="mt-10 grid gap-12 lg:grid-cols-[2fr_1fr]">
+        <div className="mt-8 grid gap-12 lg:grid-cols-[2fr_1fr]">
           <div className="min-w-0">
             <Multimedia p={p} alt={`${p.tipo} en ${p.barrio}`} />
+            {p.titulo !== p.direccion && <p className="mt-6 font-serif text-xl leading-snug font-bold md:text-2xl">{p.titulo}</p>}
 
-            <dl className="mt-10 grid grid-cols-2 border-t border-l border-borde sm:grid-cols-4">
+            <dl className="mt-6 grid grid-cols-2 border-t border-l border-borde sm:grid-cols-4">
               {datos.map(([k, v]) => (
                 <div key={k} className="border-r border-b border-borde p-4">
                   <dt className="text-xs text-gris">{k}</dt>
@@ -175,29 +184,7 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
           </div>
 
           <aside className="lg:sticky lg:top-24 lg:self-start">
-            <div className="border border-borde p-6">
-              <h2 className="font-serif text-2xl font-bold">¿Te interesa?</h2>
-              <p className="mt-2 text-sm text-gris">Coordinamos una visita o te mandamos más información. Código {p.codigo}.</p>
-              <a
-                href={linkWhatsapp(mensaje)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-6 block bg-whatsapp px-6 py-4 text-center font-bold text-white transition hover:brightness-95"
-              >
-                Consultar por WhatsApp
-              </a>
-              <div className="mt-6 border-t border-borde pt-6">
-                <FormularioWhatsapp
-                  asunto={mensaje}
-                  boton="Enviar consulta"
-                  campos={[
-                    { nombre: "nombre", label: "Tu nombre", requerido: true },
-                    { nombre: "telefono", label: "Teléfono", tipo: "tel" },
-                    { nombre: "mensaje", label: "Consulta", tipo: "textarea" },
-                  ]}
-                />
-              </div>
-            </div>
+            <Consulta mensaje={mensaje} detalle={`Coordinamos una visita o te mandamos más información. Código ${p.codigo}.`} />
           </aside>
         </div>
 

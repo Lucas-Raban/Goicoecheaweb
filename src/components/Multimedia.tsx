@@ -3,14 +3,23 @@
 import { useEffect, useState } from "react";
 import { Galeria } from "@/components/Galeria";
 import { Tour360 } from "@/components/Tour360";
-import type { Propiedad } from "@/lib/propiedad";
+import type { Multimediales } from "@/lib/propiedad";
 
 type Solapa = "fotos" | "video" | "tour" | "plano" | "maqueta";
 
-// Fotos, video, tour 360, plano y maqueta 3D de la ficha, en solapas. Solo aparecen las que tienen contenido.
-export function Multimedia({ p, alt }: { p: Propiedad; alt: string }) {
-  const solapas: { id: Solapa; nombre: string }[] = [
-    { id: "fotos" as const, nombre: `Fotos${p.fotos.length > 1 ? ` (${p.fotos.length})` : ""}` },
+// Íconos de línea finos, uno por solapa.
+const iconos: Record<Solapa, React.ReactNode> = {
+  fotos: <path d="M4 7h3l1.5-2h7L17 7h3v12H4zM12 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" />,
+  video: <path d="M4 6h11v12H4zM15 10.5l5-3v9l-5-3z" />,
+  tour: <path d="M3 12c0-2.2 4-4 9-4s9 1.8 9 4-4 4-9 4M12 16l2-2M12 16l2 2M8.5 15.6C5.3 15 3 13.6 3 12" />,
+  plano: <path d="M4 4h16v16H4zM4 11h7V4M11 15v5M15 11h5" />,
+  maqueta: <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM4 7.5l8 4.5 8-4.5M12 12v9" />,
+};
+
+// Fotos, video, tour 360, plano y maqueta 3D de la ficha, en solapas tipo carpeta. Solo aparecen las que tienen contenido.
+export function Multimedia({ p, alt }: { p: Multimediales; alt: string }) {
+  const solapas: { id: Solapa; nombre: string; cantidad?: number }[] = [
+    { id: "fotos" as const, nombre: "Fotos", cantidad: p.fotos.length > 1 ? p.fotos.length : undefined },
     ...(p.videos.length > 0 || p.videosArchivo.length > 0 ? [{ id: "video" as const, nombre: "Video" }] : []),
     ...(p.panoramas.length > 0 || p.tours.length > 0 ? [{ id: "tour" as const, nombre: "Tour 360" }] : []),
     ...(p.planos.length > 0 ? [{ id: "plano" as const, nombre: p.planos.length > 1 ? "Planos" : "Plano" }] : []),
@@ -31,25 +40,33 @@ export function Multimedia({ p, alt }: { p: Propiedad; alt: string }) {
   return (
     <div>
       {solapas.length > 1 && (
-        <div role="tablist" aria-label="Fotos, video, tour, plano y maqueta" className="mb-3 flex gap-6 overflow-x-auto border-b border-borde">
-          {solapas.map((s) => (
-            <button
-              key={s.id}
-              type="button"
-              role="tab"
-              aria-selected={actual === s.id}
-              onClick={() => setActual(s.id)}
-              className={`-mb-px shrink-0 border-b-2 py-3 text-sm font-bold transition-colors ${
-                actual === s.id ? "border-azul text-azul" : "border-transparent text-gris hover:text-azul"
-              }`}
-            >
-              {s.nombre}
-            </button>
-          ))}
+        <div role="tablist" aria-label="Fotos, video, tour, plano y maqueta" className="flex items-end overflow-x-auto pl-1 [scrollbar-width:none]">
+          {solapas.map((s, i) => {
+            const activa = actual === s.id;
+            return (
+              <button
+                key={s.id}
+                type="button"
+                role="tab"
+                aria-selected={activa}
+                onClick={() => setActual(s.id)}
+                style={{ zIndex: activa ? solapas.length + 1 : solapas.length - i }}
+                className={`solapa-carpeta relative -ml-3 flex shrink-0 items-center gap-2 pr-7 pl-7 text-sm font-bold transition-colors first:ml-0 ${
+                  activa ? "bg-fondo pt-3 pb-2.5 text-azul" : "bg-[#dfe3e9] pt-2.5 pb-2 text-gris hover:bg-[#e9ecf0] hover:text-azul"
+                }`}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" aria-hidden="true">
+                  {iconos[s.id]}
+                </svg>
+                {s.nombre}
+                {s.cantidad && <span className="font-normal text-gris">{s.cantidad}</span>}
+              </button>
+            );
+          })}
         </div>
       )}
 
-      <div role="tabpanel">
+      <div role="tabpanel" className={solapas.length > 1 ? "bg-fondo p-2 sm:p-3" : undefined}>
         {actual === "fotos" && <Galeria fotos={p.fotos} alt={alt} />}
 
         {actual === "video" && (

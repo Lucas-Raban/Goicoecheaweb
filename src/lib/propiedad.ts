@@ -30,7 +30,12 @@ export type Propiedad = {
   lat: number | null;
   lng: number | null;
   destacada: boolean;
+  // Id del emprendimiento al que pertenece la unidad, si es parte de uno.
+  emprendimiento: string | null;
 };
+
+// Lo que muestran las solapas de fotos, video, tour, plano y maqueta (fichas de propiedades y de emprendimientos).
+export type Multimediales = Pick<Propiedad, "direccion" | "fotos" | "videos" | "videosArchivo" | "tours" | "panoramas" | "planos" | "maqueta">;
 
 export const nombresOperacion: Record<Operacion, string> = {
   venta: "Venta",

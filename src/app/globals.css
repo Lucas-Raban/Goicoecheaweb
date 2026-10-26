@@ -44,3 +44,8 @@ body {
 .etiqueta {
   @apply text-[11px] font-bold uppercase tracking-[0.2em];
 }
+
+/* Solapa de carpeta: bordes inclinados y esquinas de arriba apenas redondeadas */
+.solapa-carpeta {
+  clip-path: polygon(0 100%, 10px 4px, 14px 0, calc(100% - 14px) 0, calc(100% - 10px) 4px, 100% 100%);
+}

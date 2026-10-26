@@ -2,11 +2,44 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { createClient } from "next-sanity";
 import { sanityApiVersion, sanityDataset, sanityProjectId } from "@/sanity/env";
+import type { Emprendimiento } from "./emprendimiento";
 import { linkIncrustable, type Propiedad } from "./propiedad";
 import type { Asesor } from "./site";
 import { slugify } from "./texto";
 
-type PropiedadPanel = {
+// Fotos, planos, videos y tour 360, iguales en propiedades y emprendimientos.
+type MultimediaPanel = {
+  fotos?: { url: string; descripcion?: string }[];
+  videos?: string[];
+  videosArchivo?: string[];
+  tours?: string[];
+  panoramas?: { ambiente?: string; url?: string }[];
+  planos?: { url: string; descripcion?: string }[];
+};
+
+const camposMultimedia = `
+  "fotos": fotos[]{ "url": asset->url, descripcion },
+  videos, "videosArchivo": videosArchivo[].asset->url, tours,
+  "panoramas": panoramas[]{ ambiente, "url": imagen.asset->url },
+  "planos": planos[]{ "url": asset->url, descripcion }`;
+
+function multimedia(p: MultimediaPanel) {
+  return {
+    fotos: (p.fotos ?? []).filter((f) => f.url).map((f) => ({ url: `${f.url}?w=1800&auto=format`, descripcion: f.descripcion ?? "" })),
+    videos: (p.videos ?? []).filter(Boolean).map(linkIncrustable),
+    videosArchivo: (p.videosArchivo ?? []).filter(Boolean),
+    planos: (p.planos ?? []).filter((f) => f.url).map((f) => ({ url: `${f.url}?w=2400&auto=format`, descripcion: f.descripcion ?? "" })),
+    // Los artifacts de Claude no se pueden incrustar en otra página, así que se descartan.
+    tours: (p.tours ?? []).filter((t) => t && !t.includes("claude.ai")),
+    panoramas: (p.panoramas ?? [])
+      .filter((f) => f.url)
+      .map((f, i) => ({ url: `${f.url}?w=6000&auto=format`, ambiente: f.ambiente || `Ambiente ${i + 1}` })),
+  };
+}
+
+const formatoPrecio = (precio: number, moneda?: string) => `${moneda === "ARS" ? "$" : "USD"} ${precio.toLocaleString("es-AR")}`;
+
+type PropiedadPanel = MultimediaPanel & {
   _id: string;
   destacada?: boolean;
   titulo: string;
@@ -27,23 +60,14 @@ type PropiedadPanel = {
   codigo?: string;
   descripcion?: string;
   ubicacion?: string;
-  fotos?: { url: string; descripcion?: string }[];
-  videos?: string[];
-  videosArchivo?: string[];
-  tours?: string[];
-  panoramas?: { ambiente?: string; url?: string }[];
-  planos?: { url: string; descripcion?: string }[];
   maqueta?: string;
+  emprendimiento?: string;
 };
 
 const consulta = `*[_type == "propiedad" && publicada != false && !(_id in path("drafts.**"))] | order(_createdAt desc) {
   _id, destacada, titulo, operacion, tipo, direccion, barrio, otroBarrio, precio, moneda, mostrarPrecio,
   ambientes, dormitorios, banos, cocheras, superficieCubierta, superficieTotal, codigo, descripcion, ubicacion,
-  "fotos": fotos[]{ "url": asset->url, descripcion },
-  videos, "videosArchivo": videosArchivo[].asset->url, tours,
-  "panoramas": panoramas[]{ ambiente, "url": imagen.asset->url },
-  "planos": planos[]{ "url": asset->url, descripcion },
-  "maqueta": maqueta.asset->url
+  "maqueta": maqueta.asset->url, "emprendimiento": emprendimiento._ref,${camposMultimedia}
 }`;
 
 // Saca latitud y longitud de un link de Google Maps (formatos @lat,lng o q=lat,lng).
@@ -55,8 +79,7 @@ function coordenadas(link?: string) {
 function normalizar(p: PropiedadPanel): Propiedad {
   const barrio = p.barrio === "Otro" ? p.otroBarrio || "Mar del Plata" : p.barrio;
   const codigo = p.codigo || p._id.slice(-6).toUpperCase();
-  const precio =
-    p.precio && p.mostrarPrecio !== false ? `${p.moneda === "ARS" ? "$" : "USD"} ${p.precio.toLocaleString("es-AR")}` : null;
+  const precio = p.precio && p.mostrarPrecio !== false ? formatoPrecio(p.precio, p.moneda) : null;
   const { lat, lng } = coordenadas(p.ubicacion);
   return {
     id: `panel-${p._id}`,
@@ -80,19 +103,12 @@ function normalizar(p: PropiedadPanel): Propiedad {
     superficieTotal: p.superficieTotal ?? null,
     superficieCubierta: p.superficieCubierta ?? null,
     descripcion: p.descripcion ?? "",
-    fotos: (p.fotos ?? []).filter((f) => f.url).map((f) => ({ url: `${f.url}?w=1800&auto=format`, descripcion: f.descripcion ?? "" })),
-    videos: (p.videos ?? []).filter(Boolean).map(linkIncrustable),
-    videosArchivo: (p.videosArchivo ?? []).filter(Boolean),
-    // Los artifacts de Claude no se pueden incrustar en otra página, así que se descartan.
+    ...multimedia(p),
     maqueta: p.maqueta ? `/maqueta/${p._id}` : null,
-    planos: (p.planos ?? []).filter((f) => f.url).map((f) => ({ url: `${f.url}?w=2400&auto=format`, descripcion: f.descripcion ?? "" })),
-    tours: (p.tours ?? []).filter((t) => t && !t.includes("claude.ai")),
-    panoramas: (p.panoramas ?? [])
-      .filter((f) => f.url)
-      .map((f, i) => ({ url: `${f.url}?w=6000&auto=format`, ambiente: f.ambiente || `Ambiente ${i + 1}` })),
     lat,
     lng,
     destacada: Boolean(p.destacada),
+    emprendimiento: p.emprendimiento ? `panel-${p.emprendimiento}` : null,
   };
 }
 
@@ -110,6 +126,68 @@ export async function getPropiedadesPanel(): Promise<Propiedad[]> {
     return datos.map(normalizar);
   } catch (error) {
     console.error("No se pudieron leer las propiedades del panel", error);
+    return [];
+  }
+}
+
+type EmprendimientoPanel = MultimediaPanel & {
+  _id: string;
+  destacado?: boolean;
+  nombre: string;
+  estado?: string;
+  entrega?: string;
+  direccion: string;
+  barrio: string;
+  otroBarrio?: string;
+  precioDesde?: number;
+  moneda?: string;
+  descripcion?: string;
+  amenities?: string[];
+  financiacion?: string;
+  ubicacion?: string;
+};
+
+// Emprendimientos cargados a mano en /admin.
+export async function getEmprendimientosPanel(): Promise<Emprendimiento[]> {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("propiedades");
+
+  if (!sanityProjectId) return [];
+  const cliente = createClient({ projectId: sanityProjectId, dataset: sanityDataset, apiVersion: sanityApiVersion, useCdn: false });
+  try {
+    const datos = await cliente.fetch<EmprendimientoPanel[]>(
+      `*[_type == "emprendimiento" && publicado != false && !(_id in path("drafts.**"))] | order(_createdAt desc) {
+        _id, destacado, nombre, estado, entrega, direccion, barrio, otroBarrio, precioDesde, moneda, descripcion,
+        amenities, financiacion, ubicacion,${camposMultimedia}
+      }`,
+    );
+    return datos
+      .filter((e) => e.nombre)
+      .map((e) => {
+        const barrio = e.barrio === "Otro" ? e.otroBarrio || "Mar del Plata" : e.barrio || "Mar del Plata";
+        return {
+          id: `panel-${e._id}`,
+          origen: "panel" as const,
+          slug: slugify(`${e.nombre}-${barrio}`),
+          nombre: e.nombre,
+          direccion: e.direccion || barrio,
+          barrio,
+          barrioSlug: slugify(barrio),
+          estado: e.estado || null,
+          entrega: e.entrega || null,
+          precioDesde: e.precioDesde ? formatoPrecio(e.precioDesde, e.moneda) : null,
+          descripcion: e.descripcion ?? "",
+          financiacion: e.financiacion ?? "",
+          amenities: (e.amenities ?? []).filter(Boolean),
+          ...multimedia(e),
+          maqueta: null,
+          ...coordenadas(e.ubicacion),
+          destacado: Boolean(e.destacado),
+        };
+      });
+  } catch (error) {
+    console.error("No se pudieron leer los emprendimientos del panel", error);
     return [];
   }
 }

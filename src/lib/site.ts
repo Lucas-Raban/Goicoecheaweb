@@ -58,6 +58,7 @@ export const navegacion = [
   { href: "/venta", label: "Venta" },
   { href: "/alquiler", label: "Alquiler" },
   { href: "/alquiler-temporario", label: "Temporario" },
+  { href: "/emprendimientos", label: "Emprendimientos" },
   { href: "/tasaciones", label: "Tasaciones" },
   { href: "/nosotros", label: "Nosotros" },
   { href: "/contacto", label: "Contacto" },

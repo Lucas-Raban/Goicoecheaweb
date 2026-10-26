@@ -2,16 +2,21 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { linkWhatsapp, navegacion, site } from "@/lib/site";
 
-// Transparente sobre la foto de portada; se vuelve blanco al hacer scroll.
+// Las fichas no tienen foto de portada arriba: ahí el encabezado es blanco desde el principio.
+const esFicha = (ruta: string) => /^\/(propiedades|emprendimientos)\/[^/]+/.test(ruta);
+
+// Transparente sobre la foto de portada; se vuelve blanco al hacer scroll. Las secciones se ven como solapas.
 export function Header() {
+  const ruta = usePathname();
   const [abierto, setAbierto] = useState(false);
-  const [solido, setSolido] = useState(false);
+  const [scrolleado, setScrolleado] = useState(false);
 
   useEffect(() => {
-    const alScrollear = () => setSolido(window.scrollY > 40);
+    const alScrollear = () => setScrolleado(window.scrollY > 40);
     alScrollear();
     window.addEventListener("scroll", alScrollear, { passive: true });
     return () => window.removeEventListener("scroll", alScrollear);
@@ -21,42 +26,54 @@ export function Header() {
     document.body.style.overflow = abierto ? "hidden" : "";
   }, [abierto]);
 
-  const claro = solido && !abierto;
+  const claro = (scrolleado || esFicha(ruta)) && !abierto;
+  const activa = (href: string) => ruta === href || ruta.startsWith(`${href}/`);
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${
-        claro ? "bg-white/90 shadow-[0_1px_0_rgb(0_0_0/0.06)] backdrop-blur-xl" : "bg-transparent"
+      className={`fixed inset-x-0 top-0 z-40 transition-colors duration-300 ${
+        claro ? "border-b border-borde bg-white" : "border-b border-white/25 bg-transparent"
       }`}
     >
       <div className={`mx-auto flex max-w-7xl items-center justify-between px-4 transition-all duration-300 md:px-8 ${claro ? "h-18" : "h-24"}`}>
-        <Link href="/" aria-label={`${site.nombre}, inicio`} onClick={() => setAbierto(false)} className="relative z-50">
+        <Link href="/" aria-label={`${site.nombre}, inicio`} onClick={() => setAbierto(false)} className="relative z-50 shrink-0">
           <Image
             src={claro ? "/marca/logo-azul.png" : "/marca/logo-blanco.png"}
             alt={site.nombre}
             width={210}
             height={45}
             priority
+            className="w-[180px] xl:w-[210px]"
           />
         </Link>
 
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Principal">
-          {navegacion.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`px-4 py-2 text-sm font-bold underline-offset-8 transition hover:underline ${
-                claro ? "text-azul" : "text-white"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
+        <nav className="hidden h-full items-end gap-1 lg:flex" aria-label="Principal">
+          {navegacion.map((item) => {
+            const actual = activa(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={actual ? "page" : undefined}
+                className={`-mb-px rounded-t-md border border-b-0 px-3 py-2.5 text-[13px] font-bold transition-colors xl:px-4 xl:text-sm ${
+                  claro
+                    ? actual
+                      ? "border-borde bg-white text-azul shadow-[inset_0_2px_0_var(--color-azul)]"
+                      : "border-transparent bg-fondo text-gris hover:border-borde hover:bg-white hover:text-azul"
+                    : actual
+                      ? "border-white bg-white text-azul"
+                      : "border-white/25 bg-azul/30 text-white hover:bg-white/15"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
           <a
             href={linkWhatsapp()}
             target="_blank"
             rel="noopener noreferrer"
-            className={`ml-4 border-l pl-6 text-sm font-bold ${claro ? "border-borde text-azul" : "border-white/30 text-white"}`}
+            className={`ml-3 hidden self-center border-l pl-5 text-sm font-bold xl:block ${claro ? "border-borde text-azul" : "border-white/30 text-white"}`}
           >
             {site.telefono}
           </a>
@@ -77,12 +94,13 @@ export function Header() {
       </div>
 
       {abierto && (
-        <nav id="menu-movil" className="fixed inset-0 bg-azul z-40 flex flex-col px-6 pt-32 pb-10 lg:hidden" aria-label="Principal">
+        <nav id="menu-movil" className="fixed inset-0 z-40 flex flex-col overflow-y-auto bg-azul px-6 pt-28 pb-10 lg:hidden" aria-label="Principal">
           {navegacion.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="border-b border-white/10 py-5 font-serif text-4xl font-bold text-white"
+              aria-current={activa(item.href) ? "page" : undefined}
+              className={`border-b border-white/10 py-4 font-serif text-3xl font-bold ${activa(item.href) ? "text-white" : "text-white/75"}`}
               onClick={() => setAbierto(false)}
             >
               {item.label}

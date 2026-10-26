@@ -117,6 +117,14 @@ export const propiedad = defineType({
       group: "multimedia",
     }),
     defineField({
+      name: "maqueta",
+      title: "Maqueta 3D (archivo .html)",
+      description: "La maqueta que arma Claude. Se muestra en la solapa Maqueta 3D; sus puntos 360° abren el tour de esta ficha.",
+      type: "file",
+      options: { accept: ".html,text/html" },
+      group: "multimedia",
+    }),
+    defineField({
       name: "videos",
       title: "Videos (links)",
       description: "Links de YouTube o Vimeo.",

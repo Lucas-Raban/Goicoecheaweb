@@ -33,6 +33,7 @@ type PropiedadPanel = {
   tours?: string[];
   panoramas?: { ambiente?: string; url?: string }[];
   planos?: { url: string; descripcion?: string }[];
+  maqueta?: string;
 };
 
 const consulta = `*[_type == "propiedad" && publicada != false && !(_id in path("drafts.**"))] | order(_createdAt desc) {
@@ -41,7 +42,8 @@ const consulta = `*[_type == "propiedad" && publicada != false && !(_id in path(
   "fotos": fotos[]{ "url": asset->url, descripcion },
   videos, "videosArchivo": videosArchivo[].asset->url, tours,
   "panoramas": panoramas[]{ ambiente, "url": imagen.asset->url },
-  "planos": planos[]{ "url": asset->url, descripcion }
+  "planos": planos[]{ "url": asset->url, descripcion },
+  "maqueta": maqueta.asset->url
 }`;
 
 // Saca latitud y longitud de un link de Google Maps (formatos @lat,lng o q=lat,lng).
@@ -82,6 +84,7 @@ function normalizar(p: PropiedadPanel): Propiedad {
     videos: (p.videos ?? []).filter(Boolean).map(linkIncrustable),
     videosArchivo: (p.videosArchivo ?? []).filter(Boolean),
     // Los artifacts de Claude no se pueden incrustar en otra página, así que se descartan.
+    maqueta: p.maqueta ? `/maqueta/${p._id}` : null,
     planos: (p.planos ?? []).filter((f) => f.url).map((f) => ({ url: `${f.url}?w=2400&auto=format`, descripcion: f.descripcion ?? "" })),
     tours: (p.tours ?? []).filter((t) => t && !t.includes("claude.ai")),
     panoramas: (p.panoramas ?? [])
@@ -160,5 +163,21 @@ export async function getAsesoresPanel(): Promise<Asesor[]> {
   } catch (error) {
     console.error("No se pudieron leer los asesores del panel", error);
     return [];
+  }
+}
+
+// URL del archivo de la maqueta 3D de una propiedad publicada del panel.
+export async function getMaquetaUrl(id: string): Promise<string | null> {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("propiedades");
+
+  if (!sanityProjectId || !/^[\w-]+$/.test(id)) return null;
+  const cliente = createClient({ projectId: sanityProjectId, dataset: sanityDataset, apiVersion: sanityApiVersion, useCdn: false });
+  try {
+    return await cliente.fetch<string | null>(`*[_type == "propiedad" && _id == $id][0].maqueta.asset->url`, { id });
+  } catch (error) {
+    console.error("No se pudo leer la maqueta", error);
+    return null;
   }
 }

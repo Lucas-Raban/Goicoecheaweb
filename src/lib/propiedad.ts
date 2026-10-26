@@ -25,6 +25,8 @@ export type Propiedad = {
   tours: string[];
   panoramas: { url: string; ambiente: string }[];
   planos: { url: string; descripcion: string }[];
+  // Dirección interna de la maqueta 3D (/maqueta/<id>), si se subió en el panel.
+  maqueta: string | null;
   lat: number | null;
   lng: number | null;
   destacada: boolean;

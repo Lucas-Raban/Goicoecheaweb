@@ -96,6 +96,7 @@ function normalizar(p: TokkoPropiedad): Propiedad {
     tours: enlaces.filter(esTour),
     panoramas: [],
     planos,
+    maqueta: null,
     lat: numero(p.geo_lat),
     lng: numero(p.geo_long),
     destacada: Boolean(p.is_starred_on_web),

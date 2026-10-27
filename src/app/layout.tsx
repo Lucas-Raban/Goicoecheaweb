@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Manrope, Montserrat } from "next/font/google";
-import { site } from "@/lib/site";
+import { openGraphBase, site } from "@/lib/site";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -20,11 +20,7 @@ export const metadata: Metadata = {
     template: "%s | Goicoechea Propiedades",
   },
   description: site.descripcion,
-  openGraph: {
-    type: "website",
-    locale: "es_AR",
-    siteName: site.nombre,
-  },
+  openGraph: openGraphBase,
   verification: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION ? { google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION } : undefined,
   robots: site.indexar ? { index: true, follow: true } : { index: false, follow: false },
 };

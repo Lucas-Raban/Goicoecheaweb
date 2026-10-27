@@ -49,15 +49,15 @@ export function TituloFicha({
         )}
       </div>
       <div className="border-t border-borde pt-5 md:border-t-0 md:border-l md:pt-0 md:pl-12 md:text-right">
-        <p className="text-sm text-gris">{precioEtiqueta}</p>
+        <p className="text-[15px] text-gris">{precioEtiqueta}</p>
         <p className="mt-1 leading-none font-extrabold tracking-[-0.03em] whitespace-nowrap">
           {numero ? (
             <>
-              <span className="mr-1.5 text-xl text-gris md:text-2xl">{moneda}</span>
-              <span className="text-[2.5rem] md:text-5xl">{numero}</span>
+              <span className="mr-2 text-2xl text-gris md:text-3xl">{moneda}</span>
+              <span className="text-[3rem] md:text-[4.25rem]">{numero}</span>
             </>
           ) : (
-            <span className="text-3xl md:text-4xl">{precio}</span>
+            <span className="text-4xl md:text-5xl">{precio}</span>
           )}
         </p>
       </div>

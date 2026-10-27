@@ -69,14 +69,16 @@ export function Header() {
               </Link>
             );
           })}
-          <a
-            href={linkWhatsapp()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`ml-3 hidden self-center border-l pl-5 text-sm font-bold xl:block ${claro ? "border-borde text-azul" : "border-white/30 text-white"}`}
+          <div
+            className={`ml-3 hidden self-center border-l pl-4 text-xs leading-snug whitespace-nowrap xl:block 2xl:pl-5 2xl:text-[13px] ${claro ? "border-borde text-azul" : "border-white/30 text-white"}`}
           >
-            {site.telefono}
-          </a>
+            <a href={linkWhatsapp()} target="_blank" rel="noopener noreferrer" className="block hover:underline">
+              Tel: <span className="font-bold">{site.telefono}</span>
+            </a>
+            <a href={`mailto:${site.email}`} className="block hover:underline">
+              Mail: <span className="font-bold">{site.email}</span>
+            </a>
+          </div>
         </nav>
 
         <button

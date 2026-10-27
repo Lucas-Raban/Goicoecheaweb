@@ -7,7 +7,7 @@ export function Footer() {
     <footer className="fondo-lineas mt-auto bg-azul-noche text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 md:px-8 py-14 md:grid-cols-3">
         <div>
-          <Image src="/marca/logo-blanco.png" alt={site.nombre} width={232} height={50} />
+          <Image src="/marca/logo-blanco.png" alt={site.nombre} width={290} height={63} className="w-[290px] max-w-full" />
           <p className="mt-5 text-sm text-white/75">
             Inmobiliaria en Mar del Plata. Venta, alquiler y alquiler temporario.
           </p>

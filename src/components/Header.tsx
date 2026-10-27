@@ -40,10 +40,10 @@ export function Header() {
           <Image
             src={claro ? "/marca/logo-azul.png" : "/marca/logo-blanco.png"}
             alt={site.nombre}
-            width={210}
-            height={45}
+            width={260}
+            height={56}
             priority
-            className="w-[180px] xl:w-[210px]"
+            className="w-[230px] xl:w-[260px]"
           />
         </Link>
 
@@ -55,7 +55,7 @@ export function Header() {
                 key={item.href}
                 href={item.href}
                 aria-current={actual ? "page" : undefined}
-                className={`-mb-px rounded-t-md border border-b-0 px-3 py-2.5 text-[13px] font-bold transition-colors xl:px-4 xl:text-sm ${
+                className={`-mb-px rounded-t-md border border-b-0 px-3 py-2.5 text-[13px] font-bold transition-colors xl:text-sm ${
                   claro
                     ? actual
                       ? "border-borde bg-white text-azul shadow-[inset_0_2px_0_var(--color-azul)]"

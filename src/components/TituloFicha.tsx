@@ -34,7 +34,7 @@ export function TituloFicha({
     <header className="mt-5 grid gap-6 md:grid-cols-[1fr_auto] md:items-end md:gap-12">
       <div className="min-w-0">
         <p className="text-sm font-bold text-gris">{antetitulo}</p>
-        <h1 className="mt-2 text-[2rem] leading-[1.1] font-bold tracking-[-0.03em] md:text-[2.75rem]">{titulo}</h1>
+        <h1 className="mt-2 font-titulo text-[2rem] leading-[1.1] font-bold tracking-[-0.03em] md:text-[2.75rem]">{titulo}</h1>
         {visibles.length > 0 && (
           <ul className="mt-5 flex flex-wrap gap-x-6 gap-y-3">
             {visibles.map((d) => (

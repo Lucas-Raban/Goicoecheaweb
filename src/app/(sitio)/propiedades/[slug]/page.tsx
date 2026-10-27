@@ -8,6 +8,7 @@ import { Migas } from "@/components/Migas";
 import { Multimedia } from "@/components/Multimedia";
 import { TituloFicha } from "@/components/TituloFicha";
 import { TarjetaPropiedad } from "@/components/TarjetaPropiedad";
+import { getAsesor } from "@/lib/asesores";
 import { getEmprendimientos } from "@/lib/emprendimientos";
 import { site } from "@/lib/site";
 import { nombresOperacion, rutasOperacion, type Propiedad } from "@/lib/propiedad";
@@ -45,6 +46,7 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
   if (!p) notFound();
 
   const op = p.operaciones[0];
+  const asesor = await getAsesor(p.asesor);
   const emprendimiento = p.emprendimiento ? (await getEmprendimientos()).find((e) => e.id === p.emprendimiento) : undefined;
   // Recomendaciones coherentes: misma operación y misma cantidad de ambientes (o mismo tipo si no hay ambientes).
   // Entre esas, primero las del mismo barrio y del mismo tipo.
@@ -184,7 +186,7 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
           </div>
 
           <aside className="lg:sticky lg:top-24 lg:self-start">
-            <Consulta mensaje={mensaje} detalle={`Coordinamos una visita o te mandamos más información. Código ${p.codigo}.`} />
+            <Consulta mensaje={mensaje} detalle={`Coordinamos una visita o te mandamos más información. Código ${p.codigo}.`} asesor={asesor} />
           </aside>
         </div>
 

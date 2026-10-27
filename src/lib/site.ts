@@ -69,7 +69,8 @@ export const barrios = listaBarrios.map((b) => b.nombre);
 export const avisoLegal =
   "Todas las medidas enunciadas son meramente orientativas, las medidas exactas serán las que se expresen en el respectivo título de propiedad de cada inmueble. Todas las fotos, imágenes y videos son meramente ilustrativos y no contractuales. Los precios enunciados son meramente orientativos y no contractuales.";
 
-export function linkWhatsapp(mensaje?: string) {
-  const base = `https://wa.me/${site.whatsapp}`;
+// Sin número va al WhatsApp de la inmobiliaria.
+export function linkWhatsapp(mensaje?: string, numero = site.whatsapp) {
+  const base = `https://wa.me/${numero}`;
   return mensaje ? `${base}?text=${encodeURIComponent(mensaje)}` : base;
 }

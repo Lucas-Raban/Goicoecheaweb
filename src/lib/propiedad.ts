@@ -32,6 +32,8 @@ export type Propiedad = {
   destacada: boolean;
   // Id del emprendimiento al que pertenece la unidad, si es parte de uno.
   emprendimiento: string | null;
+  // Nombre del asesor a cargo (del panel o el productor de Tokko). La ficha lo busca entre los asesores activos.
+  asesor: string | null;
 };
 
 // Lo que muestran las solapas de fotos, video, tour, plano y maqueta (fichas de propiedades y de emprendimientos).

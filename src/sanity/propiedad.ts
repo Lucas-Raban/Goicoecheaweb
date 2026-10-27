@@ -1,5 +1,6 @@
 import { defineField, defineType } from "sanity";
 import { listaBarrios } from "@/lib/barrios";
+import { asesorACargo } from "./asesorACargo";
 import { fotosYPlanos, videosYTours } from "./multimedia";
 
 const tipos = ["Departamento", "Casa", "PH", "Local", "Oficina", "Terreno", "Galpón", "Campo", "Cochera"];
@@ -16,6 +17,7 @@ export const propiedad = defineType({
   fields: [
     defineField({ name: "publicada", title: "Publicada en la web", type: "boolean", initialValue: true, group: "datos" }),
     defineField({ name: "destacada", title: "Destacada en el inicio", type: "boolean", initialValue: false, group: "datos" }),
+    asesorACargo,
     defineField({
       name: "titulo",
       title: "Título",
@@ -109,10 +111,10 @@ export const propiedad = defineType({
     ...videosYTours,
   ],
   preview: {
-    select: { title: "direccion", subtitle: "titulo", media: "fotos.0", operacion: "operacion", publicada: "publicada" },
-    prepare: ({ title, subtitle, media, operacion, publicada }) => ({
+    select: { title: "direccion", subtitle: "titulo", media: "fotos.0", operacion: "operacion", publicada: "publicada", asesor: "asesor.nombre" },
+    prepare: ({ title, subtitle, media, operacion, publicada, asesor }) => ({
       title: `${title ?? "Sin dirección"}${publicada === false ? " (oculta)" : ""}`,
-      subtitle: [operacion, subtitle].filter(Boolean).join(" · "),
+      subtitle: [operacion, subtitle, asesor].filter(Boolean).join(" · "),
       media,
     }),
   },

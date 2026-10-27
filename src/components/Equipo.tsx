@@ -1,5 +1,4 @@
-import { getAsesoresPanel } from "@/lib/sanity";
-import { equipo } from "@/lib/site";
+import { getAsesores } from "@/lib/asesores";
 import { FotoPerfil } from "./FotoPerfil";
 
 // Acepta el link completo del perfil o solo el usuario.
@@ -16,8 +15,7 @@ function usuarioInstagram(valor?: string) {
 // Las fotos de perfil de Instagram son chicas (320 px), por eso van en círculo y a tamaño moderado.
 // Usa los asesores del panel; si todavía no hay ninguno publicado, los de respaldo de site.ts.
 export async function Equipo() {
-  const panel = await getAsesoresPanel();
-  const asesores = panel.length > 0 ? panel : equipo;
+  const asesores = await getAsesores();
   return (
     <div className="grid gap-px border border-borde bg-borde sm:grid-cols-2 lg:grid-cols-3">
       {asesores.map((a) => {

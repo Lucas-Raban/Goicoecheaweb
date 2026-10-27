@@ -9,6 +9,9 @@
   --color-borde: #e3e6eb;
   --color-whatsapp: #25d366;
 
+  /* Ancho de la web: en PC usa casi toda la pantalla, como en la tablet, sin dejar columnas vacías a los costados */
+  --container-7xl: 100rem;
+
   /* Montserrat para el texto, Manrope en negrita para títulos y menú */
   --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
   --font-titulo: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;

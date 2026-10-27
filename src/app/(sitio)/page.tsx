@@ -136,7 +136,7 @@ export default async function Inicio() {
                 i % 2 === 1 ? "md:border-l" : "md:pl-0"
               } ${i > 0 ? "lg:border-l lg:pl-8" : ""}`}
             >
-              <div>
+              <div className="min-w-0">
                 <h3 className="font-titulo text-2xl font-bold group-hover:underline md:text-3xl lg:text-2xl">{op.titulo}</h3>
                 <p className="mt-2 max-w-xs text-gris">{op.texto}</p>
               </div>

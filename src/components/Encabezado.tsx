@@ -22,7 +22,7 @@ export function Encabezado({
       )}
       <div className="mx-auto max-w-7xl px-4 pt-40 pb-20 md:px-8 md:pt-52 md:pb-28">
         <span className="etiqueta inline-block bg-white px-3 py-2 text-azul">{etiqueta}</span>
-        <h1 className="mt-6 max-w-4xl font-titulo text-[clamp(2.5rem,6vw,5.5rem)] leading-[0.98] font-bold tracking-[-0.02em] text-balance">
+        <h1 className="mt-6 max-w-6xl font-titulo text-[clamp(2.5rem,6vw,5.5rem)] leading-[0.98] font-bold tracking-[-0.02em] text-balance">
           {/* "Mar del Plata" nunca se corta en dos renglones */}
           {titulo.replace(/Mar del Plata/g, "Mar\u00a0del\u00a0Plata")}
         </h1>

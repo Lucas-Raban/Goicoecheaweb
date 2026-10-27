@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Galeria } from "@/components/Galeria";
 import { Tour360 } from "@/components/Tour360";
+import { Visor } from "@/components/Visor";
 import type { Multimediales } from "@/lib/propiedad";
 
 type Solapa = "fotos" | "video" | "tour" | "plano" | "maqueta";
@@ -72,10 +73,10 @@ export function Multimedia({ p, alt }: { p: Multimediales; alt: string }) {
         {actual === "video" && (
           <div className="space-y-4">
             {p.videos.map((v) => (
-              <iframe key={v} src={v} title={`Video de ${p.direccion}`} className="aspect-video w-full" allowFullScreen />
+              <Video key={v} src={v} titulo={`Video de ${p.direccion}`} incrustado />
             ))}
             {p.videosArchivo.map((v) => (
-              <video key={v} src={v} controls preload="metadata" className="aspect-video w-full bg-black" />
+              <Video key={v} src={v} titulo={`Video de ${p.direccion}`} />
             ))}
           </div>
         )}
@@ -108,6 +109,43 @@ export function Multimedia({ p, alt }: { p: Multimediales; alt: string }) {
           />
         )}
       </div>
+    </div>
+  );
+}
+
+// Un video de la ficha con un botón para verlo en grande, ocupando toda la pantalla.
+function Video({ src, titulo, incrustado = false }: { src: string; titulo: string; incrustado?: boolean }) {
+  const [grande, setGrande] = useState(false);
+  const cerrar = useCallback(() => setGrande(false), []);
+  const reproductor = (clase: string, autoplay = false) =>
+    incrustado ? (
+      <iframe
+        src={autoplay ? `${src}${src.includes("?") ? "&" : "?"}autoplay=1` : src}
+        title={titulo}
+        className={clase}
+        allow="autoplay; fullscreen; picture-in-picture"
+        allowFullScreen
+      />
+    ) : (
+      <video src={src} controls autoPlay={autoplay} playsInline preload="metadata" className={`bg-black ${clase}`} />
+    );
+
+  return (
+    <div>
+      {reproductor("aspect-video w-full")}
+      <button type="button" onClick={() => setGrande(true)} className="mt-2 flex items-center gap-2 text-sm font-bold text-azul hover:underline">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" /></svg>
+        Ver en grande
+      </button>
+      {grande && (
+        <Visor titulo={titulo} alCerrar={cerrar}>
+          <div className="absolute inset-0 flex items-center justify-center px-2 pb-4 sm:px-6" onClick={cerrar}>
+            <div className="aspect-video w-[min(100%,calc((100svh-6rem)*16/9))]" onClick={(e) => e.stopPropagation()}>
+              {reproductor("h-full w-full", true)}
+            </div>
+          </div>
+        </Visor>
+      )}
     </div>
   );
 }

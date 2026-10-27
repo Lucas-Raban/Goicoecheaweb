@@ -7,7 +7,7 @@ import { Multimedia } from "@/components/Multimedia";
 import { TituloFicha } from "@/components/TituloFicha";
 import { GrillaPropiedades } from "@/components/TarjetaPropiedad";
 import { getEmprendimiento, getEmprendimientos, getUnidades } from "@/lib/emprendimientos";
-import { openGraphBase, site } from "@/lib/site";
+import { site } from "@/lib/site";
 
 const SIN_DATOS = "sin-emprendimientos";
 
@@ -21,15 +21,11 @@ export async function generateMetadata({ params }: PageProps<"/emprendimientos/[
   const e = await getEmprendimiento((await params).slug);
   if (!e) return {};
   const etapa = e.estado ? ` ${e.estado.toLowerCase()}` : "";
-  const title = `${e.nombre}, emprendimiento${etapa} en ${e.barrio}`;
-  const description = e.descripcion.replace(/\s+/g, " ").slice(0, 155) || `${e.nombre}, ${e.direccion}, ${e.barrio}, Mar del Plata.`;
-  const url = `/emprendimientos/${e.slug}`;
   return {
-    title,
-    description,
-    alternates: { canonical: url },
-    // La imagen la arma opengraph-image.tsx con la primera foto.
-    openGraph: { ...openGraphBase, url, title, description },
+    title: `${e.nombre}, emprendimiento${etapa} en ${e.barrio}`,
+    description: e.descripcion.replace(/\s+/g, " ").slice(0, 155) || `${e.nombre}, ${e.direccion}, ${e.barrio}, Mar del Plata.`,
+    alternates: { canonical: `/emprendimientos/${e.slug}` },
+    openGraph: { images: e.fotos.slice(0, 1).map((f) => ({ url: f.url })) },
   };
 }
 

@@ -47,7 +47,7 @@ export function Header() {
           />
         </Link>
 
-        <nav className="hidden h-full items-end gap-1 lg:flex" aria-label="Principal">
+        <nav className="hidden h-full items-end gap-1 font-titulo lg:flex" aria-label="Principal">
           {navegacion.map((item) => {
             const actual = activa(item.href);
             return (
@@ -100,7 +100,7 @@ export function Header() {
               key={item.href}
               href={item.href}
               aria-current={activa(item.href) ? "page" : undefined}
-              className={`border-b border-white/10 py-4 font-serif text-3xl font-bold ${activa(item.href) ? "text-white" : "text-white/75"}`}
+              className={`border-b border-white/10 py-4 font-titulo text-3xl font-bold ${activa(item.href) ? "text-white" : "text-white/75"}`}
               onClick={() => setAbierto(false)}
             >
               {item.label}

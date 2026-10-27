@@ -61,7 +61,7 @@ export default async function Inicio() {
           <div className="absolute inset-0 -z-10 bg-gradient-to-b from-azul/50 via-azul/20 to-azul/80" />
           <div className="mx-auto w-full max-w-7xl px-4 pt-40 pb-28 md:px-8 md:pb-36">
             <h1 className="text-sm font-bold text-white/80">Inmobiliaria en Mar del Plata · Goicoechea Propiedades</h1>
-            <p className="mt-4 max-w-5xl font-serif text-[clamp(3rem,8vw,7.5rem)] leading-[0.95] font-bold tracking-[-0.02em]">
+            <p className="mt-4 max-w-5xl font-titulo text-[clamp(3rem,8vw,7.5rem)] leading-[0.95] font-bold tracking-[-0.02em]">
               Vivir cerca del mar empieza acá
             </p>
           </div>
@@ -76,7 +76,7 @@ export default async function Inicio() {
         <section>
           <div className="mx-auto max-w-7xl px-4 pt-28 pb-8 md:px-8 md:pt-36 md:pb-12">
             <div className="mb-14 grid gap-6 md:grid-cols-[1fr_auto] md:items-end">
-              <h2 className="font-serif text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-6xl">Propiedades destacadas</h2>
+              <h2 className="font-titulo text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-6xl">Propiedades destacadas</h2>
               <Link href="/propiedades" className="group inline-flex items-center gap-3 font-bold">
                 <span className="border-b border-azul pb-1">Ver todas</span>
                 <Flecha className="transition group-hover:translate-x-1" />
@@ -96,7 +96,7 @@ export default async function Inicio() {
           <Image src={fotos.ciudad} alt="La ciudad de Mar del Plata vista desde el mar" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
         </div>
         <div className="flex flex-col justify-center px-6 py-20 md:px-16 lg:px-24">
-          <h2 className="font-serif text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-6xl">¿Querés vender o alquilar tu propiedad?</h2>
+          <h2 className="font-titulo text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-6xl">¿Querés vender o alquilar tu propiedad?</h2>
           <div className="mt-8 max-w-lg space-y-4 text-white/80">
             <p>
               Primero la vemos en persona y te decimos cuánto vale, con precios de operaciones reales de la zona. La
@@ -126,7 +126,7 @@ export default async function Inicio() {
 
       {/* Accesos rápidos por operación */}
       <section className="mx-auto max-w-7xl px-4 py-20 md:px-8 md:py-24">
-        <h2 className="font-serif text-3xl font-bold md:text-4xl">¿Qué estás buscando?</h2>
+        <h2 className="font-titulo text-3xl font-bold md:text-4xl">¿Qué estás buscando?</h2>
         <div className="mt-10 grid border-t border-borde md:grid-cols-2 lg:grid-cols-4">
           {operaciones.map((op, i) => (
             <Link
@@ -137,7 +137,7 @@ export default async function Inicio() {
               } ${i > 0 ? "lg:border-l lg:pl-8" : ""}`}
             >
               <div>
-                <h3 className="font-serif text-2xl font-bold group-hover:underline md:text-3xl lg:text-2xl">{op.titulo}</h3>
+                <h3 className="font-titulo text-2xl font-bold group-hover:underline md:text-3xl lg:text-2xl">{op.titulo}</h3>
                 <p className="mt-2 max-w-xs text-gris">{op.texto}</p>
               </div>
               <Flecha className="mt-2 shrink-0 transition group-hover:translate-x-1" />
@@ -151,7 +151,7 @@ export default async function Inicio() {
         <div className="mx-auto max-w-7xl px-4 py-20 md:px-8 md:py-24">
           <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-end">
             <div>
-              <h2 className="font-serif text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-5xl">Barrios donde trabajamos</h2>
+              <h2 className="font-titulo text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-5xl">Barrios donde trabajamos</h2>
               <p className="mt-4 max-w-lg text-white/75">Tomamos propiedades en toda la ciudad y alrededores.</p>
             </div>
             <Link href="/barrios" className="group inline-flex items-center gap-3 font-bold">
@@ -169,7 +169,7 @@ export default async function Inicio() {
                     className="group flex h-full items-end justify-between gap-3 border-r border-b border-white/20 p-4 transition-colors duration-300 hover:bg-white hover:text-azul md:p-5"
                   >
                     <div>
-                      <h3 className="font-serif text-xl leading-tight font-bold md:text-2xl">{b.nombre}</h3>
+                      <h3 className="font-titulo text-xl leading-tight font-bold md:text-2xl">{b.nombre}</h3>
                       <p className="mt-1 text-xs text-white/60 group-hover:text-gris">
                         {cantidad > 0 ? `${cantidad} ${cantidad === 1 ? "propiedad" : "propiedades"}` : "Consultanos"}
                       </p>
@@ -186,7 +186,7 @@ export default async function Inicio() {
       {/* Equipo */}
       <section className="mx-auto max-w-7xl px-4 py-24 md:px-8 md:py-32">
         <div className="mb-14 grid gap-6 md:grid-cols-[1fr_1fr] md:items-end">
-          <h2 className="font-serif text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-6xl">Quiénes son nuestros asesores</h2>
+          <h2 className="font-titulo text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-6xl">Quiénes son nuestros asesores</h2>
           <p className="text-gris md:justify-self-end md:text-right">
             Somos un equipo chico: cada consulta la sigue la misma persona de principio a fin.
           </p>
@@ -198,7 +198,7 @@ export default async function Inicio() {
       <section className="border-t border-borde bg-fondo">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-20 md:grid-cols-[1fr_1.4fr] md:px-8 md:py-24">
           <div className="self-center">
-            <h2 className="font-serif text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-5xl">Pasá por la oficina</h2>
+            <h2 className="font-titulo text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-5xl">Pasá por la oficina</h2>
             <p className="mt-6 text-lg">
               {site.direccion.calle}
               <br />

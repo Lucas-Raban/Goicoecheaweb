@@ -153,7 +153,7 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
         <div className="mt-8 grid gap-12 lg:grid-cols-[2fr_1fr]">
           <div className="min-w-0">
             <Multimedia p={p} alt={`${p.tipo} en ${p.barrio}`} />
-            {p.titulo !== p.direccion && <p className="mt-6 font-serif text-xl leading-snug font-bold md:text-2xl">{p.titulo}</p>}
+            {p.titulo !== p.direccion && <p className="mt-6 font-titulo text-xl leading-snug font-bold md:text-2xl">{p.titulo}</p>}
 
             <dl className="mt-6 grid grid-cols-2 border-t border-l border-borde sm:grid-cols-4">
               {datos.map(([k, v]) => (
@@ -166,13 +166,13 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
 
             {p.descripcion && (
               <section className="mt-12">
-                <h2 className="font-serif text-2xl font-bold">Descripción</h2>
+                <h2 className="font-titulo text-2xl font-bold">Descripción</h2>
                 <div className="mt-4 leading-relaxed whitespace-pre-line text-gris">{p.descripcion}</div>
               </section>
             )}
 
             <section className="mt-12">
-              <h2 className="font-serif text-2xl font-bold">Ubicación</h2>
+              <h2 className="font-titulo text-2xl font-bold">Ubicación</h2>
               <iframe
                 src={`https://www.google.com/maps?q=${lugarMapa}&z=16&output=embed`}
                 title={`Mapa de ${p.direccion}`}
@@ -191,7 +191,7 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
         {similares.length > 0 && (
           <section className="mt-24 border-t border-borde pt-16">
             <div className="mb-10 flex items-end justify-between gap-6">
-              <h2 className="font-serif text-3xl font-bold">También te pueden interesar</h2>
+              <h2 className="font-titulo text-3xl font-bold">También te pueden interesar</h2>
               <BotonesDeslizar objetivo="recomendaciones" fondo="claro" />
             </div>
             <ul

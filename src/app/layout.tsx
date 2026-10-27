@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Montserrat, Tinos } from "next/font/google";
+import { Manrope, Montserrat } from "next/font/google";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -9,10 +9,9 @@ const montserrat = Montserrat({
   weight: ["400", "700", "800"],
 });
 
-const tinos = Tinos({
-  variable: "--font-tinos",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
-  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -33,7 +32,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="es-AR" className={`${montserrat.variable} ${tinos.variable} h-full antialiased`}>
+    <html lang="es-AR" className={`${montserrat.variable} ${manrope.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col font-sans">{children}</body>
     </html>
   );

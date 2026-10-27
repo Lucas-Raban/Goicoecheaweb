@@ -1,10 +1,13 @@
 import { defineField, defineType } from "sanity";
+import { esAdministrador } from "./permisos";
 
 // Asesor de la oficina. Se muestra en el inicio y en Nosotros, ordenado por el campo "orden".
 export const asesor = defineType({
   name: "asesor",
   title: "Asesor",
   type: "document",
+  // Solo los administradores dan de alta, editan o dan de baja asesores.
+  readOnly: ({ currentUser }) => !esAdministrador(currentUser?.email),
   fields: [
     defineField({ name: "nombre", title: "Nombre y apellido", type: "string", validation: (r) => r.required() }),
     defineField({ name: "cargo", title: "Cargo", type: "string", initialValue: "Asesor inmobiliario" }),

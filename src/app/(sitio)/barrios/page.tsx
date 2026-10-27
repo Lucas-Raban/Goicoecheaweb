@@ -23,7 +23,7 @@ export default function Barrios() {
           {listaBarrios.map((b) => (
             <li key={b.slug} className="border-b border-borde py-8">
               <Link href={`/barrios/${b.slug}`} className="group block">
-                <h2 className="font-serif text-3xl font-bold group-hover:underline">{b.nombre}</h2>
+                <h2 className="font-titulo text-3xl font-bold group-hover:underline">{b.nombre}</h2>
                 <p className="mt-3 text-gris">{b.descripcion}</p>
               </Link>
             </li>

@@ -12,5 +12,5 @@ export function FotoPerfil({ foto, nombre, esLogo }: { foto?: string; nombre: st
     .map((p) => p[0])
     .slice(0, 2)
     .join("");
-  return <span className="absolute inset-0 flex items-center justify-center font-serif text-3xl font-bold text-gris">{iniciales}</span>;
+  return <span className="absolute inset-0 flex items-center justify-center font-titulo text-3xl font-bold text-gris">{iniciales}</span>;
 }

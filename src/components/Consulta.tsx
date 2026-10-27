@@ -5,7 +5,7 @@ import { linkWhatsapp } from "@/lib/site";
 export function Consulta({ mensaje, detalle }: { mensaje: string; detalle: string }) {
   return (
     <div className="border border-borde p-6">
-      <h2 className="font-serif text-2xl font-bold">¿Te interesa?</h2>
+      <h2 className="font-titulo text-2xl font-bold">¿Te interesa?</h2>
       <p className="mt-2 text-sm text-gris">{detalle}</p>
       <a
         href={linkWhatsapp(mensaje)}

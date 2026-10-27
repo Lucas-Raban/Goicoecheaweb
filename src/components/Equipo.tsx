@@ -28,7 +28,7 @@ export async function Equipo() {
               <FotoPerfil foto={a.foto} nombre={a.nombre} esLogo={a.esLogo} />
             </div>
             <div className="min-w-0">
-              <h3 className="font-serif text-2xl leading-tight font-bold">{a.nombre}</h3>
+              <h3 className="font-titulo text-2xl leading-tight font-bold">{a.nombre}</h3>
               <p className="mt-1 text-sm text-gris">{a.cargo}</p>
               <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm font-bold">
                 {a.whatsapp && (

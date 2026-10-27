@@ -38,7 +38,7 @@ export function TarjetaPropiedad({ propiedad: p, prioridad }: { propiedad: Propi
         )}
       </div>
       <p className="mt-4 text-sm text-gris">{p.barrio}</p>
-      <h3 className="mt-1 font-serif text-xl leading-snug font-bold group-hover:underline">{p.direccion}</h3>
+      <h3 className="mt-1 font-titulo text-xl leading-snug font-bold group-hover:underline">{p.direccion}</h3>
       <p className="mt-2 text-sm text-gris">{datosCortos(p).join(" · ")}</p>
       <p className="mt-3 font-bold">{op?.precio ?? "Consultar precio"}</p>
     </Link>

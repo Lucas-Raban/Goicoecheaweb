@@ -45,7 +45,7 @@ export default function Nosotros() {
         </div>
 
         <aside className="border-l-2 border-azul pl-6">
-          <h2 className="font-serif text-xl font-bold">Oficina</h2>
+          <h2 className="font-titulo text-xl font-bold">Oficina</h2>
           <p className="mt-3 text-gris">
             {site.direccion.calle}
             <br />
@@ -67,7 +67,7 @@ export default function Nosotros() {
 
       <section className="border-t border-borde">
         <div className="mx-auto max-w-7xl px-4 py-20 md:px-8">
-          <h2 className="mb-12 font-serif text-3xl font-bold md:text-4xl">El equipo</h2>
+          <h2 className="mb-12 font-titulo text-3xl font-bold md:text-4xl">El equipo</h2>
           <Equipo />
         </div>
       </section>

@@ -9,7 +9,7 @@ import { Multimedia } from "@/components/Multimedia";
 import { TituloFicha } from "@/components/TituloFicha";
 import { TarjetaPropiedad } from "@/components/TarjetaPropiedad";
 import { getEmprendimientos } from "@/lib/emprendimientos";
-import { site } from "@/lib/site";
+import { openGraphBase, site } from "@/lib/site";
 import { nombresOperacion, rutasOperacion, type Propiedad } from "@/lib/propiedad";
 import { getPropiedad, getPropiedades } from "@/lib/propiedades";
 
@@ -31,11 +31,14 @@ export async function generateMetadata({ params }: PageProps<"/propiedades/[slug
   const p = await getPropiedad((await params).slug);
   if (!p) return {};
   const descripcion = p.descripcion.replace(/\s+/g, " ").slice(0, 155) || `${tituloSeo(p)}. ${p.direccion}, Mar del Plata.`;
+  const precio = p.operaciones[0]?.precio;
+  const url = `/propiedades/${p.slug}`;
   return {
     title: `${tituloSeo(p)} | ${p.direccion}`,
     description: descripcion,
-    alternates: { canonical: `/propiedades/${p.slug}` },
-    openGraph: { images: p.fotos.slice(0, 1).map((f) => ({ url: f.url })) },
+    alternates: { canonical: url },
+    // La imagen la arma opengraph-image.tsx con la primera foto y el precio.
+    openGraph: { ...openGraphBase, url, title: `${precio ? `${precio} · ` : ""}${tituloSeo(p)}`, description: descripcion },
   };
 }
 

@@ -25,6 +25,10 @@ export const site = {
   catalogoActual: "https://goicoecheapropiedades.com",
 };
 
+// Datos de Open Graph que comparten todas las páginas. Next reemplaza el objeto openGraph entero
+// cuando una página define el suyo, así que las fichas lo vuelven a incluir.
+export const openGraphBase = { type: "website", locale: "es_AR", siteName: site.nombre } as const;
+
 export type Asesor = { nombre: string; cargo: string; whatsapp?: string; instagram?: string; foto?: string; esLogo?: boolean };
 
 // Asesores de respaldo, mientras no haya ninguno publicado en el panel (/admin). Sin foto se ven las iniciales.

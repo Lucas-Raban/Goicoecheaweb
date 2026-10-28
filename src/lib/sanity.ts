@@ -33,7 +33,8 @@ function multimedia(p: MultimediaPanel) {
     tours: (p.tours ?? []).filter((t) => t && !t.includes("claude.ai")),
     panoramas: (p.panoramas ?? [])
       .filter((f) => f.url)
-      .map((f, i) => ({ url: `${f.url}?w=6000&auto=format`, ambiente: f.ambiente || `Ambiente ${i + 1}` })),
+      // JPG de hasta 4096 px de ancho: más grande no lo dibujan muchos celulares y Sanity agrandaría la foto.
+      .map((f, i) => ({ url: `${f.url}?w=4096&fit=max&fm=jpg&q=85`, ambiente: f.ambiente || `Ambiente ${i + 1}` })),
   };
 }
 

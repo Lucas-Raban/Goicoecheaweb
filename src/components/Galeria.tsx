@@ -21,6 +21,7 @@ export function Galeria({
     <div>
       <div className="relative aspect-[3/2] overflow-hidden bg-fondo">
         <Image
+          unoptimized
           src={fotos[actual].url}
           alt={fotos[actual].descripcion || `${alt}, foto ${actual + 1}`}
           fill
@@ -52,7 +53,7 @@ export function Galeria({
               aria-label={`Ver foto ${i + 1}`}
               className={`relative h-16 w-24 shrink-0 overflow-hidden ${i === actual ? "ring-2 ring-azul" : "opacity-70 hover:opacity-100"}`}
             >
-              <Image src={f.url} alt="" fill sizes="96px" className="object-cover" />
+              <Image unoptimized src={f.url} alt="" fill sizes="96px" className="object-cover" />
             </button>
           ))}
         </div>

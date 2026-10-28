@@ -18,6 +18,7 @@ export function TarjetaPropiedad({ propiedad: p, prioridad }: { propiedad: Propi
       <div className="relative aspect-[4/3] overflow-hidden bg-fondo">
         {p.fotos[0] && (
           <Image
+            unoptimized
             src={p.fotos[0].url}
             alt={`${p.tipo} en ${p.barrio}`}
             fill

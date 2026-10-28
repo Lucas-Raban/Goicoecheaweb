@@ -8,6 +8,7 @@ export function TarjetaEmprendimiento({ e, unidades, prioridad }: { e: Emprendim
       <div className="relative aspect-[4/3] overflow-hidden bg-fondo">
         {e.fotos[0] && (
           <Image
+            unoptimized
             src={e.fotos[0].url}
             alt={`${e.nombre}, ${e.barrio}`}
             fill

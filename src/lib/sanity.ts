@@ -57,6 +57,7 @@ type PropiedadPanel = MultimediaPanel & {
   cocheras?: number;
   superficieCubierta?: number;
   superficieTotal?: number;
+  expensas?: number;
   codigo?: string;
   descripcion?: string;
   ubicacion?: string;
@@ -66,7 +67,7 @@ type PropiedadPanel = MultimediaPanel & {
 
 const consulta = `*[_type == "propiedad" && publicada != false && !(_id in path("drafts.**"))] | order(_createdAt desc) {
   _id, destacada, titulo, operacion, tipo, direccion, barrio, otroBarrio, precio, moneda, mostrarPrecio,
-  ambientes, dormitorios, banos, cocheras, superficieCubierta, superficieTotal, codigo, descripcion, ubicacion,
+  ambientes, dormitorios, banos, cocheras, superficieCubierta, superficieTotal, expensas, codigo, descripcion, ubicacion,
   "maqueta": maqueta.asset->url, "emprendimiento": emprendimiento._ref,${camposMultimedia}
 }`;
 
@@ -79,7 +80,8 @@ function coordenadas(link?: string) {
 function normalizar(p: PropiedadPanel): Propiedad {
   const barrio = p.barrio === "Otro" ? p.otroBarrio || "Mar del Plata" : p.barrio;
   const codigo = p.codigo || p._id.slice(-6).toUpperCase();
-  const precio = p.precio && p.mostrarPrecio !== false ? formatoPrecio(p.precio, p.moneda) : null;
+  const visible = p.precio && p.mostrarPrecio !== false ? p.precio : null;
+  const precio = visible ? formatoPrecio(visible, p.moneda) : null;
   const { lat, lng } = coordenadas(p.ubicacion);
   return {
     id: `panel-${p._id}`,
@@ -95,13 +97,14 @@ function normalizar(p: PropiedadPanel): Propiedad {
     barrio,
     barrioSlug: slugify(barrio),
     tipo: p.tipo,
-    operaciones: [{ tipo: p.operacion, precio }],
+    operaciones: [{ tipo: p.operacion, precio, valor: visible, moneda: visible ? (p.moneda === "ARS" ? "ARS" : "USD") : null }],
     ambientes: p.ambientes ?? null,
     dormitorios: p.dormitorios ?? null,
     banos: p.banos ?? null,
     cocheras: p.cocheras ?? null,
     superficieTotal: p.superficieTotal ?? null,
     superficieCubierta: p.superficieCubierta ?? null,
+    expensas: p.expensas ?? null,
     descripcion: p.descripcion ?? "",
     ...multimedia(p),
     maqueta: p.maqueta ? `/maqueta/${p._id}` : null,

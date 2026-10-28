@@ -67,6 +67,7 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
     ["Cocheras", p.cocheras],
     ["Sup. cubierta", p.superficieCubierta && `${p.superficieCubierta} m²`],
     ["Sup. total", p.superficieTotal && `${p.superficieTotal} m²`],
+    ["Expensas", p.expensas && `$ ${p.expensas.toLocaleString("es-AR")}`],
     ["Código", p.codigo],
   ].filter(([, v]) => v) as [string, string | number][];
 

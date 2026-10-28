@@ -1,7 +1,7 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import type { Emprendimiento } from "./emprendimiento";
-import { linkIncrustable, type Operacion, type Propiedad } from "./propiedad";
+import { linkIncrustable, type Moneda, type Operacion, type Propiedad } from "./propiedad";
 import { slugify } from "./texto";
 
 // Lo que devuelve la API de Tokko (solo los campos que usamos).
@@ -20,6 +20,7 @@ type TokkoPropiedad = {
   parking_lot_amount?: number;
   total_surface?: string | number;
   roofed_surface?: string | number;
+  expenses?: string | number;
   description?: string;
   photos?: { image?: string; original?: string; description?: string; is_front_cover?: boolean; is_blueprint?: boolean; order?: number }[];
   videos?: { player_url?: string; url?: string; provider?: string }[];
@@ -59,8 +60,11 @@ function normalizar(p: TokkoPropiedad): Propiedad {
   const operaciones = (p.operations ?? []).flatMap((op) => {
     const t = tipoOperacion(op.operation_type);
     if (!t) return [];
-    const precio = p.web_price === false ? null : formatearPrecio(op.prices?.[0]?.currency, op.prices?.[0]?.price);
-    return [{ tipo: t, precio }];
+    const oculto = p.web_price === false;
+    const { currency, price } = op.prices?.[0] ?? {};
+    const valor = oculto ? null : numero(price);
+    const moneda: Moneda | null = currency === "USD" || currency === "ARS" ? currency : null;
+    return [{ tipo: t, precio: oculto ? null : formatearPrecio(currency, price), valor, moneda: valor ? moneda : null }];
   });
   const ordenadas = [...(p.photos ?? [])]
     .filter((f) => f.image)
@@ -91,6 +95,7 @@ function normalizar(p: TokkoPropiedad): Propiedad {
     cocheras: numero(p.parking_lot_amount),
     superficieTotal: numero(p.total_surface),
     superficieCubierta: numero(p.roofed_surface),
+    expensas: numero(p.expenses),
     descripcion: p.description ?? "",
     fotos,
     videos: enlaces.filter((u) => !esTour(u)).map(linkIncrustable),

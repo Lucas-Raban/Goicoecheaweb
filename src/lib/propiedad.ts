@@ -1,5 +1,6 @@
 // Tipos y nombres compartidos entre el servidor y los componentes del navegador.
 export type Operacion = "venta" | "alquiler" | "temporario";
+export type Moneda = "USD" | "ARS";
 
 export type Propiedad = {
   id: string;
@@ -11,13 +12,16 @@ export type Propiedad = {
   barrio: string;
   barrioSlug: string;
   tipo: string;
-  operaciones: { tipo: Operacion; precio: string | null }[];
+  // precio es el texto que se muestra; valor y moneda sirven para filtrar por precio.
+  operaciones: { tipo: Operacion; precio: string | null; valor: number | null; moneda: Moneda | null }[];
   ambientes: number | null;
   dormitorios: number | null;
   banos: number | null;
   cocheras: number | null;
   superficieTotal: number | null;
   superficieCubierta: number | null;
+  // Expensas mensuales en pesos, si se cargaron.
+  expensas: number | null;
   descripcion: string;
   fotos: { url: string; descripcion: string }[];
   videos: string[];

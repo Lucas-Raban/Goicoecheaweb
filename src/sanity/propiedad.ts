@@ -73,6 +73,7 @@ export const propiedad = defineType({
       initialValue: "USD",
       group: "datos",
     }),
+    defineField({ name: "expensas", title: "Expensas ($ por mes)", description: "Opcional. Sirve para el filtro de expensas del buscador.", type: "number", group: "datos" }),
     defineField({ name: "mostrarPrecio", title: "Mostrar el precio en la web", type: "boolean", initialValue: true, group: "datos" }),
     defineField({ name: "ambientes", title: "Ambientes", type: "number", group: "datos" }),
     defineField({ name: "dormitorios", title: "Dormitorios", type: "number", group: "datos" }),

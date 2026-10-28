@@ -9,22 +9,36 @@ export function Tour360({ panoramas, direccion }: { panoramas: { url: string; am
   const contenedor = useRef<HTMLDivElement>(null);
   const visor = useRef<Viewer | null>(null);
   const [actual, setActual] = useState(0);
+  // Si el navegador no puede abrir el visor (sin WebGL 2, celulares viejos), se muestra la foto plana para recorrer deslizando.
+  const [sinVisor, setSinVisor] = useState(false);
 
   useEffect(() => {
     let cancelado = false;
-    import("@photo-sphere-viewer/core").then(({ Viewer }) => {
-      if (cancelado || !contenedor.current) return;
-      visor.current = new Viewer({
-        container: contenedor.current,
-        panorama: panoramas[0].url,
-        caption: `${panoramas[0].ambiente} · ${direccion}`,
-        navbar: ["zoom", "move", "caption", "fullscreen"],
-        lang: { zoom: "Zoom", zoomOut: "Alejar", zoomIn: "Acercar", moveUp: "Arriba", moveDown: "Abajo", moveLeft: "Izquierda", moveRight: "Derecha", fullscreen: "Pantalla completa", loadError: "No se pudo cargar la foto 360" },
-        defaultZoomLvl: 0,
-        mousewheel: false,
-        touchmoveTwoFingers: true,
-      });
-    });
+    const pasarAFotoPlana = () => {
+      visor.current?.destroy();
+      visor.current = null;
+      if (!cancelado) setSinVisor(true);
+    };
+    if (!document.createElement("canvas").getContext("webgl2")) {
+      pasarAFotoPlana();
+      return;
+    }
+    import("@photo-sphere-viewer/core")
+      .then(({ Viewer }) => {
+        if (cancelado || !contenedor.current) return;
+        visor.current = new Viewer({
+          container: contenedor.current,
+          panorama: panoramas[0].url,
+          caption: `${panoramas[0].ambiente} · ${direccion}`,
+          navbar: ["zoom", "move", "caption", "fullscreen"],
+          lang: { zoom: "Zoom", zoomOut: "Alejar", zoomIn: "Acercar", moveUp: "Arriba", moveDown: "Abajo", moveLeft: "Izquierda", moveRight: "Derecha", fullscreen: "Pantalla completa", loadError: "No se pudo cargar la foto 360" },
+          defaultZoomLvl: 0,
+          mousewheel: false,
+          touchmoveTwoFingers: true,
+        });
+        visor.current.addEventListener("panorama-error", pasarAFotoPlana);
+      })
+      .catch(pasarAFotoPlana);
     return () => {
       cancelado = true;
       visor.current?.destroy();
@@ -39,7 +53,14 @@ export function Tour360({ panoramas, direccion }: { panoramas: { url: string; am
 
   return (
     <div>
-      <div ref={contenedor} className="aspect-video w-full bg-azul-noche" />
+      {sinVisor ? (
+        <div className="aspect-video w-full overflow-x-auto bg-azul-noche">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={panoramas[actual].url} alt={`${panoramas[actual].ambiente} · ${direccion}`} className="h-full w-auto max-w-none" />
+        </div>
+      ) : (
+        <div ref={contenedor} className="aspect-video w-full bg-azul-noche" />
+      )}
       {panoramas.length > 1 && (
         <div className="mt-3 flex flex-wrap gap-2">
           {panoramas.map((p, i) => (

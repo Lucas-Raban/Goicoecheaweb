@@ -26,16 +26,21 @@ export function Multimedia({ p, alt }: { p: Multimediales; alt: string }) {
     ...(p.maqueta ? [{ id: "maqueta" as const, nombre: "Maqueta 3D" }] : []),
   ];
   const [actual, setActual] = useState<Solapa>("fotos");
+  // Foto 360 con la que abre el tour (la elige el punto 360° tocado en la maqueta).
+  const [inicioTour, setInicioTour] = useState(0);
   const hayTour = p.panoramas.length > 0 || p.tours.length > 0;
 
   // Los puntos 360° de la maqueta piden abrir el tour de esta misma ficha.
   useEffect(() => {
     const escuchar = (e: MessageEvent) => {
-      if (e.data?.tipo === "abrir-tour360" && hayTour) setActual("tour");
+      if (e.data?.tipo !== "abrir-tour360" || !hayTour) return;
+      const indice = Number(e.data.indice);
+      setInicioTour(indice >= 0 && indice < p.panoramas.length ? indice : 0);
+      setActual("tour");
     };
     window.addEventListener("message", escuchar);
     return () => window.removeEventListener("message", escuchar);
-  }, [hayTour]);
+  }, [hayTour, p.panoramas.length]);
 
   return (
     <div>
@@ -82,7 +87,7 @@ export function Multimedia({ p, alt }: { p: Multimediales; alt: string }) {
 
         {actual === "tour" && (
           <div className="space-y-4">
-            {p.panoramas.length > 0 && <Tour360 panoramas={p.panoramas} direccion={p.direccion} />}
+            {p.panoramas.length > 0 && <Tour360 key={inicioTour} panoramas={p.panoramas} direccion={p.direccion} inicial={inicioTour} />}
             {p.tours.map((t) => (
               <iframe
                 key={t}

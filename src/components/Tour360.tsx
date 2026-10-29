@@ -19,11 +19,11 @@ const flecha = (destino: string) =>
   </span>`;
 
 // Visor de fotos 360 cargadas en el panel. Se pasa de un ambiente a otro con las flechas dentro de la foto o con los botones de abajo.
-export function Tour360({ panoramas, direccion }: { panoramas: Panorama[]; direccion: string }) {
+export function Tour360({ panoramas, direccion, inicial = 0 }: { panoramas: Panorama[]; direccion: string; inicial?: number }) {
   const contenedor = useRef<HTMLDivElement>(null);
   const visor = useRef<Viewer | null>(null);
   const marcas = useRef<MarkersPlugin | null>(null);
-  const [actual, setActual] = useState(0);
+  const [actual, setActual] = useState(inicial);
   // Si el navegador no puede abrir el visor (sin WebGL 2, celulares viejos) se usa la vista simple. Guarda el motivo para mostrarlo.
   const [sinVisor, setSinVisor] = useState<string | null>(null);
 
@@ -68,14 +68,14 @@ export function Tour360({ panoramas, direccion }: { panoramas: Panorama[]; direc
         if (cancelado || !contenedor.current) return;
         visor.current = new Viewer({
           container: contenedor.current,
-          panorama: panoramas[0].url,
-          caption: `${panoramas[0].ambiente} · ${direccion}`,
+          panorama: panoramas[inicial].url,
+          caption: `${panoramas[inicial].ambiente} · ${direccion}`,
           navbar: ["zoom", "move", "caption", "fullscreen"],
           lang: { zoom: "Zoom", zoomOut: "Alejar", zoomIn: "Acercar", moveUp: "Arriba", moveDown: "Abajo", moveLeft: "Izquierda", moveRight: "Derecha", fullscreen: "Pantalla completa", loadError: "No se pudo cargar la foto 360" },
           defaultZoomLvl: 0,
           // La rueda del mouse sigue bajando la página; con un dedo se mueve la foto (con dos pedía "dos dedos" y parecía una foto fija).
           mousewheel: false,
-          plugins: [[MarkersPlugin, { markers: puertasDe(0) }]],
+          plugins: [[MarkersPlugin, { markers: puertasDe(inicial) }]],
         });
         visor.current.addEventListener("panorama-error", ({ error }) => pasarAFotoPlana(`foto: ${error?.message ?? "error"}`));
         marcas.current = visor.current.getPlugin<MarkersPlugin>(MarkersPlugin);
@@ -90,7 +90,7 @@ export function Tour360({ panoramas, direccion }: { panoramas: Panorama[]; direc
     };
     // mostrar y puertasDe solo leen panoramas y direccion.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [panoramas, direccion]);
+  }, [panoramas, direccion, inicial]);
 
   return (
     <div>

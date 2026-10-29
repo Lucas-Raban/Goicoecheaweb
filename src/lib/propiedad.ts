@@ -27,7 +27,8 @@ export type Propiedad = {
   videos: string[];
   videosArchivo: string[];
   tours: string[];
-  panoramas: { url: string; ambiente: string }[];
+  // puertas: flechas a otros ambientes; posicion va de 0 (borde izquierdo de la foto plana) a 100 (borde derecho).
+  panoramas: { url: string; ambiente: string; puertas?: { destino: string; posicion: number }[] }[];
   planos: { url: string; descripcion: string }[];
   // Dirección interna de la maqueta 3D (/maqueta/<id>), si se subió en el panel.
   maqueta: string | null;

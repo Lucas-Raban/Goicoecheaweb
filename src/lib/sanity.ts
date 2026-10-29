@@ -35,7 +35,7 @@ function multimedia(p: MultimediaPanel) {
       .filter((f) => f.url)
       // JPG de hasta 4096 px de ancho: más grande no lo dibujan muchos celulares y Sanity agrandaría la foto.
       .map((f, i) => ({
-        url: `${f.url}?w=4096&fit=max&fm=jpg&q=85`,
+        url: `/foto360/${f.url!.split("/").pop()}?w=4096&fit=max&fm=jpg&q=85`,
         ambiente: f.ambiente || `Ambiente ${i + 1}`,
         puertas: (f.puertas ?? []).flatMap((x) => (x.destino && typeof x.posicion === "number" ? [{ destino: x.destino, posicion: x.posicion }] : [])),
       })),

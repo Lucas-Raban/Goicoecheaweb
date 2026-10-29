@@ -13,14 +13,14 @@ type MultimediaPanel = {
   videos?: string[];
   videosArchivo?: string[];
   tours?: string[];
-  panoramas?: { ambiente?: string; url?: string }[];
+  panoramas?: { ambiente?: string; url?: string; puertas?: { destino?: string; posicion?: number }[] }[];
   planos?: { url: string; descripcion?: string }[];
 };
 
 const camposMultimedia = `
   "fotos": fotos[]{ "url": asset->url, descripcion },
   videos, "videosArchivo": videosArchivo[].asset->url, tours,
-  "panoramas": panoramas[]{ ambiente, "url": imagen.asset->url },
+  "panoramas": panoramas[]{ ambiente, "url": imagen.asset->url, puertas[]{ destino, posicion } },
   "planos": planos[]{ "url": asset->url, descripcion }`;
 
 function multimedia(p: MultimediaPanel) {
@@ -34,7 +34,11 @@ function multimedia(p: MultimediaPanel) {
     panoramas: (p.panoramas ?? [])
       .filter((f) => f.url)
       // JPG de hasta 4096 px de ancho: más grande no lo dibujan muchos celulares y Sanity agrandaría la foto.
-      .map((f, i) => ({ url: `${f.url}?w=4096&fit=max&fm=jpg&q=85`, ambiente: f.ambiente || `Ambiente ${i + 1}` })),
+      .map((f, i) => ({
+        url: `${f.url}?w=4096&fit=max&fm=jpg&q=85`,
+        ambiente: f.ambiente || `Ambiente ${i + 1}`,
+        puertas: (f.puertas ?? []).flatMap((x) => (x.destino && typeof x.posicion === "number" ? [{ destino: x.destino, posicion: x.posicion }] : [])),
+      })),
   };
 }
 

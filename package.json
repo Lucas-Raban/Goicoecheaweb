@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@photo-sphere-viewer/core": "^5.15.1",
+    "@photo-sphere-viewer/markers-plugin": "^5.15.1",
     "@sanity/image-url": "^2.1.1",
     "@sanity/locale-es-es": "^1.2.39",
     "next": "16.4.3",

@@ -24,8 +24,8 @@ export function Tour360({ panoramas, direccion }: { panoramas: Panorama[]; direc
   const visor = useRef<Viewer | null>(null);
   const marcas = useRef<MarkersPlugin | null>(null);
   const [actual, setActual] = useState(0);
-  // Si el navegador no puede abrir el visor (sin WebGL 2, celulares viejos), se muestra la foto plana para recorrer deslizando.
-  const [sinVisor, setSinVisor] = useState(false);
+  // Si el navegador no puede abrir el visor (sin WebGL 2, celulares viejos) se usa la vista simple. Guarda el motivo para mostrarlo.
+  const [sinVisor, setSinVisor] = useState<string | null>(null);
 
   // Las puertas de un ambiente, como marcas del visor. El destino se busca por nombre de ambiente.
   function puertasDe(i: number) {
@@ -54,13 +54,13 @@ export function Tour360({ panoramas, direccion }: { panoramas: Panorama[]; direc
 
   useEffect(() => {
     let cancelado = false;
-    const pasarAFotoPlana = () => {
+    const pasarAFotoPlana = (motivo: string) => {
       visor.current?.destroy();
       visor.current = null;
-      if (!cancelado) setSinVisor(true);
+      if (!cancelado) setSinVisor(motivo);
     };
     if (!document.createElement("canvas").getContext("webgl2")) {
-      pasarAFotoPlana();
+      pasarAFotoPlana("sin WebGL 2");
       return;
     }
     Promise.all([import("@photo-sphere-viewer/core"), import("@photo-sphere-viewer/markers-plugin")])
@@ -77,11 +77,11 @@ export function Tour360({ panoramas, direccion }: { panoramas: Panorama[]; direc
           mousewheel: false,
           plugins: [[MarkersPlugin, { markers: puertasDe(0) }]],
         });
-        visor.current.addEventListener("panorama-error", pasarAFotoPlana);
+        visor.current.addEventListener("panorama-error", ({ error }) => pasarAFotoPlana(`foto: ${error?.message ?? "error"}`));
         marcas.current = visor.current.getPlugin<MarkersPlugin>(MarkersPlugin);
         marcas.current.addEventListener("select-marker", ({ marker }) => mostrar(marker.data.destino));
       })
-      .catch(pasarAFotoPlana);
+      .catch((e: unknown) => pasarAFotoPlana(`visor: ${e instanceof Error ? e.message : "error"}`));
     return () => {
       cancelado = true;
       visor.current?.destroy();
@@ -95,10 +95,7 @@ export function Tour360({ panoramas, direccion }: { panoramas: Panorama[]; direc
   return (
     <div>
       {sinVisor ? (
-        <div className="aspect-video w-full overflow-x-auto bg-azul-noche">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={panoramas[actual].url} alt={`${panoramas[actual].ambiente} · ${direccion}`} className="h-full w-auto max-w-none" />
-        </div>
+        <VistaSimple key={panoramas[actual].url} panorama={panoramas[actual]} direccion={direccion} motivo={sinVisor} />
       ) : (
         <div ref={contenedor} className="aspect-video w-full bg-azul-noche" />
       )}
@@ -116,6 +113,46 @@ export function Tour360({ panoramas, direccion }: { panoramas: Panorama[]; direc
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+// Vista sin WebGL: la foto 360 se recorre arrastrando de costado (da la vuelta completa), con zoom y pantalla completa.
+function VistaSimple({ panorama, direccion, motivo }: { panorama: Panorama; direccion: string; motivo: string }) {
+  const [desplazamiento, setDesplazamiento] = useState(0);
+  const [zoom, setZoom] = useState(1);
+  const [completa, setCompleta] = useState(false);
+  const arrastre = useRef<{ x: number; inicio: number } | null>(null);
+
+  return (
+    <div className={completa ? "fixed inset-0 z-50 flex flex-col bg-black" : ""}>
+      <div
+        role="img"
+        aria-label={`${panorama.ambiente} · ${direccion}`}
+        className={`relative w-full cursor-grab touch-pan-y select-none bg-azul-noche bg-repeat-x active:cursor-grabbing ${completa ? "flex-1" : "aspect-video"}`}
+        style={{ backgroundImage: `url("${panorama.url}")`, backgroundSize: `auto ${zoom * 100}%`, backgroundPosition: `${desplazamiento}px center` }}
+        onPointerDown={(e) => {
+          arrastre.current = { x: e.clientX, inicio: desplazamiento };
+          e.currentTarget.setPointerCapture(e.pointerId);
+        }}
+        onPointerMove={(e) => arrastre.current && setDesplazamiento(arrastre.current.inicio + e.clientX - arrastre.current.x)}
+        onPointerUp={() => (arrastre.current = null)}
+        onPointerCancel={() => (arrastre.current = null)}
+      >
+        <div className="absolute inset-x-0 bottom-0 flex items-center gap-1 bg-black/50 px-2 py-1 text-sm text-white" onPointerDown={(e) => e.stopPropagation()}>
+          <button type="button" aria-label="Alejar" className="size-8 text-lg" onClick={() => setZoom((z) => Math.max(1, z - 0.5))}>−</button>
+          <button type="button" aria-label="Acercar" className="size-8 text-lg" onClick={() => setZoom((z) => Math.min(3, z + 0.5))}>+</button>
+          <span className="flex-1 truncate text-center">
+            {panorama.ambiente} · {direccion}
+          </span>
+          <button type="button" className="px-2" onClick={() => setCompleta((c) => !c)}>
+            {completa ? "Cerrar" : "Pantalla completa"}
+          </button>
+        </div>
+      </div>
+      <p className="mt-1 text-xs text-gris" title={motivo}>
+        Vista simple: arrastrá para girar. Este navegador no abre el recorrido 360 completo ({motivo}).
+      </p>
     </div>
   );
 }

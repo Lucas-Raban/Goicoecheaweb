@@ -33,8 +33,8 @@ export function Tour360({ panoramas, direccion }: { panoramas: { url: string; am
           navbar: ["zoom", "move", "caption", "fullscreen"],
           lang: { zoom: "Zoom", zoomOut: "Alejar", zoomIn: "Acercar", moveUp: "Arriba", moveDown: "Abajo", moveLeft: "Izquierda", moveRight: "Derecha", fullscreen: "Pantalla completa", loadError: "No se pudo cargar la foto 360" },
           defaultZoomLvl: 0,
+          // La rueda del mouse sigue bajando la página; con un dedo se mueve la foto (con dos pedía "dos dedos" y parecía una foto fija).
           mousewheel: false,
-          touchmoveTwoFingers: true,
         });
         visor.current.addEventListener("panorama-error", pasarAFotoPlana);
       })

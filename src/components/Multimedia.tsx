@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Galeria } from "@/components/Galeria";
+import { BotonExpandir, usePantallaCompleta } from "@/components/PantallaCompleta";
 import { Tour360 } from "@/components/Tour360";
 import type { Multimediales } from "@/lib/propiedad";
 
@@ -29,6 +30,10 @@ export function Multimedia({ p, alt }: { p: Multimediales; alt: string }) {
   // Foto 360 con la que abre el tour (la elige el punto 360° tocado en la maqueta).
   const [inicioTour, setInicioTour] = useState(0);
   const hayTour = p.panoramas.length > 0 || p.tours.length > 0;
+  // La maqueta se agranda sobre la página sin recargarse (queda en la misma vista que se estaba mirando).
+  const [maquetaGrande, setMaquetaGrande] = useState(false);
+  const cerrarMaqueta = useCallback(() => setMaquetaGrande(false), []);
+  usePantallaCompleta(maquetaGrande, cerrarMaqueta);
 
   // Los puntos 360° de la maqueta piden abrir el tour de esta misma ficha.
   useEffect(() => {
@@ -36,6 +41,7 @@ export function Multimedia({ p, alt }: { p: Multimediales; alt: string }) {
       if (e.data?.tipo !== "abrir-tour360" || !hayTour) return;
       const indice = Number(e.data.indice);
       setInicioTour(indice >= 0 && indice < p.panoramas.length ? indice : 0);
+      setMaquetaGrande(false);
       setActual("tour");
     };
     window.addEventListener("message", escuchar);
@@ -104,13 +110,21 @@ export function Multimedia({ p, alt }: { p: Multimediales; alt: string }) {
         {actual === "plano" && <Galeria fotos={p.planos} alt={`Plano de ${p.direccion}`} ajuste="contain" />}
 
         {actual === "maqueta" && p.maqueta && (
-          <iframe
-            src={p.maqueta}
-            title={`Maqueta 3D de ${p.direccion}`}
-            className="h-[75svh] max-h-[720px] min-h-[480px] w-full bg-azul-noche"
-            sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
-            allow="fullscreen"
-          />
+          <div
+            role={maquetaGrande ? "dialog" : undefined}
+            aria-modal={maquetaGrande || undefined}
+            className={maquetaGrande ? "fixed inset-0 z-[100] bg-azul-noche" : "relative"}
+          >
+            <iframe
+              src={p.maqueta}
+              title={`Maqueta 3D de ${p.direccion}`}
+              className={`w-full bg-azul-noche ${maquetaGrande ? "h-full" : "h-[75svh] max-h-[720px] min-h-[480px]"}`}
+              sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
+              allow="fullscreen"
+            />
+            {/* A la izquierda: arriba a la derecha la maqueta tiene sus botones 3D / Plano. */}
+            <BotonExpandir abierta={maquetaGrande} onClick={() => setMaquetaGrande((g) => !g)} className="absolute top-3 left-3" />
+          </div>
         )}
       </div>
     </div>

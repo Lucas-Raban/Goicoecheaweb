@@ -1,22 +1,20 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { BotonExpandir, usePantallaCompleta } from "@/components/PantallaCompleta";
 
 export function Galeria({
   fotos,
   alt,
-  ajuste = "cover",
+  ajuste = "foto",
 }: {
   fotos: { url: string; descripcion: string }[];
   alt: string;
-  ajuste?: "cover" | "contain";
+  ajuste?: "foto" | "plano";
 }) {
   const [actual, setActual] = useState(0);
-  const [grande, setGrande] = useState(false);
-  const cerrar = useCallback(() => setGrande(false), []);
-  usePantallaCompleta(grande, cerrar);
+  const { ref, abierta: grande, abrir, cerrar } = usePantallaCompleta<HTMLDivElement>();
   // En pantalla completa se pasa de foto deslizando el dedo.
   const toque = useRef<number | null>(null);
   if (fotos.length === 0) return <div className="aspect-[3/2] bg-fondo" />;
@@ -34,10 +32,10 @@ export function Galeria({
           fill
           priority={actual === 0}
           sizes="(min-width: 1024px) 66vw, 100vw"
-          onClick={() => setGrande(true)}
-          className={`cursor-zoom-in ${ajuste === "contain" ? "bg-white object-contain" : "object-cover"}`}
+          onClick={abrir}
+          className={`cursor-zoom-in object-contain ${ajuste === "plano" ? "bg-white" : ""}`}
         />
-        <BotonExpandir abierta={false} onClick={() => setGrande(true)} className="absolute top-3 right-3" />
+        <BotonExpandir abierta={false} onClick={abrir} className="absolute top-3 right-3" />
         {fotos.length > 1 && (
           <>
             <button type="button" onClick={() => mover(-1)} aria-label="Foto anterior" className="absolute top-1/2 left-0 -translate-y-1/2 bg-white/90 p-3 text-azul hover:bg-white">
@@ -54,6 +52,7 @@ export function Galeria({
       </div>
       {grande && (
         <div
+          ref={ref}
           role="dialog"
           aria-modal="true"
           aria-label={`${alt}, fotos en pantalla completa`}
@@ -74,7 +73,7 @@ export function Galeria({
             }}
             onPointerCancel={() => (toque.current = null)}
           >
-            <Image unoptimized src={fotos[actual].url} alt={descripcion} fill sizes="100vw" className={`object-contain ${ajuste === "contain" ? "bg-white" : ""}`} />
+            <Image unoptimized src={fotos[actual].url} alt={descripcion} fill sizes="100vw" className={`object-contain ${ajuste === "plano" ? "bg-white" : ""}`} />
           </div>
           <BotonExpandir abierta onClick={cerrar} className="absolute top-3 right-3" />
           {fotos.length > 1 && (

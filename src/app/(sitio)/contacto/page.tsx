@@ -49,7 +49,7 @@ export default function Contacto() {
         </div>
 
         <div className="border border-borde bg-white p-6 md:p-10">
-          <h2 className="font-serif text-2xl font-bold">Escribinos</h2>
+          <h2 className="font-titulo text-2xl font-bold">Escribinos</h2>
           <div className="mt-6">
             <FormularioWhatsapp
               asunto="Quiero hacer una consulta."

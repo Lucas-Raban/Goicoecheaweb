@@ -8,6 +8,7 @@ export function TarjetaEmprendimiento({ e, unidades, prioridad }: { e: Emprendim
       <div className="relative aspect-[4/3] overflow-hidden bg-fondo">
         {e.fotos[0] && (
           <Image
+            unoptimized
             src={e.fotos[0].url}
             alt={`${e.nombre}, ${e.barrio}`}
             fill
@@ -21,7 +22,7 @@ export function TarjetaEmprendimiento({ e, unidades, prioridad }: { e: Emprendim
       <p className="mt-4 text-sm text-gris">
         {e.barrio} · {e.direccion}
       </p>
-      <h3 className="mt-1 font-serif text-xl leading-snug font-bold group-hover:underline">{e.nombre}</h3>
+      <h3 className="mt-1 font-titulo text-xl leading-snug font-bold group-hover:underline">{e.nombre}</h3>
       <p className="mt-2 text-sm text-gris">
         {[e.entrega && `Entrega ${e.entrega}`, unidades > 0 && `${unidades} ${unidades === 1 ? "unidad disponible" : "unidades disponibles"}`]
           .filter(Boolean)

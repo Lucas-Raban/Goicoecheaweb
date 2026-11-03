@@ -8,7 +8,7 @@ export function Consulta({ mensaje, detalle, asesor }: { mensaje: string; detall
   const whatsapp = asesor?.whatsapp;
   return (
     <div className="border border-borde p-6">
-      <h2 className="font-serif text-2xl font-bold">¿Te interesa?</h2>
+      <h2 className="font-titulo text-2xl font-bold">¿Te interesa?</h2>
       <p className="mt-2 text-sm text-gris">{detalle}</p>
       {asesor && (
         <div className="mt-6 flex items-center gap-4">

@@ -40,7 +40,7 @@ export default function Tasaciones() {
 
       <section className="mx-auto grid max-w-7xl gap-14 px-4 md:px-8 py-20 md:grid-cols-2">
         <div>
-          <h2 className="font-serif text-2xl font-bold">Cómo es la tasación</h2>
+          <h2 className="font-titulo text-2xl font-bold">Cómo es la tasación</h2>
           <div className="mt-6 space-y-4 text-gris">
             <p>
               Contanos la dirección y qué tipo de propiedad es. Coordinamos un día para ir a verla, porque el estado, la
@@ -56,7 +56,7 @@ export default function Tasaciones() {
         </div>
 
         <div className="border border-borde bg-white p-6 md:p-10">
-          <h2 className="font-serif text-2xl font-bold">Pedí tu tasación</h2>
+          <h2 className="font-titulo text-2xl font-bold">Pedí tu tasación</h2>
           <div className="mt-6">
             <FormularioWhatsapp
               asunto="Quiero tasar mi propiedad."
@@ -75,7 +75,7 @@ export default function Tasaciones() {
 
       <section className="border-t border-borde bg-fondo">
         <div className="mx-auto max-w-7xl px-4 py-20 md:px-8">
-          <h2 className="font-serif text-3xl font-bold md:text-4xl">Preguntas frecuentes</h2>
+          <h2 className="font-titulo text-3xl font-bold md:text-4xl">Preguntas frecuentes</h2>
           <div className="mt-10 grid gap-x-12 md:grid-cols-2">
             {preguntas.map((p) => (
               <div key={p.pregunta} className="border-t border-borde py-6">

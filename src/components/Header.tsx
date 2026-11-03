@@ -40,14 +40,14 @@ export function Header() {
           <Image
             src={claro ? "/marca/logo-azul.png" : "/marca/logo-blanco.png"}
             alt={site.nombre}
-            width={210}
-            height={45}
+            width={260}
+            height={56}
             priority
-            className="w-[180px] xl:w-[210px]"
+            className="w-[230px] xl:w-[260px]"
           />
         </Link>
 
-        <nav className="hidden h-full items-end gap-1 lg:flex" aria-label="Principal">
+        <nav className="hidden h-full items-end gap-1 font-titulo lg:flex" aria-label="Principal">
           {navegacion.map((item) => {
             const actual = activa(item.href);
             return (
@@ -55,7 +55,7 @@ export function Header() {
                 key={item.href}
                 href={item.href}
                 aria-current={actual ? "page" : undefined}
-                className={`-mb-px rounded-t-md border border-b-0 px-3 py-2.5 text-[13px] font-bold transition-colors xl:px-4 xl:text-sm ${
+                className={`-mb-px rounded-t-md border border-b-0 px-3 py-2.5 text-[13px] font-bold transition-colors xl:text-sm ${
                   claro
                     ? actual
                       ? "border-borde bg-white text-azul shadow-[inset_0_2px_0_var(--color-azul)]"
@@ -69,14 +69,16 @@ export function Header() {
               </Link>
             );
           })}
-          <a
-            href={linkWhatsapp()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`ml-3 hidden self-center border-l pl-5 text-sm font-bold xl:block ${claro ? "border-borde text-azul" : "border-white/30 text-white"}`}
+          <div
+            className={`ml-3 hidden self-center border-l pl-4 text-xs leading-snug whitespace-nowrap xl:block 2xl:pl-5 2xl:text-[13px] ${claro ? "border-borde text-azul" : "border-white/30 text-white"}`}
           >
-            {site.telefono}
-          </a>
+            <a href={linkWhatsapp()} target="_blank" rel="noopener noreferrer" className="block hover:underline">
+              Tel: <span className="font-bold">{site.telefono}</span>
+            </a>
+            <a href={`mailto:${site.email}`} className="block hover:underline">
+              Mail: <span className="font-bold">{site.email}</span>
+            </a>
+          </div>
         </nav>
 
         <button
@@ -100,7 +102,7 @@ export function Header() {
               key={item.href}
               href={item.href}
               aria-current={activa(item.href) ? "page" : undefined}
-              className={`border-b border-white/10 py-4 font-serif text-3xl font-bold ${activa(item.href) ? "text-white" : "text-white/75"}`}
+              className={`border-b border-white/10 py-4 font-titulo text-3xl font-bold ${activa(item.href) ? "text-white" : "text-white/75"}`}
               onClick={() => setAbierto(false)}
             >
               {item.label}

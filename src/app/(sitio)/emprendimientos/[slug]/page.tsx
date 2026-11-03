@@ -108,14 +108,14 @@ export default async function FichaEmprendimiento({ params }: PageProps<"/empren
 
             {e.descripcion && (
               <section className="mt-12">
-                <h2 className="font-serif text-2xl font-bold">El proyecto</h2>
+                <h2 className="font-titulo text-2xl font-bold">El proyecto</h2>
                 <div className="mt-4 leading-relaxed whitespace-pre-line text-gris">{e.descripcion}</div>
               </section>
             )}
 
             {e.amenities.length > 0 && (
               <section className="mt-12">
-                <h2 className="font-serif text-2xl font-bold">Amenities y características</h2>
+                <h2 className="font-titulo text-2xl font-bold">Amenities y características</h2>
                 <ul className="mt-4 grid gap-x-8 gap-y-2 text-gris sm:grid-cols-2">
                   {e.amenities.map((a) => (
                     <li key={a} className="border-b border-borde py-2">
@@ -128,13 +128,13 @@ export default async function FichaEmprendimiento({ params }: PageProps<"/empren
 
             {e.financiacion && (
               <section className="mt-12">
-                <h2 className="font-serif text-2xl font-bold">Formas de pago</h2>
+                <h2 className="font-titulo text-2xl font-bold">Formas de pago</h2>
                 <div className="mt-4 leading-relaxed whitespace-pre-line text-gris">{e.financiacion}</div>
               </section>
             )}
 
             <section className="mt-12">
-              <h2 className="font-serif text-2xl font-bold">Ubicación</h2>
+              <h2 className="font-titulo text-2xl font-bold">Ubicación</h2>
               <iframe
                 src={`https://www.google.com/maps?q=${lugarMapa}&z=16&output=embed`}
                 title={`Mapa de ${e.nombre}`}
@@ -152,7 +152,7 @@ export default async function FichaEmprendimiento({ params }: PageProps<"/empren
 
         {unidades.length > 0 && (
           <section className="mt-24 border-t border-borde pt-16">
-            <h2 className="mb-10 font-serif text-3xl font-bold">Unidades disponibles</h2>
+            <h2 className="mb-10 font-titulo text-3xl font-bold">Unidades disponibles</h2>
             <GrillaPropiedades propiedades={unidades} />
           </section>
         )}

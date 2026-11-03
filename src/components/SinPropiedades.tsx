@@ -4,7 +4,7 @@ import { linkWhatsapp, site } from "@/lib/site";
 export function SinPropiedades({ titulo, mensaje }: { titulo: string; mensaje: string }) {
   return (
     <div className="border border-borde bg-fondo p-8 md:p-12">
-      <h2 className="font-serif text-2xl font-bold">{titulo}</h2>
+      <h2 className="font-titulo text-2xl font-bold">{titulo}</h2>
       <p className="mt-4 max-w-2xl text-gris">{mensaje}</p>
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <a

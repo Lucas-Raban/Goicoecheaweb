@@ -6,6 +6,9 @@ import { getEmprendimientos } from "@/lib/emprendimientos";
 import { getPropiedades } from "@/lib/propiedades";
 import { esDelTipo, listaTipos } from "@/lib/tipos";
 
+// Next no escapa las direcciones de las imágenes y las de Sanity traen "&" (?w=1800&auto=format), que rompe el XML.
+const escaparXml = (url: string) => url.replace(/&/g, "&amp;");
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [propiedades, emprendimientos] = await Promise.all([getPropiedades(), getEmprendimientos()]);
   // Solo las combinaciones operación + tipo que tienen propiedades (ej. /venta/departamentos).
@@ -32,13 +35,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${site.url}/emprendimientos/${e.slug}`,
       changeFrequency: "weekly" as const,
       priority: 0.7,
-      images: e.fotos.slice(0, 1).map((f) => f.url),
+      images: e.fotos.slice(0, 1).map((f) => escaparXml(f.url)),
     })),
     ...propiedades.map((p) => ({
       url: `${site.url}/propiedades/${p.slug}`,
       changeFrequency: "weekly" as const,
       priority: 0.6,
-      images: p.fotos.slice(0, 1).map((f) => f.url),
+      images: p.fotos.slice(0, 1).map((f) => escaparXml(f.url)),
     })),
   ];
 }

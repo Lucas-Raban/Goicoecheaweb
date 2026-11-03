@@ -56,7 +56,7 @@ export default async function PaginaBarrio({ params }: PageProps<"/barrios/[barr
             if (deEstaOperacion.length === 0) return null;
             return (
               <div key={op}>
-                <h2 className="mb-8 font-serif text-3xl font-bold">
+                <h2 className="mb-8 font-titulo text-3xl font-bold">
                   {nombresOperacion[op]} en {barrio.nombre}
                 </h2>
                 <GrillaPropiedades propiedades={deEstaOperacion} />
@@ -67,7 +67,7 @@ export default async function PaginaBarrio({ params }: PageProps<"/barrios/[barr
       </section>
       <section className="border-t border-borde bg-fondo">
         <div className="mx-auto max-w-7xl px-4 py-16 md:px-8">
-          <h2 className="font-serif text-2xl font-bold">Otros barrios</h2>
+          <h2 className="font-titulo text-2xl font-bold">Otros barrios</h2>
           <ul className="mt-6 flex flex-wrap gap-x-8 gap-y-3">
             {listaBarrios
               .filter((b) => b.slug !== barrio.slug)

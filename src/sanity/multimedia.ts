@@ -52,7 +52,7 @@ export const videosYTours = [
   defineField({
     name: "panoramas",
     title: "Tour virtual 360 (subir fotos 360)",
-    description: "Fotos 360 (equirectangulares, 2:1) de cada ambiente. En la ficha se recorren una por una.",
+    description: "Fotos 360 (equirectangulares, 2:1) de cada ambiente. En la ficha se recorren una por una, o con las flechas de “Pasos a otros ambientes”.",
     type: "array",
     of: [
       defineArrayMember({
@@ -60,6 +60,23 @@ export const videosYTours = [
         fields: [
           defineField({ name: "ambiente", title: "Ambiente", type: "string", description: "Ej.: Living, Cocina, Dormitorio principal." }),
           defineField({ name: "imagen", title: "Foto 360", type: "image", validation: (r) => r.required() }),
+          defineField({
+            name: "puertas",
+            title: "Pasos a otros ambientes",
+            description:
+              "Flechas dentro de la foto para pasar a otro ambiente. Posición: dónde está la puerta en la foto 360 vista plana, de 0 (borde izquierdo) a 100 (borde derecho).",
+            type: "array",
+            of: [
+              defineArrayMember({
+                type: "object",
+                fields: [
+                  defineField({ name: "destino", title: "Ir a (ambiente)", type: "string", description: "Igual que el nombre del otro ambiente. Ej.: Cocina." }),
+                  defineField({ name: "posicion", title: "Posición (0 a 100)", type: "number", validation: (r) => r.min(0).max(100) }),
+                ],
+                preview: { select: { title: "destino", subtitle: "posicion" } },
+              }),
+            ],
+          }),
         ],
         preview: { select: { title: "ambiente", media: "imagen" } },
       }),

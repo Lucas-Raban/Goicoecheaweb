@@ -55,7 +55,7 @@ export async function PaginaOperacion({ operacion, ruta }: { operacion: Operacio
         <div className="mx-auto max-w-7xl px-4 py-16 md:px-8">
           {tiposConPropiedades.length > 0 && (
             <>
-              <h2 className="font-serif text-2xl font-bold md:text-3xl">{nombresOperacion[operacion]} por tipo</h2>
+              <h2 className="font-titulo text-2xl font-bold md:text-3xl">{nombresOperacion[operacion]} por tipo</h2>
               <ul className="mt-6 mb-12 flex flex-wrap gap-x-8 gap-y-3">
                 {tiposConPropiedades.map((t) => (
                   <li key={t.slug}>
@@ -67,7 +67,7 @@ export async function PaginaOperacion({ operacion, ruta }: { operacion: Operacio
               </ul>
             </>
           )}
-          <h2 className="font-serif text-2xl font-bold md:text-3xl">{nombresOperacion[operacion]} por barrio</h2>
+          <h2 className="font-titulo text-2xl font-bold md:text-3xl">{nombresOperacion[operacion]} por barrio</h2>
           <ul className="mt-6 flex flex-wrap gap-x-8 gap-y-3">
             {(barriosConPropiedades.length > 0 ? barriosConPropiedades : listaBarrios).map((b) => (
               <li key={b.slug}>

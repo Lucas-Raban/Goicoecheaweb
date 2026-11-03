@@ -1,5 +1,6 @@
 // Tipos y nombres compartidos entre el servidor y los componentes del navegador.
 export type Operacion = "venta" | "alquiler" | "temporario";
+export type Moneda = "USD" | "ARS";
 
 export type Propiedad = {
   id: string;
@@ -11,19 +12,23 @@ export type Propiedad = {
   barrio: string;
   barrioSlug: string;
   tipo: string;
-  operaciones: { tipo: Operacion; precio: string | null }[];
+  // precio es el texto que se muestra; valor y moneda sirven para filtrar por precio.
+  operaciones: { tipo: Operacion; precio: string | null; valor: number | null; moneda: Moneda | null }[];
   ambientes: number | null;
   dormitorios: number | null;
   banos: number | null;
   cocheras: number | null;
   superficieTotal: number | null;
   superficieCubierta: number | null;
+  // Expensas mensuales en pesos, si se cargaron.
+  expensas: number | null;
   descripcion: string;
   fotos: { url: string; descripcion: string }[];
   videos: string[];
   videosArchivo: string[];
   tours: string[];
-  panoramas: { url: string; ambiente: string }[];
+  // puertas: flechas a otros ambientes; posicion va de 0 (borde izquierdo de la foto plana) a 100 (borde derecho).
+  panoramas: { url: string; ambiente: string; puertas?: { destino: string; posicion: number }[] }[];
   planos: { url: string; descripcion: string }[];
   // Dirección interna de la maqueta 3D (/maqueta/<id>), si se subió en el panel.
   maqueta: string | null;

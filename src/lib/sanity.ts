@@ -13,14 +13,14 @@ type MultimediaPanel = {
   videos?: string[];
   videosArchivo?: string[];
   tours?: string[];
-  panoramas?: { ambiente?: string; url?: string }[];
+  panoramas?: { ambiente?: string; url?: string; puertas?: { destino?: string; posicion?: number }[] }[];
   planos?: { url: string; descripcion?: string }[];
 };
 
 const camposMultimedia = `
   "fotos": fotos[]{ "url": asset->url, descripcion },
   videos, "videosArchivo": videosArchivo[].asset->url, tours,
-  "panoramas": panoramas[]{ ambiente, "url": imagen.asset->url },
+  "panoramas": panoramas[]{ ambiente, "url": imagen.asset->url, puertas[]{ destino, posicion } },
   "planos": planos[]{ "url": asset->url, descripcion }`;
 
 function multimedia(p: MultimediaPanel) {
@@ -33,7 +33,12 @@ function multimedia(p: MultimediaPanel) {
     tours: (p.tours ?? []).filter((t) => t && !t.includes("claude.ai")),
     panoramas: (p.panoramas ?? [])
       .filter((f) => f.url)
-      .map((f, i) => ({ url: `${f.url}?w=6000&auto=format`, ambiente: f.ambiente || `Ambiente ${i + 1}` })),
+      // JPG de hasta 4096 px de ancho: más grande no lo dibujan muchos celulares y Sanity agrandaría la foto.
+      .map((f, i) => ({
+        url: `/foto360/${f.url!.split("/").pop()}?w=4096&fit=max&fm=jpg&q=85`,
+        ambiente: f.ambiente || `Ambiente ${i + 1}`,
+        puertas: (f.puertas ?? []).flatMap((x) => (x.destino && typeof x.posicion === "number" ? [{ destino: x.destino, posicion: x.posicion }] : [])),
+      })),
   };
 }
 
@@ -57,6 +62,7 @@ type PropiedadPanel = MultimediaPanel & {
   cocheras?: number;
   superficieCubierta?: number;
   superficieTotal?: number;
+  expensas?: number;
   codigo?: string;
   descripcion?: string;
   ubicacion?: string;
@@ -67,7 +73,7 @@ type PropiedadPanel = MultimediaPanel & {
 
 const consulta = `*[_type == "propiedad" && publicada != false && !(_id in path("drafts.**"))] | order(_createdAt desc) {
   _id, destacada, titulo, operacion, tipo, direccion, barrio, otroBarrio, precio, moneda, mostrarPrecio,
-  ambientes, dormitorios, banos, cocheras, superficieCubierta, superficieTotal, codigo, descripcion, ubicacion,
+  ambientes, dormitorios, banos, cocheras, superficieCubierta, superficieTotal, expensas, codigo, descripcion, ubicacion,
   "maqueta": maqueta.asset->url, "emprendimiento": emprendimiento._ref, "asesor": asesor->nombre,${camposMultimedia}
 }`;
 
@@ -80,7 +86,8 @@ function coordenadas(link?: string) {
 function normalizar(p: PropiedadPanel): Propiedad {
   const barrio = p.barrio === "Otro" ? p.otroBarrio || "Mar del Plata" : p.barrio;
   const codigo = p.codigo || p._id.slice(-6).toUpperCase();
-  const precio = p.precio && p.mostrarPrecio !== false ? formatoPrecio(p.precio, p.moneda) : null;
+  const visible = p.precio && p.mostrarPrecio !== false ? p.precio : null;
+  const precio = visible ? formatoPrecio(visible, p.moneda) : null;
   const { lat, lng } = coordenadas(p.ubicacion);
   return {
     id: `panel-${p._id}`,
@@ -96,13 +103,14 @@ function normalizar(p: PropiedadPanel): Propiedad {
     barrio,
     barrioSlug: slugify(barrio),
     tipo: p.tipo,
-    operaciones: [{ tipo: p.operacion, precio }],
+    operaciones: [{ tipo: p.operacion, precio, valor: visible, moneda: visible ? (p.moneda === "ARS" ? "ARS" : "USD") : null }],
     ambientes: p.ambientes ?? null,
     dormitorios: p.dormitorios ?? null,
     banos: p.banos ?? null,
     cocheras: p.cocheras ?? null,
     superficieTotal: p.superficieTotal ?? null,
     superficieCubierta: p.superficieCubierta ?? null,
+    expensas: p.expensas ?? null,
     descripcion: p.descripcion ?? "",
     ...multimedia(p),
     maqueta: p.maqueta ? `/maqueta/${p._id}` : null,

@@ -53,3 +53,50 @@ body {
 .solapa-carpeta {
   clip-path: polygon(0 100%, 10px 4px, 14px 0, calc(100% - 14px) 0, calc(100% - 10px) 4px, 100% 100%);
 }
+
+/* Foto de la sección "¿Querés vender o alquilar?": pasa de amanecer a día, atardecer y noche, como un video corto en loop.
+   La foto cambia de luz y encima se funden dos capas de color: la naranja del atardecer y la azul de la noche. */
+.ciclo-dia {
+  --duracion-ciclo: 9s;
+}
+.ciclo-dia > img {
+  animation: luz-del-dia var(--duracion-ciclo) ease-in-out infinite;
+}
+.ciclo-dia .capa-atardecer {
+  background: linear-gradient(to bottom, #f6a04d 0%, #e8655a 45%, #7a3e6b 100%);
+  mix-blend-mode: overlay;
+  animation: capa-atardecer var(--duracion-ciclo) ease-in-out infinite;
+}
+.ciclo-dia .capa-noche {
+  background: linear-gradient(to bottom, #050d1c 0%, #0d233c 60%, #1b3a5c 100%);
+  mix-blend-mode: multiply;
+  animation: capa-noche var(--duracion-ciclo) ease-in-out infinite;
+}
+@keyframes luz-del-dia {
+  0%, 100% { filter: brightness(0.8) saturate(1.1) sepia(0.3) hue-rotate(-12deg); } /* amanecer */
+  25% { filter: none; } /* día */
+  55% { filter: brightness(1) saturate(1.6) sepia(0.4) hue-rotate(-20deg); } /* atardecer */
+  80% { filter: brightness(0.6) saturate(0.8) contrast(1.1); } /* noche */
+}
+@keyframes capa-atardecer {
+  0%, 100% { opacity: 0.45; }
+  25% { opacity: 0; }
+  55% { opacity: 0.9; }
+  80% { opacity: 0.1; }
+}
+@keyframes capa-noche {
+  0%, 100% { opacity: 0.15; }
+  25%, 55% { opacity: 0; }
+  80% { opacity: 0.6; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ciclo-dia > img,
+  .ciclo-dia .capa-atardecer,
+  .ciclo-dia .capa-noche {
+    animation: none;
+  }
+  .ciclo-dia .capa-atardecer,
+  .ciclo-dia .capa-noche {
+    opacity: 0;
+  }
+}

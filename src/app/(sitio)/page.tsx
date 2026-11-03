@@ -92,10 +92,8 @@ export default async function Inicio() {
 
       {/* Vender o alquilar: imagen a sangre de un lado, texto del otro */}
       <section className="grid bg-azul text-white md:grid-cols-2">
-        <div className="ciclo-dia relative min-h-[360px] overflow-hidden md:min-h-[680px]">
+        <div className="relative min-h-[360px] md:min-h-[680px]">
           <Image src={fotos.ciudad} alt="La ciudad de Mar del Plata vista desde el mar" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
-          <div aria-hidden className="capa-atardecer absolute inset-0" />
-          <div aria-hidden className="capa-noche absolute inset-0" />
         </div>
         <div className="flex flex-col justify-center px-6 py-20 md:px-16 lg:px-24">
           <h2 className="font-titulo text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-6xl">¿Querés vender o alquilar tu propiedad?</h2>

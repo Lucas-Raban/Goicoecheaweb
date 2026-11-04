@@ -10,10 +10,12 @@ export function FormularioWhatsapp({
   asunto,
   campos,
   boton = "Enviar por WhatsApp",
+  whatsapp,
 }: {
   asunto: string;
   campos: Campo[];
   boton?: string;
+  whatsapp?: string;
 }) {
   const [valores, setValores] = useState<Record<string, string>>({});
 
@@ -23,7 +25,7 @@ export function FormularioWhatsapp({
       .filter((c) => valores[c.nombre]?.trim())
       .map((c) => `${c.label}: ${valores[c.nombre].trim()}`);
     const mensaje = [`Hola, te escribo desde la web. ${asunto}`, "", ...lineas].join("\n");
-    window.open(linkWhatsapp(mensaje), "_blank", "noopener,noreferrer");
+    window.open(linkWhatsapp(mensaje, whatsapp), "_blank", "noopener,noreferrer");
   }
 
   const clasesInput =

@@ -1,10 +1,13 @@
 import { defineField, defineType } from "sanity";
+import { esAdministrador } from "./permisos";
 
 // Asesor de la oficina. Se muestra en el inicio y en Nosotros, ordenado por el campo "orden".
 export const asesor = defineType({
   name: "asesor",
   title: "Asesor",
   type: "document",
+  // Solo los administradores dan de alta, editan o dan de baja asesores.
+  readOnly: ({ currentUser }) => !esAdministrador(currentUser?.email),
   fields: [
     defineField({ name: "nombre", title: "Nombre y apellido", type: "string", validation: (r) => r.required() }),
     defineField({ name: "cargo", title: "Cargo", type: "string", initialValue: "Asesor inmobiliario" }),
@@ -22,13 +25,20 @@ export const asesor = defineType({
       type: "boolean",
       initialValue: false,
     }),
+    defineField({
+      name: "email",
+      title: "Email con el que entra al panel",
+      description: "El mismo con el que se invitó desde sanity.io/manage. Así las propiedades que carga quedan a su nombre solas.",
+      type: "string",
+      validation: (r) => r.email(),
+    }),
     defineField({ name: "whatsapp", title: "WhatsApp", description: "Con característica, sin 0 ni 15. Ej.: 2234399282", type: "string" }),
     defineField({ name: "instagram", title: "Instagram", description: "Link del perfil o usuario.", type: "string" }),
     defineField({ name: "orden", title: "Orden", description: "1 aparece primero.", type: "number", initialValue: 10 }),
     defineField({
       name: "activo",
-      title: "Mostrar en la web",
-      description: "Destildalo cuando alguien deja la oficina, o borrá el asesor.",
+      title: "Activo",
+      description: "Destildalo cuando alguien deja de trabajar en la oficina: deja de aparecer en la web y las consultas de sus propiedades pasan al WhatsApp de la inmobiliaria. Para que tampoco pueda entrar al panel, sacalo de sanity.io/manage.",
       type: "boolean",
       initialValue: true,
     }),

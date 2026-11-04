@@ -54,10 +54,21 @@ export default async function Inicio() {
 
   return (
     <>
-      {/* Portada a pantalla completa; el buscador queda montado sobre el borde inferior */}
+      {/* Portada a pantalla completa con el video de la costa del día a la noche (ida y vuelta);
+          el buscador queda montado sobre el borde inferior. Con animaciones reducidas queda la primera imagen fija. */}
       <section className="relative isolate">
         <div className="relative isolate flex min-h-[92svh] items-end overflow-hidden bg-azul text-white">
-          <Image src={fotos.hero} alt="Vista aérea de la costa de Mar del Plata" fill priority sizes="100vw" className="-z-20 scale-105 object-cover motion-safe:animate-[acercar_18s_ease-out_both]" />
+          <Image src="/videos/costa-dia-noche.jpg" alt="Vista aérea de la costa de Mar del Plata" fill priority sizes="100vw" className="-z-20 object-cover object-[30%_50%] md:object-center" />
+          <video
+            src="/videos/costa-dia-noche.mp4"
+            poster="/videos/costa-dia-noche.jpg"
+            autoPlay
+            muted
+            loop
+            playsInline
+            aria-hidden
+            className="absolute inset-0 -z-20 h-full w-full object-cover object-[30%_50%] motion-reduce:hidden md:object-center"
+          />
           <div className="absolute inset-0 -z-10 bg-gradient-to-b from-azul/50 via-azul/20 to-azul/80" />
           <div className="mx-auto w-full max-w-7xl px-4 pt-40 pb-28 md:px-8 md:pb-36">
             <h1 className="text-sm font-bold text-white/80">Inmobiliaria en Mar del Plata · Goicoechea Propiedades</h1>
@@ -90,21 +101,10 @@ export default async function Inicio() {
       {/* Sin destacadas, deja aire para el buscador que sobresale de la portada */}
       {destacadas.length === 0 && <div className="h-24 md:h-28" />}
 
-      {/* Vender o alquilar: video a sangre de un lado (la costa del día a la noche, ida y vuelta), texto del otro.
-          Con animaciones reducidas queda la primera imagen fija. */}
+      {/* Vender o alquilar: imagen a sangre de un lado, texto del otro */}
       <section className="grid bg-azul text-white md:grid-cols-2">
-        <div className="relative min-h-[360px] overflow-hidden md:min-h-[680px]">
-          <Image src="/videos/costa-dia-noche.jpg" alt="La costa de Mar del Plata vista desde el aire" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover object-[35%_50%]" />
-          <video
-            src="/videos/costa-dia-noche.mp4"
-            poster="/videos/costa-dia-noche.jpg"
-            autoPlay
-            muted
-            loop
-            playsInline
-            aria-hidden
-            className="absolute inset-0 h-full w-full object-cover object-[35%_50%] motion-reduce:hidden"
-          />
+        <div className="relative min-h-[360px] md:min-h-[680px]">
+          <Image src={fotos.ciudad} alt="La ciudad de Mar del Plata vista desde el mar" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
         </div>
         <div className="flex flex-col justify-center px-6 py-20 md:px-16 lg:px-24">
           <h2 className="font-titulo text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-6xl">¿Querés vender o alquilar tu propiedad?</h2>

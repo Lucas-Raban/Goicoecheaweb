@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Buscador } from "@/components/Buscador";
 import { Equipo } from "@/components/Equipo";
 import { GrillaPropiedades } from "@/components/TarjetaPropiedad";
+import { VideoFondo } from "@/components/VideoFondo";
 import { fotos } from "@/lib/fotos";
 import { listaBarrios } from "@/lib/barrios";
 import { linkWhatsapp, site } from "@/lib/site";
@@ -59,15 +60,9 @@ export default async function Inicio() {
       <section className="relative isolate">
         <div className="relative isolate flex min-h-[92svh] items-end overflow-hidden bg-azul text-white">
           <Image src="/videos/costa-dia-noche.jpg" alt="Vista aérea de la costa de Mar del Plata" fill priority sizes="100vw" className="-z-20 object-cover object-[30%_50%] md:object-center" />
-          <video
+          <VideoFondo
             src="/videos/costa-dia-noche.mp4"
-            poster="/videos/costa-dia-noche.jpg"
-            autoPlay
-            muted
-            loop
-            playsInline
-            aria-hidden
-            className="absolute inset-0 -z-20 h-full w-full object-cover object-[30%_50%] motion-reduce:hidden md:object-center"
+            className="absolute inset-0 -z-20 h-full w-full object-cover object-[30%_50%] md:object-center"
           />
           <div className="absolute inset-0 -z-10 bg-gradient-to-b from-azul/50 via-azul/20 to-azul/80" />
           <div className="mx-auto w-full max-w-7xl px-4 pt-40 pb-28 md:px-8 md:pb-36">

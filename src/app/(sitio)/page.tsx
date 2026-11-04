@@ -5,7 +5,6 @@ import { Buscador } from "@/components/Buscador";
 import { Equipo } from "@/components/Equipo";
 import { GrillaPropiedades } from "@/components/TarjetaPropiedad";
 import { VideoFondo } from "@/components/VideoFondo";
-import { fotos } from "@/lib/fotos";
 import { listaBarrios } from "@/lib/barrios";
 import { linkWhatsapp, site } from "@/lib/site";
 import { getPropiedades } from "@/lib/propiedades";
@@ -96,10 +95,12 @@ export default async function Inicio() {
       {/* Sin destacadas, deja aire para el buscador que sobresale de la portada */}
       {destacadas.length === 0 && <div className="h-24 md:h-28" />}
 
-      {/* Vender o alquilar: imagen a sangre de un lado, texto del otro */}
+      {/* Vender o alquilar: video a sangre de un lado (la ciudad en 3D se arma desde el mapa, ida y vuelta), texto del otro.
+          Si el celular no reproduce el video, queda la imagen fija de la ciudad. */}
       <section className="grid bg-azul text-white md:grid-cols-2">
-        <div className="relative min-h-[360px] md:min-h-[680px]">
-          <Image src={fotos.ciudad} alt="La ciudad de Mar del Plata vista desde el mar" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+        <div className="relative min-h-[420px] overflow-hidden bg-azul-noche md:min-h-[680px]">
+          <Image src="/videos/mapa-mdp.jpg" alt="Mapa de Mar del Plata con la ciudad en 3D" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover object-bottom" />
+          <VideoFondo src="/videos/mapa-mdp.mp4" className="absolute inset-0 h-full w-full object-cover object-bottom" />
         </div>
         <div className="flex flex-col justify-center px-6 py-20 md:px-16 lg:px-24">
           <h2 className="font-titulo text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-6xl">¿Querés vender o alquilar tu propiedad?</h2>

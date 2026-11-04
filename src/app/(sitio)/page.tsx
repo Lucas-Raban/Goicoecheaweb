@@ -98,7 +98,7 @@ export default async function Inicio() {
       {/* Vender o alquilar: video a sangre de un lado (la ciudad en 3D se arma desde el mapa, ida y vuelta), texto del otro.
           Si el celular no reproduce el video, queda la imagen fija de la ciudad. */}
       <section className="grid bg-azul text-white md:grid-cols-2">
-        <div className="relative min-h-[420px] overflow-hidden bg-azul-noche md:min-h-[680px]">
+        <div className="relative aspect-[804/1076] overflow-hidden bg-azul-noche md:aspect-auto md:min-h-[680px]">
           <Image src="/videos/mapa-mdp.jpg" alt="Mapa de Mar del Plata con la ciudad en 3D" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover object-bottom" />
           <VideoFondo src="/videos/mapa-mdp.mp4" className="absolute inset-0 h-full w-full object-cover object-bottom" />
         </div>

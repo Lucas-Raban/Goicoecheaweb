@@ -30,6 +30,7 @@ type TokkoPropiedad = {
   web_price?: boolean;
   development?: { id?: number } | null;
   producer?: { name?: string } | null;
+  created_at?: string;
 };
 
 const API = "https://www.tokkobroker.com/api/v1/";
@@ -110,6 +111,7 @@ function normalizar(p: TokkoPropiedad): Propiedad {
     destacada: Boolean(p.is_starred_on_web),
     emprendimiento: p.development?.id ? `tokko-${p.development.id}` : null,
     asesor: p.producer?.name || null,
+    publicadaEl: p.created_at || null,
   };
 }
 

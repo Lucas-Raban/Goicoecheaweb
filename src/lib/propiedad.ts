@@ -39,6 +39,8 @@ export type Propiedad = {
   emprendimiento: string | null;
   // Nombre del asesor a cargo (del panel o el productor de Tokko). La ficha lo busca entre los asesores activos.
   asesor: string | null;
+  // Fecha de carga (ISO) en Tokko o en el panel. Sirve para mostrar primero las más nuevas.
+  publicadaEl: string | null;
 };
 
 // Lo que muestran las solapas de fotos, video, tour, plano y maqueta (fichas de propiedades y de emprendimientos).

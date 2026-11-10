@@ -69,10 +69,11 @@ type PropiedadPanel = MultimediaPanel & {
   maqueta?: string;
   emprendimiento?: string;
   asesor?: string;
+  _createdAt?: string;
 };
 
 const consulta = `*[_type == "propiedad" && publicada != false && !(_id in path("drafts.**"))] | order(_createdAt desc) {
-  _id, destacada, titulo, operacion, tipo, direccion, barrio, otroBarrio, precio, moneda, mostrarPrecio,
+  _id, _createdAt, destacada, titulo, operacion, tipo, direccion, barrio, otroBarrio, precio, moneda, mostrarPrecio,
   ambientes, dormitorios, banos, cocheras, superficieCubierta, superficieTotal, expensas, codigo, descripcion, ubicacion,
   "maqueta": maqueta.asset->url, "emprendimiento": emprendimiento._ref, "asesor": asesor->nombre,${camposMultimedia}
 }`;
@@ -119,6 +120,7 @@ function normalizar(p: PropiedadPanel): Propiedad {
     destacada: Boolean(p.destacada),
     emprendimiento: p.emprendimiento ? `panel-${p.emprendimiento}` : null,
     asesor: p.asesor ?? null,
+    publicadaEl: p._createdAt ?? null,
   };
 }
 

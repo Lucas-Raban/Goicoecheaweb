@@ -425,7 +425,7 @@ function enterPlace(key){T.u=null;T.set=FOTOS[key];T.i=0;stopRot();$("tVid").hid
 document.querySelectorAll("[data-place]").forEach(b=>b.onclick=()=>enterPlace(b.dataset.place));
 $("tOut").onclick=closeTour;
 addEventListener("keydown",e=>{if(!$("tour").classList.contains("on"))return;if(e.key==="Escape")closeTour();else if(e.key==="ArrowRight")showPhoto(T.i+1);else if(e.key==="ArrowLeft")showPhoto(T.i-1)});
-{let sx=null;$("tStage").addEventListener("touchstart",e=>{sx=e.touches[0].clientX},{passive:true});$("tStage").addEventListener("touchend",e=>{if(sx==null||T.vid)return;const d=e.changedTouches[0].clientX-sx;if(Math.abs(d)>50)showPhoto(T.i+(d<0?1:-1));sx=null})}
+{let sx=null;$("tStage").addEventListener("touchstart",e=>{sx=e.touches[0].clientX},{passive:true});$("tStage").addEventListener("touchend",e=>{if(sx==null||T.vid||$("tPano").classList.contains("on")){sx=null;return}const d=e.changedTouches[0].clientX-sx;if(Math.abs(d)>50)showPhoto(T.i+(d<0?1:-1));sx=null})}
 
 /* ---------- mini plano del recorrido (esquema orientativo sobre la planta real del semipiso) ---------- */
 // fy: profundidad 0 frente → 1 contrafrente (<0 balcón al frente, >1 balcón contrafrente) · dx: -1 medianera … 1 lado del palier · lv: 1 = planta alta del dúplex

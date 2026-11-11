@@ -89,6 +89,14 @@ export const emprendimiento = defineType({
       group: "datos",
     }),
     ...fotosYPlanos,
+    defineField({
+      name: "maqueta3d",
+      title: "Maqueta 3D",
+      description: "Nombre de la carpeta de la maqueta dentro de public/maquetas de la web, ej.: saint-angelo. Se muestra en la solapa Maqueta 3D.",
+      type: "string",
+      validation: (r) => r.regex(/^[a-z0-9-]+$/, { name: "nombre de carpeta" }),
+      group: "multimedia",
+    }),
     ...videosYTours,
   ],
   preview: {

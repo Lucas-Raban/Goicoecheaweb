@@ -157,6 +157,7 @@ type EmprendimientoPanel = MultimediaPanel & {
   amenities?: string[];
   financiacion?: string;
   ubicacion?: string;
+  maqueta3d?: string;
 };
 
 // Emprendimientos cargados a mano en /admin.
@@ -171,7 +172,7 @@ export async function getEmprendimientosPanel(): Promise<Emprendimiento[]> {
     const datos = await cliente.fetch<EmprendimientoPanel[]>(
       `*[_type == "emprendimiento" && publicado != false && !(_id in path("drafts.**"))] | order(_createdAt desc) {
         _id, destacado, nombre, estado, entrega, direccion, barrio, otroBarrio, precioDesde, moneda, descripcion,
-        amenities, financiacion, ubicacion,${camposMultimedia}
+        amenities, financiacion, ubicacion, maqueta3d,${camposMultimedia}
       }`,
     );
     return datos
@@ -193,7 +194,8 @@ export async function getEmprendimientosPanel(): Promise<Emprendimiento[]> {
           financiacion: e.financiacion ?? "",
           amenities: (e.amenities ?? []).filter(Boolean),
           ...multimedia(e),
-          maqueta: null,
+          // Maqueta guardada en public/maquetas/<carpeta>/ de esta misma web.
+          maqueta: /^[a-z0-9-]+$/.test(e.maqueta3d ?? "") ? `/maquetas/${e.maqueta3d}/index.html` : null,
           ...coordenadas(e.ubicacion),
           destacado: Boolean(e.destacado),
         };

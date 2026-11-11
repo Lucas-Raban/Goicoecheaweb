@@ -65,12 +65,12 @@ h1{margin:3px 0 0;font:800 27px/1.1 Manrope,system-ui;letter-spacing:-.015em}
 #tour .strip img{display:block;width:100%;height:64px;object-fit:cover}#tour .strip span{display:block;padding:4px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #tPano{position:absolute;inset:0;width:100%;height:100%;display:none;touch-action:none;cursor:grab}#tPano.on{display:block}#tPano:active{cursor:grabbing}
 #tour .b360{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);background:rgba(10,14,18,.6);color:#fff;border-radius:999px;padding:7px 14px;font-size:12px;pointer-events:none;backdrop-filter:blur(8px);white-space:nowrap;transition:opacity .6s}
-#fade{position:fixed;inset:0;z-index:9;background:#05080b;opacity:0;pointer-events:none;transition:opacity .45s}
+.kb-only{display:none}@media (hover:hover) and (pointer:fine){.kb-only{display:inline}}#fade{position:fixed;inset:0;z-index:9;background:#05080b;opacity:0;pointer-events:none;transition:opacity .45s}
 @media (max-width:760px){#tour .ttl b{font-size:18px}#tour .nav{width:38px;height:38px}#tour .strip button{width:90px}}
 @media (prefers-reduced-motion:reduce){#tour .stage img.kb{animation:none}}
 </style></head><body class="intro">
 <div id="fade"></div>
-<div id="tour" role="dialog" aria-label="Recorrido del departamento"><div class="stage" id="tStage"><img id="tBg" alt=""><img id="tImg" class="kb" alt=""><canvas id="tPano"></canvas><div class="b360" id="tHint" hidden>360° · arrastrá para mirar alrededor</div><button class="nav prev lbl" id="tPrev" aria-label="Ambiente anterior">‹</button><button class="nav next lbl" id="tNext" aria-label="Ambiente siguiente">›</button><div id="tMap" hidden></div>
+<div id="tour" role="dialog" aria-label="Recorrido del departamento"><div class="stage" id="tStage"><img id="tBg" alt=""><img id="tImg" class="kb" alt=""><canvas id="tPano"></canvas><div class="b360" id="tHint" hidden>360° · arrastrá para mirar alrededor<span class="kb-only"> · o usá ← → para girar y ↑ ↓ para cambiar de ambiente</span></div><button class="nav prev lbl" id="tPrev" aria-label="Ambiente anterior">‹</button><button class="nav next lbl" id="tNext" aria-label="Ambiente siguiente">›</button><div id="tMap" hidden></div>
 <div class="bar"><div class="ttl" id="tTtl"></div><div class="acts"><button class="tbtn" id="tVid">▶ Video del recorrido</button><button class="tbtn" id="tOut">Salir al edificio</button></div></div></div>
 <div class="strip" id="tStrip"></div></div>
 <canvas id="c"></canvas>
@@ -424,7 +424,17 @@ function closeTour(){stopVid();const t=$("tour");t.classList.remove("vis");setTi
 function enterPlace(key){T.u=null;T.set=FOTOS[key];T.i=0;stopRot();$("tVid").hidden=true;$("fade").style.opacity=1;setTimeout(()=>{openTour();$("fade").style.opacity=0},450)}
 document.querySelectorAll("[data-place]").forEach(b=>b.onclick=()=>enterPlace(b.dataset.place));
 $("tOut").onclick=closeTour;
-addEventListener("keydown",e=>{if(!$("tour").classList.contains("on"))return;if(e.key==="Escape")closeTour();else if(e.key==="ArrowRight")showPhoto(T.i+1);else if(e.key==="ArrowLeft")showPhoto(T.i-1)});
+// teclado: ← → giran la vista 360°, ↑ ↓ pasan al ambiente siguiente o anterior (también W A S D)
+const KEYS={};
+addEventListener("keydown",e=>{if(!$("tour").classList.contains("on"))return;const k=e.key.length===1?e.key.toLowerCase():e.key,pano=$("tPano").classList.contains("on")&&!T.vid;
+  if(k==="Escape")return closeTour();
+  if(["ArrowLeft","ArrowRight","ArrowUp","ArrowDown","a","d","w","s"].includes(k))e.preventDefault();else return;
+  if(k==="ArrowUp"||k==="w"){if(!e.repeat)showPhoto(T.i+1);return}
+  if(k==="ArrowDown"||k==="s"){if(!e.repeat)showPhoto(T.i-1);return}
+  if(!pano){if(!e.repeat)showPhoto(T.i+(k==="ArrowRight"||k==="d"?1:-1));return}
+  KEYS[k==="ArrowLeft"||k==="a"?"l":"r"]=true;PV.auto=false;$("tHint").style.opacity=0});
+addEventListener("keyup",e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;if(k==="ArrowLeft"||k==="a")KEYS.l=false;if(k==="ArrowRight"||k==="d")KEYS.r=false});
+addEventListener("blur",()=>{KEYS.l=KEYS.r=false});
 {let sx=null;$("tStage").addEventListener("touchstart",e=>{sx=e.touches[0].clientX},{passive:true});$("tStage").addEventListener("touchend",e=>{if(sx==null||T.vid||$("tPano").classList.contains("on")){sx=null;return}const d=e.changedTouches[0].clientX-sx;if(Math.abs(d)>50)showPhoto(T.i+(d<0?1:-1));sx=null})}
 
 /* ---------- mini plano del recorrido (esquema orientativo sobre la planta real del semipiso) ---------- */
@@ -468,7 +478,7 @@ function panoInit(){if(PV.r)return;const c=$("tPano");
   c.addEventListener("wheel",e=>{e.preventDefault();PV.fov=Math.max(35,Math.min(95,PV.fov+e.deltaY*.04))},{passive:false});
   const tick=()=>{requestAnimationFrame(tick);if(!T.on||!c.classList.contains("on"))return;
     const w=c.clientWidth,h=c.clientHeight;if(c.width!==Math.round(w*PV.r.getPixelRatio())||c.height!==Math.round(h*PV.r.getPixelRatio())){PV.r.setSize(w,h,false);PV.cam.aspect=w/h}
-    if(PV.auto)PV.lon+=.03;const phi=THREE.MathUtils.degToRad(90-PV.lat),th=THREE.MathUtils.degToRad(PV.lon);
+    if(PV.auto)PV.lon+=.03;if(KEYS.l)PV.lon-=1.2*PV.fov/75;if(KEYS.r)PV.lon+=1.2*PV.fov/75;const phi=THREE.MathUtils.degToRad(90-PV.lat),th=THREE.MathUtils.degToRad(PV.lon);
     PV.cam.fov=PV.fov;PV.cam.updateProjectionMatrix();PV.cam.lookAt(Math.sin(phi)*Math.cos(th),Math.cos(phi),Math.sin(phi)*Math.sin(th));PV.r.render(PV.scene,PV.cam)};tick()}
 function setTex(t){t.encoding=THREE.sRGBEncoding;t.minFilter=THREE.LinearFilter;t.generateMipmaps=false;if(PV.mat.map&&PV.mat.map!==t)PV.mat.map.dispose();PV.mat.map=t;PV.mat.color.set(0xffffff);PV.mat.needsUpdate=true}
 function loadPano(k,yaw){panoInit();const id=Symbol();PV.cur=id;PV.lon=yaw==null?180:yaw;PV.lat=0;PV.fov=innerWidth<760?85:75;PV.auto=!matchMedia("(prefers-reduced-motion: reduce)").matches;$("tHint").style.opacity=1;

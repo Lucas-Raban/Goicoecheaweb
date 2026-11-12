@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
     ],
   },
   // Las fotos 360 se piden desde el mismo dominio: el visor las baja con fetch y así no depende del CORS de Sanity.
+  // Las maquetas 3D se abren en un iframe aislado (origen nulo): sus fotos 360 se cargan como texturas y necesitan CORS.
+  async headers() {
+    return [{ source: "/maquetas/:path*", headers: [{ key: "Access-Control-Allow-Origin", value: "*" }] }];
+  },
   async rewrites() {
     return [{ source: "/foto360/:archivo", destination: "https://cdn.sanity.io/images/wjn5b9z2/production/:archivo" }];
   },

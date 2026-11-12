@@ -6,6 +6,7 @@ import { structureTool } from "sanity/structure";
 import { sanityDataset, sanityProjectId } from "./src/sanity/env";
 import { asesor } from "./src/sanity/asesor";
 import { emprendimiento } from "./src/sanity/emprendimiento";
+import { multimediaTokko } from "./src/sanity/multimediaTokko";
 import { esAdministrador } from "./src/sanity/permisos";
 import { propiedad } from "./src/sanity/propiedad";
 
@@ -15,7 +16,7 @@ export default defineConfig({
   title: "Goicoechea Propiedades",
   projectId: sanityProjectId,
   dataset: sanityDataset,
-  schema: { types: [propiedad, emprendimiento, asesor] },
+  schema: { types: [propiedad, multimediaTokko, emprendimiento, asesor] },
   plugins: [structureTool(), esESLocale()],
   document: {
     // Los asesores cargan y editan; borrar, despublicar y manejar asesores es solo de los administradores.

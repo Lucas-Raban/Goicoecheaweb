@@ -267,9 +267,37 @@ export async function getMaquetaUrl(id: string): Promise<string | null> {
   if (!sanityProjectId || !/^[\w-]+$/.test(id)) return null;
   const cliente = createClient({ projectId: sanityProjectId, dataset: sanityDataset, apiVersion: sanityApiVersion, useCdn: false });
   try {
-    return await cliente.fetch<string | null>(`*[_type == "propiedad" && _id == $id][0].maqueta.asset->url`, { id });
+    return await cliente.fetch<string | null>(`*[_type in ["propiedad", "multimediaTokko"] && _id == $id][0].maqueta.asset->url`, { id });
   } catch (error) {
     console.error("No se pudo leer la maqueta", error);
     return null;
+  }
+}
+
+export type MultimediaTokko = Pick<Propiedad, "videos" | "videosArchivo" | "tours" | "panoramas" | "planos" | "maqueta"> & { codigo: string };
+
+// Tour 360, maqueta, planos y videos cargados en el panel para propiedades de Tokko.
+export async function getMultimediaTokko(): Promise<MultimediaTokko[]> {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("propiedades");
+
+  if (!sanityProjectId) return [];
+  const cliente = createClient({ projectId: sanityProjectId, dataset: sanityDataset, apiVersion: sanityApiVersion, useCdn: false });
+  try {
+    const datos = await cliente.fetch<(MultimediaPanel & { _id: string; codigo?: string; maqueta?: string })[]>(
+      `*[_type == "multimediaTokko" && !(_id in path("drafts.**"))] {
+        _id, codigo, "maqueta": maqueta.asset->url,${camposMultimedia}
+      }`,
+    );
+    return datos.flatMap((d) => {
+      // Acepta el código suelto o el link de la ficha (termina en el número de Tokko).
+      const codigo = d.codigo?.match(/(\d+)\D*$/)?.[1];
+      if (!codigo) return [];
+      return [{ codigo, ...multimedia(d), maqueta: d.maqueta ? `/maqueta/${d._id}` : null }];
+    });
+  } catch (error) {
+    console.error("No se pudo leer el tour 360 de las propiedades de Tokko", error);
+    return [];
   }
 }

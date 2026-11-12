@@ -197,14 +197,15 @@ function neighbor(x,z,w,d,floors,hue=35){const h=floors*3+1.2,g=new THREE.Group(
 
 /* ---------- entorno: calle, vereda, plaza, manzana ---------- */
 const FZ=D/2; // frente del edificio (z)
-scene.add(box(1400,.2,1400,M("#e3dfd8",{roughness:1}),0,-.1,0,false,true));
+const groundBase=box(1400,.2,1400,M("#e3dfd8",{roughness:1}),0,-.1,0,false,true);scene.add(groundBase);
 // calle Falucho frente al edificio y calles laterales
-const st=(w,d,x,z)=>scene.add(box(w,.06,d,asphalt,x,.03,z,false,true));
+const envProc=new THREE.Group();scene.add(envProc);
+const st=(w,d,x,z)=>envProc.add(box(w,.06,d,asphalt,x,.03,z,false,true));
 st(400,10,0,FZ+4+5);st(10,400,-70,0);st(10,400,70,FZ+60);
-scene.add(box(400,.18,4,walk,0,.09,FZ+2,false,true),box(400,.18,3,walk,0,.09,FZ+15.5,false,true));
-{const lm=M("#f6f4f0");for(let x=-195;x<200;x+=6)scene.add(box(3,.07,.18,lm,x,.07,FZ+9,false,false))}
+envProc.add(box(400,.18,4,walk,0,.09,FZ+2,false,true),box(400,.18,3,walk,0,.09,FZ+15.5,false,true));
+{const lm=M("#f6f4f0");for(let x=-195;x<200;x+=6)envProc.add(box(3,.07,.18,lm,x,.07,FZ+9,false,false))}
 // plaza Mitre: césped, caminos, fuente, bancos y faroles
-const plaza=new THREE.Group();scene.add(plaza);const PC=FZ+62;
+const plaza=new THREE.Group();envProc.add(plaza);const PC=FZ+62;
 {const t=noiseTex(200,30,128);t.repeat.set(10,7);lawn.map=t;lawn.color.set("#9db381")}
 plaza.add(box(130,.25,90,lawn,0,.12,PC,false,true));
 plaza.add(box(130,.12,.5,walk,0,.3,FZ+17.25,false,true),box(130,.12,.5,walk,0,.3,FZ+106.75,false,true),box(.5,.12,90,walk,-64.75,.3,PC,false,true),box(.5,.12,90,walk,64.75,.3,PC,false,true));
@@ -237,9 +238,9 @@ const water=new THREE.Mesh(new THREE.CylinderGeometry(6.4,6.4,.1,48),new THREE.M
     for(let j=0;j<L;j++){const a=rnd()*6.28,r=j?1.1*s:0,sz=(j?1.5:2.1)*s*(.85+rnd()*.3);
       o.position.set(x+Math.cos(a)*r,(4.4+(j?-.4+rnd()*1.2:.4))*s,z+Math.sin(a)*r);o.scale.set(sz*(1+rnd()*.2),sz*(.8+rnd()*.25),sz*(1+rnd()*.2));o.rotation.set(rnd(),rnd()*6,rnd());o.updateMatrix();
       crown.setMatrixAt(i*L+j,o.matrix);col.set(base).offsetHSL((rnd()-.5)*.03,(rnd()-.5)*.1,(rnd()-.5)*.08+(j?.02:0));crown.setColorAt(i*L+j,col.convertSRGBToLinear())}});
-  trunk.castShadow=crown.castShadow=true;crown.receiveShadow=true;scene.add(trunk,crown)})();
+  trunk.castShadow=crown.castShadow=true;crown.receiveShadow=true;envProc.add(trunk,crown)})();
 // manzana: vecinos entre medianeras a los lados y edificios del entorno
-const city=new THREE.Group();scene.add(city);
+const city=new THREE.Group(),farCity=new THREE.Group();scene.add(city,farCity);
 (function block(){let seed=11;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
   // frente de manzana sobre Falucho
   let x=W/2;const fl=[4,3,5,2,4,3,6];let i=0;
@@ -248,11 +249,30 @@ const city=new THREE.Group();scene.add(city);
   x=-W/2;i=3;city.add(neighbor(x-4.5,FZ-12,9,24,6));x-=9;
   while(x>-64){const w=7+rnd()*7;city.add(neighbor(x-w/2,FZ-12,w,24,fl[i++%fl.length],25+rnd()*30));x-=w}
   // contrafrente y resto de la manzana
-  for(let k=0;k<10;k++){const w=10+rnd()*10;city.add(neighbor(-60+k*12.5,FZ-52,w,18,2+Math.floor(rnd()*6),20+rnd()*40))}
+  for(let k=0;k<10;k++){const w=10+rnd()*10;farCity.add(neighbor(-60+k*12.5,FZ-52,w,18,2+Math.floor(rnd()*6),20+rnd()*40))}
   // manzanas lejanas
   for(let bx=-3;bx<=3;bx++)for(let bz=-3;bz<=1;bz++){if(bz===0&&Math.abs(bx)<=0)continue;if(bz===1&&Math.abs(bx)<=0)continue;
-    const cx=bx*140,cz=bz*130-40;for(let k=0;k<6;k++){const w=14+rnd()*20,d=14+rnd()*20;city.add(neighbor(cx-45+rnd()*90,cz-40+rnd()*80,w,d,2+Math.floor(rnd()*(bz>=0?6:12)),20+rnd()*40))}}
+    const cx=bx*140,cz=bz*130-40;for(let k=0;k<6;k++){const w=14+rnd()*20,d=14+rnd()*20;farCity.add(neighbor(cx-45+rnd()*90,cz-40+rnd()*80,w,d,2+Math.floor(rnd()*(bz>=0?6:12)),20+rnd()*40))}}
 })();
+
+/* ---------- entorno real: foto aérea de Plaza Mitre como piso ---------- */
+// GR: píxel del frente de Saint Angelo en la imagen (cx,cy), vector de la calle Falucho (sx,sy) y metros por píxel
+const GR={src:"img/entorno-plaza.jpg",w:2048,h:2022,cx:1000,cy:1435,sx:-1,sy:-.7,mpp:.2,keep:0,base:"#77735f",boxes:false};
+(function(){const t=tl.load(GR.src,()=>{envProc.visible=false;
+    // los volúmenes blancos solo quedan donde la foto no llega (horizonte)
+    const ca=Math.cos(piv.rotation.y),sa=Math.sin(piv.rotation.y),inPhoto=p=>{const x=p.x,z=p.z-FZ,lx=x*ca-z*sa,lz=x*sa+z*ca,px=GR.cx+lx/GR.mpp,py=GR.cy+lz/GR.mpp;return px>-60&&px<GR.w+60&&py>-60&&py<GR.h+60};
+    [...city.children,...farCity.children].forEach(n=>{n.visible=GR.boxes&&!inPhoto(n.children[0].position)});groundBase.material.color.set(GR.base);scene.fog.near=140;scene.fog.far=500;ctl.maxPolarAngle=THREE.MathUtils.degToRad(72)});
+  t.encoding=THREE.sRGBEncoding;t.anisotropy=R.capabilities.getMaxAnisotropy();
+  const piv=new THREE.Group();piv.position.set(0,.04,FZ);scene.add(piv);
+  // la calle queda paralela al frente (eje x) y la plaza hacia +z
+  let a=Math.atan2(GR.sy,GR.sx);piv.rotation.y=a;
+  const Wm=GR.w*GR.mpp,Hm=GR.h*GR.mpp,g=new THREE.PlaneGeometry(Wm,Hm);g.rotateX(-Math.PI/2);
+  g.translate(Wm/2-GR.cx*GR.mpp,0,Hm/2-GR.cy*GR.mpp);
+  const ac=document.createElement("canvas");ac.width=ac.height=256;{const x=ac.getContext("2d");x.fillStyle="#000";x.fillRect(0,0,256,256);x.filter="blur(22px)";x.fillStyle="#fff";x.fillRect(40,40,176,176)}
+  const am=new THREE.CanvasTexture(ac);
+  const ph=new THREE.Mesh(g,new THREE.MeshBasicMaterial({map:t,alphaMap:am,transparent:true,depthWrite:false,toneMapped:false}));ph.renderOrder=-1;piv.add(ph);
+  const sh=new THREE.Mesh(g.clone(),new THREE.ShadowMaterial({opacity:.32}));sh.position.y=.02;sh.receiveShadow=true;piv.add(sh);
+  window.GRpiv=piv})();
 
 /* ---------- el edificio, modelado completo (estilo render) ---------- */
 const bld=new THREE.Group();scene.add(bld);
@@ -344,7 +364,7 @@ function paint(){const t=performance.now()/1000;
     const fr=m.geometry.type==='PlaneGeometry';m.material.opacity=(!on?.05:sel?.55+.15*Math.sin(t*3):hov?.55:u.ok?.42:.26)*(fr?.6:1);m.children[0].material.opacity=!on?.12:sel||hov?1:.75}}
 
 /* ---------- cámara: vistas y entrada cinematográfica ---------- */
-const VIEWS={frente:[[30,20,74],[0,16,4]],aerea:[[110,130,150],[0,8,10]],contra:[[-34,26,-70],[0,16,-2]]};
+const VIEWS={frente:[[34,44,90],[0,15,6]],aerea:[[110,130,150],[0,8,10]],contra:[[-36,40,-78],[0,16,-2]]};
 let tween=null;
 function go(pos,tgt,dur=1800){if(innerWidth<760){const t=new THREE.Vector3(...tgt);pos=new THREE.Vector3(...pos).sub(t).multiplyScalar(1.45).add(t).toArray()}tween={p0:cam.position.clone(),t0:ctl.target.clone(),p1:new THREE.Vector3(...pos),t1:new THREE.Vector3(...tgt),s:performance.now(),dur}}
 function ease(x){return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2}

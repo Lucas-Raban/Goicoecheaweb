@@ -256,7 +256,8 @@ const city=new THREE.Group(),farCity=new THREE.Group();scene.add(city,farCity);
 })();
 
 /* ---------- relieve: manzanas en 3D sobre la foto (techos con la foto, alturas variadas) y árboles 3D sobre las copas ---------- */
-const REL={C:25,
+const REL={C:25,edificios:false, // edificios:false = solo Saint Angelo y la plaza (sin manzanas alrededor)
+
  plaza:[[860,110],[1790,640],[1200,1584],[340,990],[640,480]],
  roads:[[170,[[-100,-30],[1000,115],[1500,410],[2150,790]]],[60,[[880,0],[760,210],[640,470],[540,600],[430,770],[350,960],[200,1100],[100,1300],[20,1450]]],[50,[[620,490],[400,420],[280,300],[190,240],[80,170],[-20,110]]],[55,[[340,990],[700,1260],[1000,1449],[1200,1584]]],[55,[[1800,570],[1600,880],[1400,1250],[1200,1584],[1100,1720],[1000,1900],[950,2050]]],[55,[[2100,1150],[1950,1450],[1850,1650],[1700,2050]]],[50,[[1560,-20],[1430,240],[1330,350]]],[45,[[0,1420],[260,1640],[480,1790],[700,1940],[820,2050]]],[40,[[40,0],[20,500],[60,1150],[30,1400]]]]};
 function buildRelief(img,tex,piv){
@@ -303,11 +304,11 @@ function buildRelief(img,tex,piv){
   const walls=new THREE.Mesh(gw,new THREE.MeshStandardMaterial({map:wt,vertexColors:true,roughness:.88,envMapIntensity:.35}));walls.castShadow=walls.receiveShadow=true;
   const gr=new THREE.BufferGeometry();gr.setAttribute("position",new THREE.Float32BufferAttribute(rp,3));gr.setAttribute("uv",new THREE.Float32BufferAttribute(ruv,2));gr.computeVertexNormals();
   const roofs=new THREE.Mesh(gr,new THREE.MeshBasicMaterial({map:tex,toneMapped:false,side:THREE.DoubleSide}));roofs.castShadow=true;
-  const grp=new THREE.Group();grp.position.y=-.04;grp.add(walls,roofs);piv.add(grp);
+  if(REL.edificios){const grp=new THREE.Group();grp.position.y=-.04;grp.add(walls,roofs);piv.add(grp)}
   // árboles 3D donde la foto muestra copas (verde con textura)
   const tp=[];for(let gx=80;gx<GR.w-80;gx+=26)for(let gy=80;gy<GR.h-80;gy+=26){const x=gx+(h1(gx,gy)-.5)*16,y=gy+(h1(gy,gx)-.5)*16;
     if(!veg(x,y))continue;let s=0,s2=0;for(let a=-8;a<=8;a+=8)for(let b=-8;b<=8;b+=8){const l=lum(x+a,y+b);s+=l;s2+=l*l}if(Math.sqrt(Math.max(0,s2/9-(s/9)**2))<8)continue;
-    if(roadD(x,y)<-4&&!inPoly(x,y,REL.plaza))continue;{const[wx,wz]=toW(x,y);if(Math.abs(wx)<W/2+4&&wz>-D/2-5&&wz<FZ+2)continue}tp.push([x,y])}
+    if(!REL.edificios&&polyD(x,y,REL.plaza)>20&&!inPoly(x,y,REL.plaza))continue;if(roadD(x,y)<-4&&!inPoly(x,y,REL.plaza))continue;{const[wx,wz]=toW(x,y);if(Math.abs(wx)<W/2+4&&wz>-D/2-5&&wz<FZ+2)continue}tp.push([x,y])}
   const tg=new THREE.SphereGeometry(1,12,8),ta=tg.attributes.position,v=new THREE.Vector3();
   for(let i=0;i<ta.count;i++){v.fromBufferAttribute(ta,i);v.multiplyScalar(1+.14*Math.sin(v.x*5.1+v.y*3.3)*Math.cos(v.z*4.7-v.y*2.1));ta.setXYZ(i,v.x,v.y,v.z)}tg.computeVertexNormals();
   const crown=new THREE.InstancedMesh(tg,new THREE.MeshStandardMaterial({color:"#fff",roughness:.92,envMapIntensity:.35}),tp.length),o=new THREE.Object3D(),tc=new THREE.Color();
@@ -317,11 +318,15 @@ function buildRelief(img,tex,piv){
   window.REL_STATS={cells:cells.length,tris:(pos.length+rp.length)/9,trees:tp.length}}
 /* ---------- entorno real: foto aérea de Plaza Mitre como piso ---------- */
 // GR: píxel del frente de Saint Angelo en la imagen (cx,cy), vector de la calle Falucho (sx,sy) y metros por píxel
-const GR={src:"img/entorno-plaza.jpg",w:2048,h:2022,cx:1000,cy:1435,sx:-1,sy:-.7,mpp:.2,keep:0,base:"#77735f",boxes:false};
+const GR={src:"img/entorno-plaza.jpg",w:2048,h:2022,cx:1000,cy:1435,sx:-1,sy:-.7,mpp:.2,keep:0,base:"#dcd8cf",boxes:false};
 (function(){const t=tl.load(GR.src,()=>{envProc.visible=false;
     // los volúmenes blancos solo quedan donde la foto no llega (horizonte)
     const ca=Math.cos(piv.rotation.y),sa=Math.sin(piv.rotation.y),inPhoto=p=>{const x=p.x,z=p.z-FZ,lx=x*ca-z*sa,lz=x*sa+z*ca,px=GR.cx+lx/GR.mpp,py=GR.cy+lz/GR.mpp;return px>-60&&px<GR.w+60&&py>-60&&py<GR.h+60};
-    [...city.children,...farCity.children].forEach(n=>{n.visible=GR.boxes&&!inPhoto(n.children[0].position)});groundBase.material.color.set(GR.base);scene.fog.near=140;scene.fog.far=500;ctl.maxPolarAngle=THREE.MathUtils.degToRad(72);buildRelief(t.image,t,piv)});
+    [...city.children,...farCity.children].forEach(n=>{n.visible=GR.boxes&&!inPhoto(n.children[0].position)});groundBase.material.color.set(GR.base);scene.fog.near=140;scene.fog.far=500;ctl.maxPolarAngle=THREE.MathUtils.degToRad(72);buildRelief(t.image,t,piv);
+    if(!REL.edificios){// solo la plaza: recorta la foto a la plaza, sus calles y la vereda de Saint Angelo
+      const c=document.createElement("canvas");c.width=GR.w;c.height=GR.h;const x=c.getContext("2d");x.filter="blur(10px)";x.fillStyle=x.strokeStyle="#fff";
+      x.beginPath();REL.plaza.forEach(([px,py],i)=>i?x.lineTo(px,py):x.moveTo(px,py));x.closePath();x.fill();x.lineJoin="round";x.lineWidth=24;x.stroke();x.filter="none";x.globalCompositeOperation="source-in";x.drawImage(t.image,0,0,GR.w,GR.h);
+      const ct=new THREE.CanvasTexture(c);ct.encoding=THREE.sRGBEncoding;ct.anisotropy=t.anisotropy;ph.material.map=ct;ph.material.alphaMap=null;ph.material.needsUpdate=true}});
   t.encoding=THREE.sRGBEncoding;t.anisotropy=R.capabilities.getMaxAnisotropy();
   const piv=new THREE.Group();piv.position.set(0,.04,FZ);scene.add(piv);
   // la calle queda paralela al frente (eje x) y la plaza hacia +z
@@ -398,6 +403,17 @@ for(let f=1;f<=10;f++){const y0=base(f)+.15,h=FH-.3,yc=y0+h/2;
 add(box(W,.5,D+.2,fac,0,TOP+.4,0),box(W,1.2,.35,fac,0,TOP+1.0,-FZ-.05),box(W,1.1,.3,fac,0,TOP+.95,FZ-.05));
 add(box(4.2,2.4,5,fac,X(2.4+2.1),TOP+1.6,-2),box(.9,1.1,.9,M("#3c3f43"),X(1.2),TOP+1.2,FZ-1.6),box(.9,1.1,.9,M("#3c3f43"),X(W-1.2),TOP+1.2,FZ-1.6));
 bld.traverse(o=>{if(o.isMesh&&(o.material===gl||o.material===railGl)){o.renderOrder=1}});
+/* ---------- fachada real: render fiel (Gemini, sobre la foto de dron) proyectado sobre el frente del modelo ----------
+   La imagen está recortada al ancho del edificio (W) y va de hb a ht metros de altura; las losas calzan con base(f). */
+const FACADE={src:"img/sa-fachada-render.jpg?v=2",hb:0,ht:34.354};
+{const t=tl.load(FACADE.src);t.encoding=THREE.sRGBEncoding;t.anisotropy=R.capabilities.getMaxAnisotropy();t.wrapS=t.wrapT=THREE.ClampToEdgeWrapping;
+  const pm=new THREE.MeshStandardMaterial({map:t,roughness:.72,metalness:0,envMapIntensity:.25}),hide=new Set([railGl,...curt]),bb=new THREE.Box3();
+  for(const m of [...bld.children]){if(!m.isMesh)continue;bb.setFromObject(m);
+    if(bb.max.z<FZ-3||bb.max.z-bb.min.z>4||bb.min.y<-.2||bb.max.y>TOP+1.6)continue;
+    if(hide.has(m.material)||(m.material.emissiveIntensity>0&&m.material.emissive&&m.material.emissive.getHex()!==0)){m.visible=false;continue}
+    const p=m.geometry.attributes.position,uv=m.geometry.attributes.uv;
+    for(let i=0;i<p.count;i++){const x=p.getX(i)+m.position.x,y=p.getY(i)+m.position.y;uv.setXY(i,(x+W/2)/W,(y-FACADE.hb)/(FACADE.ht-FACADE.hb))}
+    uv.needsUpdate=true;m.material=pm}}
 const FZP=FZ+1.95;
 
 /* volúmenes de disponibilidad por unidad */

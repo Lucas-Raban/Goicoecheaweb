@@ -155,7 +155,7 @@ function refreshEnv(){const g=envC.getContext("2d"),c=k=>"#"+skyU[k].value.getHe
 
 const hemi=new THREE.HemisphereLight("#dfe8f5","#c9b89c",.4);scene.add(hemi);
 const sun=new THREE.DirectionalLight("#fff3e0",2.1);sun.castShadow=true;sun.shadow.mapSize.set(innerWidth<760?2048:4096,innerWidth<760?2048:4096);sun.shadow.radius=4;
-Object.assign(sun.shadow.camera,{left:-80,right:80,top:80,bottom:-80,near:10,far:420});sun.target.position.set(0,0,12);sun.shadow.bias=-.0004;sun.shadow.normalBias=.03;
+Object.assign(sun.shadow.camera,{left:-130,right:130,top:130,bottom:-130,near:10,far:520});sun.target.position.set(0,0,12);sun.shadow.bias=-.0004;sun.shadow.normalBias=.03;
 scene.add(sun,sun.target);
 function setSun(sunset){S.sunset=sunset;$("bSol").setAttribute("aria-pressed",sunset);
   // tarde: sol cálido y bajo desde el frente · atardecer: sol rasante y cielo naranja
@@ -255,13 +255,73 @@ const city=new THREE.Group(),farCity=new THREE.Group();scene.add(city,farCity);
     const cx=bx*140,cz=bz*130-40;for(let k=0;k<6;k++){const w=14+rnd()*20,d=14+rnd()*20;farCity.add(neighbor(cx-45+rnd()*90,cz-40+rnd()*80,w,d,2+Math.floor(rnd()*(bz>=0?6:12)),20+rnd()*40))}}
 })();
 
+/* ---------- relieve: manzanas en 3D sobre la foto (techos con la foto, alturas variadas) y árboles 3D sobre las copas ---------- */
+const REL={C:25,
+ plaza:[[860,110],[1790,640],[1200,1584],[340,990],[640,480]],
+ roads:[[170,[[-100,-30],[1000,115],[1500,410],[2150,790]]],[60,[[880,0],[760,210],[640,470],[540,600],[430,770],[350,960],[200,1100],[100,1300],[20,1450]]],[50,[[620,490],[400,420],[280,300],[190,240],[80,170],[-20,110]]],[55,[[340,990],[700,1260],[1000,1449],[1200,1584]]],[55,[[1800,570],[1600,880],[1400,1250],[1200,1584],[1100,1720],[1000,1900],[950,2050]]],[55,[[2100,1150],[1950,1450],[1850,1650],[1700,2050]]],[50,[[1560,-20],[1430,240],[1330,350]]],[45,[[0,1420],[260,1640],[480,1790],[700,1940],[820,2050]]],[40,[[40,0],[20,500],[60,1150],[30,1400]]]]};
+function buildRelief(img,tex,piv){
+  const S=4,cw=Math.round(GR.w/S),ch=Math.round(GR.h/S),cv=document.createElement("canvas");cv.width=cw;cv.height=ch;const cx2=cv.getContext("2d");cx2.drawImage(img,0,0,cw,ch);
+  let pix;try{pix=cx2.getImageData(0,0,cw,ch).data}catch(e){return}
+  const P=(x,y)=>{const i=(Math.min(ch-1,Math.max(0,y/S|0))*cw+Math.min(cw-1,Math.max(0,x/S|0)))*4;return[pix[i],pix[i+1],pix[i+2]]};
+  const lum=(x,y)=>{const p=P(x,y);return .3*p[0]+.59*p[1]+.11*p[2]};
+  const veg=(x,y)=>{const[r,g,b]=P(x,y);return g>b*1.22&&g>r*.8&&g<235};
+  const inPoly=(x,y,Q)=>{let c=false;for(let i=0,j=Q.length-1;i<Q.length;j=i++){const[x1,y1]=Q[i],[x2,y2]=Q[j];if((y1>y)!=(y2>y)&&x<(x2-x1)*(y-y1)/(y2-y1)+x1)c=!c}return c};
+  const dseg=(x,y,a,b)=>{const dx=b[0]-a[0],dy=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(y-a[1])*dy)/(dx*dx+dy*dy)));return Math.hypot(x-a[0]-t*dx,y-a[1]-t*dy)};
+  const polyD=(x,y,Q)=>{let m=1e9;for(let i=0,j=Q.length-1;i<Q.length;j=i++)m=Math.min(m,dseg(x,y,Q[i],Q[j]));return m};
+  const roadD=(x,y)=>{let m=polyD(x,y,REL.plaza);for(const[w,pl]of REL.roads)for(let i=0;i<pl.length-1;i++)m=Math.min(m,dseg(x,y,pl[i],pl[i+1])-w/2);return m};
+  const h1=(a,b)=>{const s=Math.sin(a*127.1+b*311.7)*43758.5453;return s-Math.floor(s)};
+  const n=Math.hypot(1,.67),ux=1/n,uy=.67/n,vx=-uy,vy=ux,C=REL.C,mpp=GR.mpp;
+  const ca=Math.cos(piv.rotation.y),sa=Math.sin(piv.rotation.y);
+  const toW=(x,y)=>{const lx=(x-GR.cx)*mpp,lz=(y-GR.cy)*mpp;return[lx*ca+lz*sa,-lx*sa+lz*ca+FZ]};
+  const N=110,grid=new Map(),cells=[];
+  for(let i=-N;i<N;i++)for(let j=-N;j<N;j++){const cu=i*C,cvv=j*C,x=1000+cu*ux+cvv*vx,y=1000+cu*uy+cvv*vy;
+    if(x<80||x>GR.w-80||y<80||y>GR.h-80)continue;if(inPoly(x,y,REL.plaza))continue;
+    const rd=roadD(x,y);if(rd<14||veg(x,y))continue;
+    const[wx,wz]=toW(x,y);if(Math.abs(wx)<W/2+3.5&&wz>-D/2-5&&wz<FZ+3)continue;
+    // lote: franjas de 26 m de fondo, frentes de 9 a 16 m
+    const r=Math.floor(cvv/130),lw=45+h1(r,1)*35,k=Math.floor((cu+h1(r,2)*200)/lw),q=h1(r*7.1,k*3.3),pz=polyD(x,y,REL.plaza);
+    let fl;if(rd<170){fl=pz<260?4+Math.floor(Math.pow(q,1.5)*9):(q<.55?2+Math.floor(q*5):3+Math.floor(q*q*8))}else fl=1+Math.floor(q*2);if(Math.hypot(wx,wz)<45)fl=Math.min(fl,6);
+    const hgt=fl*3+.6+h1(r,k)*.8,c={i,j,x,y,h:hgt,lot:r*1000+k,q};grid.set(i+","+j,c);cells.push(c)}
+  const pal=["#ece8e1","#e6dfd4","#dcd5ca","#f0ebe2","#d9d0c3","#cdc6bb","#e9e1d3"].map(c=>new THREE.Color(c));
+  const pos=[],nor=[],uv=[],col=[],rp=[],ru=[],ruv=[];
+  const L=(x,y,h)=>[(x-GR.cx)*mpp,h,(y-GR.cy)*mpp];
+  const tmp=new THREE.Color();
+  for(const c of cells){const hu=C/2,cor=[[-1,-1],[1,-1],[1,1],[-1,1]].map(([a,b])=>[c.x+(a*ux+b*vx)*hu,c.y+(a*uy+b*vy)*hu]);
+    const pc=P(c.x,c.y);tmp.copy(pal[Math.floor(h1(c.lot,9)*pal.length)]).lerp(new THREE.Color(pc[0]/255,pc[1]/255,pc[2]/255),.18).convertSRGBToLinear();
+    // techo: la foto proyectada desde arriba
+    const R4=cor.map(([x,y])=>L(x,y,c.h));[0,2,1,0,3,2].forEach(t=>{rp.push(...R4[t]);ruv.push(cor[t][0]/GR.w,1-cor[t][1]/GR.h)});
+    // paredes: solo donde el vecino es más bajo
+    const nb=[[0,-1,0,1],[1,0,1,2],[0,1,2,3],[-1,0,3,0]];
+    for(const[di,dj,a,b]of nb){const o=grid.get((c.i+di)+","+(c.j+dj)),h0=o?o.h:0;if(h0>=c.h-.05)continue;
+      const A=cor[a],B=cor[b],p1=L(A[0],A[1],h0),p2=L(B[0],B[1],h0),p3=L(B[0],B[1],c.h),p4=L(A[0],A[1],c.h);
+      const ex=p2[0]-p1[0],ez=p2[2]-p1[2],el=Math.hypot(ex,ez),nx=ez/el,nz=-ex/el;
+      const u0=(c.i*7+c.j*3)%4*1.5625,U=[u0,u0+el/3.2,u0+el/3.2,u0],V=[h0/3,h0/3,c.h/3,c.h/3],Q=[p1,p2,p3,p4];
+      [0,2,1,0,3,2].forEach(t=>{pos.push(...Q[t]);nor.push(nx,0,nz);uv.push(U[t],V[t]);col.push(tmp.r,tmp.g,tmp.b)})}}
+  const wc=document.createElement("canvas");wc.width=wc.height=64;{const g=wc.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,64,64);g.fillStyle="#aab1b7";g.fillRect(14,18,36,26);g.fillStyle="#c3c8cc";g.fillRect(14,18,36,5);g.fillStyle="#efece6";g.fillRect(12,44,40,3);g.fillStyle="#e6e2db";g.fillRect(0,61,64,3)}
+  const wt=new THREE.CanvasTexture(wc);wt.wrapS=wt.wrapT=THREE.RepeatWrapping;wt.encoding=THREE.sRGBEncoding;wt.anisotropy=4;
+  const gw=new THREE.BufferGeometry();gw.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));gw.setAttribute("normal",new THREE.Float32BufferAttribute(nor,3));gw.setAttribute("uv",new THREE.Float32BufferAttribute(uv,2));gw.setAttribute("color",new THREE.Float32BufferAttribute(col,3));
+  const walls=new THREE.Mesh(gw,new THREE.MeshStandardMaterial({map:wt,vertexColors:true,roughness:.88,envMapIntensity:.35}));walls.castShadow=walls.receiveShadow=true;
+  const gr=new THREE.BufferGeometry();gr.setAttribute("position",new THREE.Float32BufferAttribute(rp,3));gr.setAttribute("uv",new THREE.Float32BufferAttribute(ruv,2));gr.computeVertexNormals();
+  const roofs=new THREE.Mesh(gr,new THREE.MeshBasicMaterial({map:tex,toneMapped:false,side:THREE.DoubleSide}));roofs.castShadow=true;
+  const grp=new THREE.Group();grp.position.y=-.04;grp.add(walls,roofs);piv.add(grp);
+  // árboles 3D donde la foto muestra copas (verde con textura)
+  const tp=[];for(let gx=80;gx<GR.w-80;gx+=26)for(let gy=80;gy<GR.h-80;gy+=26){const x=gx+(h1(gx,gy)-.5)*16,y=gy+(h1(gy,gx)-.5)*16;
+    if(!veg(x,y))continue;let s=0,s2=0;for(let a=-8;a<=8;a+=8)for(let b=-8;b<=8;b+=8){const l=lum(x+a,y+b);s+=l;s2+=l*l}if(Math.sqrt(Math.max(0,s2/9-(s/9)**2))<8)continue;
+    if(roadD(x,y)<-4&&!inPoly(x,y,REL.plaza))continue;{const[wx,wz]=toW(x,y);if(Math.abs(wx)<W/2+4&&wz>-D/2-5&&wz<FZ+2)continue}tp.push([x,y])}
+  const tg=new THREE.SphereGeometry(1,12,8),ta=tg.attributes.position,v=new THREE.Vector3();
+  for(let i=0;i<ta.count;i++){v.fromBufferAttribute(ta,i);v.multiplyScalar(1+.14*Math.sin(v.x*5.1+v.y*3.3)*Math.cos(v.z*4.7-v.y*2.1));ta.setXYZ(i,v.x,v.y,v.z)}tg.computeVertexNormals();
+  const crown=new THREE.InstancedMesh(tg,new THREE.MeshStandardMaterial({color:"#fff",roughness:.92,envMapIntensity:.35}),tp.length),o=new THREE.Object3D(),tc=new THREE.Color();
+  tp.forEach(([x,y],i)=>{const s=1.7+h1(x,y)*1.3,[lx,,lz]=L(x,y,0);o.position.set(lx,2.6+s*.9,lz);o.scale.set(s,s*.82,s);o.rotation.set(0,h1(y,x)*6,0);o.updateMatrix();crown.setMatrixAt(i,o.matrix);
+    let r=0,g=0,b=0;for(let a=-4;a<=4;a+=4)for(let bb=-4;bb<=4;bb+=4){const p=P(x+a,y+bb);r+=p[0];g+=p[1];b+=p[2]}tc.setRGB(r/9/255,g/9/255,b/9/255).multiplyScalar(1.22);tc.offsetHSL(0,.06,0).convertSRGBToLinear();crown.setColorAt(i,tc)});
+  crown.castShadow=true;crown.receiveShadow=true;crown.position.y=-.04;piv.add(crown);
+  window.REL_STATS={cells:cells.length,tris:(pos.length+rp.length)/9,trees:tp.length}}
 /* ---------- entorno real: foto aérea de Plaza Mitre como piso ---------- */
 // GR: píxel del frente de Saint Angelo en la imagen (cx,cy), vector de la calle Falucho (sx,sy) y metros por píxel
 const GR={src:"img/entorno-plaza.jpg",w:2048,h:2022,cx:1000,cy:1435,sx:-1,sy:-.7,mpp:.2,keep:0,base:"#77735f",boxes:false};
 (function(){const t=tl.load(GR.src,()=>{envProc.visible=false;
     // los volúmenes blancos solo quedan donde la foto no llega (horizonte)
     const ca=Math.cos(piv.rotation.y),sa=Math.sin(piv.rotation.y),inPhoto=p=>{const x=p.x,z=p.z-FZ,lx=x*ca-z*sa,lz=x*sa+z*ca,px=GR.cx+lx/GR.mpp,py=GR.cy+lz/GR.mpp;return px>-60&&px<GR.w+60&&py>-60&&py<GR.h+60};
-    [...city.children,...farCity.children].forEach(n=>{n.visible=GR.boxes&&!inPhoto(n.children[0].position)});groundBase.material.color.set(GR.base);scene.fog.near=140;scene.fog.far=500;ctl.maxPolarAngle=THREE.MathUtils.degToRad(72)});
+    [...city.children,...farCity.children].forEach(n=>{n.visible=GR.boxes&&!inPhoto(n.children[0].position)});groundBase.material.color.set(GR.base);scene.fog.near=140;scene.fog.far=500;ctl.maxPolarAngle=THREE.MathUtils.degToRad(72);buildRelief(t.image,t,piv)});
   t.encoding=THREE.sRGBEncoding;t.anisotropy=R.capabilities.getMaxAnisotropy();
   const piv=new THREE.Group();piv.position.set(0,.04,FZ);scene.add(piv);
   // la calle queda paralela al frente (eje x) y la plaza hacia +z

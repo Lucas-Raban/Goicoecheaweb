@@ -16,7 +16,7 @@ export const propiedad = defineType({
   ],
   fields: [
     defineField({ name: "publicada", title: "Publicada en la web", type: "boolean", initialValue: true, group: "datos" }),
-    defineField({ name: "destacada", title: "Destacada en el inicio", type: "boolean", initialValue: false, group: "datos" }),
+    defineField({ name: "destacada", title: "Destacada (aparece primero)", type: "boolean", initialValue: false, group: "datos" }),
     asesorACargo,
     defineField({
       name: "titulo",

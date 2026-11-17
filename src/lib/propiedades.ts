@@ -14,7 +14,7 @@ function idTokko(p: Propiedad) {
   return p.origen === "tokko" ? Number(p.id.slice("tokko-".length)) || 0 : 0;
 }
 
-// Todas las propiedades de la web (panel y Tokko), de la más nueva a la más vieja.
+// Todas las propiedades de la web (panel y Tokko): primero las destacadas y, dentro de cada grupo, de la más nueva a la más vieja.
 // Suma a una propiedad de Tokko el tour 360, la maqueta, los planos y los videos cargados en el panel.
 function conMultimedia(p: Propiedad, extras: MultimediaTokko[]): Propiedad {
   if (p.origen !== "tokko") return p;
@@ -33,7 +33,9 @@ function conMultimedia(p: Propiedad, extras: MultimediaTokko[]): Propiedad {
 
 export async function getPropiedades() {
   const [panel, tokko, extras] = await Promise.all([getPropiedadesPanel(), getPropiedadesTokko(), getMultimediaTokko()]);
-  return [...panel, ...tokko.map((p) => conMultimedia(p, extras))].sort((a, b) => cargada(b) - cargada(a) || idTokko(b) - idTokko(a));
+  return [...panel, ...tokko.map((p) => conMultimedia(p, extras))].sort(
+    (a, b) => Number(b.destacada) - Number(a.destacada) || cargada(b) - cargada(a) || idTokko(b) - idTokko(a),
+  );
 }
 
 export async function getPropiedad(slug: string) {

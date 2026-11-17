@@ -145,7 +145,9 @@ async function leerTodo<T>(recurso: "property" | "development", fixture?: string
 // y la web muestra el aviso de catálogo en preparación.
 export async function getPropiedadesTokko(): Promise<Propiedad[]> {
   "use cache";
-  cacheLife("hours");
+  // Se vuelve a pedir a Tokko cada minuto (si hay visitas): así una propiedad borrada o editada
+  // allá desaparece o se actualiza en la web en uno o dos minutos, sin servicios pagos.
+  cacheLife("minutes");
   cacheTag("propiedades");
 
   try {
@@ -225,7 +227,9 @@ function normalizarEmprendimiento(e: TokkoEmprendimiento): Emprendimiento {
 // Emprendimientos publicados en Tokko. Sus unidades son las propiedades que Tokko asocia a cada uno.
 export async function getEmprendimientosTokko(): Promise<Emprendimiento[]> {
   "use cache";
-  cacheLife("hours");
+  // Se vuelve a pedir a Tokko cada minuto (si hay visitas): así una propiedad borrada o editada
+  // allá desaparece o se actualiza en la web en uno o dos minutos, sin servicios pagos.
+  cacheLife("minutes");
   cacheTag("propiedades");
 
   try {

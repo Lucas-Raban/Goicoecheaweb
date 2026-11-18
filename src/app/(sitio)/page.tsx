@@ -207,6 +207,13 @@ export default async function Inicio() {
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-20 md:grid-cols-[1fr_1.4fr] md:px-8 md:py-24">
           <div className="self-center">
             <h2 className="font-titulo text-4xl leading-[1.05] font-bold tracking-[-0.01em] md:text-5xl">Pasá por la oficina</h2>
+            {/* Texto local para Google: qué hace la inmobiliaria y dónde, dicho como lo buscaría alguien. */}
+            <p className="mt-6 max-w-lg text-gris">
+              Goicoechea Propiedades es una inmobiliaria de Mar del Plata ({site.registro}). Vendemos, alquilamos y
+              tasamos departamentos, casas, PH, locales y terrenos en el Centro, Plaza Mitre, Chauvin, La Perla, Güemes,
+              Playa Grande, Los Troncos y el resto de la ciudad. También tenemos alquileres temporarios para la temporada
+              y unidades en emprendimientos en pozo.
+            </p>
             <p className="mt-6 text-lg">
               {site.direccion.calle}
               <br />

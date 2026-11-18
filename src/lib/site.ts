@@ -13,6 +13,7 @@ export const site = {
     ciudad: "Mar del Plata",
     provincia: "Buenos Aires",
     codigoPais: "AR",
+    codigoPostal: "B7600",
   },
   telefono: "+54 9 223 511-1816",
   whatsapp: "5492235111816",
@@ -21,6 +22,9 @@ export const site = {
     instagram: "https://www.instagram.com/goicoecheapropiedades/",
     facebook: "https://www.facebook.com/people/Goicoechea-Propiedades/100010540184939/",
   },
+  // Link de la ficha de Google Business Profile (Google Maps). Cuando esté, se suma a los datos estructurados
+  // y al mapa de la oficina, así Google une la web con la ficha del mapa.
+  googleBusiness: process.env.NEXT_PUBLIC_GOOGLE_BUSINESS ?? "",
   // Web actual en Tokko, hasta que el catálogo se lea desde la API.
   catalogoActual: "https://goicoecheapropiedades.com",
 };

@@ -115,7 +115,7 @@ export default async function FichaPropiedad({ params }: PageProps<"/propiedades
             ...(o.precio
               ? { price: o.precio.replace(/[^\d]/g, ""), priceCurrency: o.precio.startsWith("USD") ? "USD" : "ARS" }
               : {}),
-            seller: { "@type": "RealEstateAgent", name: site.nombre, telephone: site.telefono },
+            seller: { "@type": "RealEstateAgent", "@id": `${site.url}/#inmobiliaria`, name: site.nombre, telephone: site.telefono },
           })),
         }}
       />

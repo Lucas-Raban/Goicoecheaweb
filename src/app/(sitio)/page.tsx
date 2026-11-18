@@ -50,7 +50,8 @@ export const metadata: Metadata = {
 
 export default async function Inicio() {
   const propiedades = await getPropiedades();
-  const destacadas = [...propiedades.filter((p) => p.destacada), ...propiedades.filter((p) => !p.destacada)].slice(0, 6);
+  // getPropiedades ya trae las destacadas primero.
+  const destacadas = propiedades.slice(0, 6);
 
   return (
     <>
